@@ -1024,6 +1024,24 @@
   var embedEl = document.getElementById('embed');
   var fancy = false;
 
+  // Reloading the live preview.
+  //
+  // Assigning an iframe src that differs from the current one ONLY after the
+  // '#' is a same-document navigation: the browser moves the fragment and
+  // renders nothing new, so every selection appeared to be ignored until a
+  // manual refresh. A differing query string forces a genuine reload, and
+  // home.html ignores query parameters, so the rendered page is unaffected.
+  // The counter stays out of the embed snippet teachers copy.
+  var previewSeq = 0, previewTimer = null;
+  function schedulePreview(u) {
+    clearTimeout(previewTimer);
+    previewTimer = setTimeout(function () {
+      var i = u.indexOf('#');
+      previewSeq++;
+      frameEl.setAttribute('src', u.slice(0, i) + '?p=' + previewSeq + u.slice(i));
+    }, 320);   // debounced so typing does not reload on every keystroke
+  }
+
   function updateOutput() {
     var html = build();
     codeEl.value = html;
@@ -1038,9 +1056,11 @@
       if (u.length > 8000) note += ' · very long — consider trimming announcements';
       document.getElementById('urlNote').textContent = note;
       frameEl.removeAttribute('srcdoc');
-      if (frameEl.getAttribute('src') !== u) frameEl.setAttribute('src', u);
+      schedulePreview(u);
       sizeEl.textContent = OAO.SUBJECTS[state.subject].label + ' · ' + OAO.STYLES[state.style].label;
     } else {
+      // drop any queued fancy reload, or it would land on top of the srcdoc
+      clearTimeout(previewTimer);
       frameEl.removeAttribute('src');
       frameEl.srcdoc = '<!DOCTYPE html><html><head><meta charset="utf-8" /></head>' +
         '<body style="margin:0; padding:14px; background:#e8ecf5;">' + html + '</body></html>';
