@@ -204,14 +204,16 @@
 
         <hr style="border:none; border-top:1px solid var(--line); margin:6px 0 14px;" />
 
-        <label class="f" style="margin-bottom:4px;"><span>Your photo</span></label>
-        <p class="hint">Pick a photo from your computer. It gets shrunk to a small square and built straight into the page, so there is nothing to upload and no link that can break later.</p>
-        <div class="photoRow">
-          <button type="button" data-action="pickPhoto">Choose a photo&hellip;</button>
-          <input type="file" id="photoFile" accept="image/*" style="display:none;" />
-          <span class="sizenote" id="photoNote"></span>
-        </div>
-        <div class="photoRow" id="photoPrev" style="margin-top:12px;"></div>
+        <label class="f"><span>Your photo &mdash; the link to it in Canvas</span>
+          <input type="text" data-path="teacher.photo" id="photoUrl" placeholder="https://&hellip;.instructure.com/courses/123/files/45678" /></label>
+        <ol class="steps" style="margin-bottom:12px;">
+          <li>In Canvas, open <strong>Files</strong> and upload your photo.</li>
+          <li><strong>Publish it</strong> &mdash; click the grey circle beside it so it becomes a green check. Students cannot see an unpublished file.</li>
+          <li>Click the file to open it, then copy the address out of your browser's address bar and paste it above.</li>
+        </ol>
+        <p class="hint">The builder adds the bit Canvas needs on the end of that address to show it as a picture, so you don't have to. Any other web address for an image works here too.</p>
+        <p class="hint" style="margin-bottom:10px;"><strong>Why a link and not an upload:</strong> Canvas strips out photos that are built directly into a pasted page, so a link is the only way one survives.</p>
+        <div class="photoRow" id="photoPrev"><span class="sizenote" id="photoNote"></span></div>
 
         <label class="f" style="margin-top:14px;"><span>Frame shape</span></label>
         <div class="picks" id="framePicks"></div>
@@ -482,6 +484,10 @@
           for (var k2 in b[k]) if (!(k2 in s[k])) s[k][k2] = b[k][k2];
         }
       }
+      // A build in between shipped embedded photos, which Canvas strips. Drop any
+      // that survived in saved work so nobody keeps pasting a photo that cannot
+      // render, and so the field is free for a real link.
+      if (s.teacher && /^data:/i.test(String(s.teacher.photo || ''))) s.teacher.photo = '';
       return s;
     } catch (e) { return null; }
   }
@@ -699,8 +705,11 @@
 
       // portrait, or a monogram when there is no photo
       h.push('      <div style="flex: 0 0 auto;">');
-      if (String(tc.photo || '').trim()) {
-        h.push('        <img src="' + href(tc.photo) + '" alt="' + esc(who) + '" style="width: 150px; height: 150px; object-fit: cover; border-radius: ' + fr.radius + '; border: 4px solid #55C8E8; display: block;" />');
+      // A link the builder has already flagged would render as a broken image
+      // in Canvas. The monogram is a better outcome than that, so a warned
+      // link is not emitted at all.
+      if (photoSrc() && !photoWarning()) {
+        h.push('        <img src="' + href(photoSrc()) + '" alt="' + esc(who) + '" style="width: 150px; height: 150px; object-fit: cover; border-radius: ' + fr.radius + '; border: 4px solid #55C8E8; display: block;" />');
       } else {
         h.push('        <div style="width: 150px; height: 150px; border-radius: ' + fr.radius + '; border: 4px solid #55C8E8; background: #EDF1F9; color: #0e1c42; font-size: 46px; text-align: center; line-height: 142px; letter-spacing: 1px;">' + esc(initials) + '</div>');
       }
@@ -901,6 +910,37 @@
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
+  // ----------------------------------------------------------- photo linking
+  // Canvas gives teachers the address of a file's *preview page*, e.g.
+  //   https://host/courses/123/files/45678?module_item_id=99
+  // which is an HTML page, not an image, so dropping it straight into an
+  // <img src> shows nothing. Canvas's own editor uses the /preview form.
+  // Normalise to that, so a teacher can paste exactly what the address bar gave
+  // them and it still works.
+  function photoSrc() {
+    var u = String(state.teacher.photo || '').trim();
+    if (!u) return '';
+    var m = u.match(/^(https?:\/\/[^?#]*?\/files\/\d+)(?:\/(preview|download)[^?#]*)?/i);
+    if (!m) return u.split('#')[0];
+    return m[1] + '/' + (m[2] ? m[2].toLowerCase() : 'preview');
+  }
+
+  // Judge what was pasted and name the specific mistake, rather than silently
+  // emitting a broken image.
+  function photoWarning() {
+    var u = String(state.teacher.photo || '').trim();
+    if (!u) return '';
+    if (/^data:/i.test(u))
+      return 'Canvas strips photos embedded this way. Upload the file to Canvas Files and paste its link instead.';
+    if (!/^https?:\/\//i.test(u))
+      return 'That does not look like a web address \u2014 it should start with https://';
+    if (/\/files\/folder\//i.test(u))
+      return 'That is a Files folder, not one photo. Click the photo itself, then copy the address.';
+    if (/\/(pages|assignments|modules|discussion_topics|quizzes)\//i.test(u))
+      return 'That looks like a Canvas page rather than a file. Open Files, click your photo, and copy that address.';
+    return '';
+  }
+
   // -------------------------------------------------- frame & house pickers
   function renderPickers() {
     var fp = [];
@@ -923,57 +963,28 @@
     }
     document.getElementById('housePicks').innerHTML = hp.join('');
 
-    // photo preview + what the photo is costing the paste
+    // Photo preview. This is the only place a bad link gets caught before it
+    // reaches Canvas, so it reports load failures rather than showing nothing.
     var prev = document.getElementById('photoPrev');
-    var ph = String(state.teacher.photo || '').trim();
-    if (ph) {
-      var kb = ph.indexOf('data:') === 0 ? ' &middot; adds about ' + Math.round(ph.length / 1024) + ' KB to the paste' : '';
-      prev.innerHTML = '<img src="' + escAttr(ph) + '" alt="" />' +
-        '<span class="sizenote">' + (ph.indexOf('data:') === 0 ? 'Photo is built into the page' : 'Photo loads from a link') + kb + '</span>' +
-        '<button type="button" data-action="clearPhoto">Remove photo</button>';
+    var src = photoSrc(), warn = photoWarning();
+    if (warn) {
+      prev.innerHTML = '<span class="sizenote" style="color:#8C2C2C;">' + escAttr(warn) + '</span>';
+    } else if (src) {
+      prev.innerHTML = '<img alt="" /><span class="sizenote">Checking that link\u2026</span>';
+      var im = prev.firstChild, msg = prev.lastChild;
+      im.onload = function () {
+        msg.textContent = 'That link works. Students who cannot see the file will get your initials instead.';
+        msg.style.color = '#1E7A46';
+      };
+      im.onerror = function () {
+        im.style.display = 'none';
+        msg.textContent = 'That link did not load a picture. Check the file is published in Canvas.';
+        msg.style.color = '#8C2C2C';
+      };
+      im.src = src;
     } else {
       prev.innerHTML = '<span class="sizenote">No photo yet &mdash; your initials will fill the frame.</span>';
     }
-  }
-
-  // ------------------------------------------------------------ photo intake
-  // There is no server here, so a chosen file cannot be hosted. It is shrunk
-  // and written into the page itself as a data URI, which a pasted Canvas page
-  // can display without depending on anything else. A pasted link stays a link.
-  function loadPhotoFile(file) {
-    var note = document.getElementById('photoNote');
-    if (!file) return;
-    if (!/^image\//.test(file.type)) { note.textContent = 'That does not look like an image file.'; return; }
-    note.textContent = 'Shrinking your photo…';
-    var fr = new FileReader();
-    fr.onload = function () {
-      var img = new Image();
-      img.onload = function () {
-        // square centre-crop, then step down until the result is a sane size
-        var sizes = [360, 300, 240, 200], quals = [0.82, 0.72, 0.62, 0.5], out = null;
-        for (var i = 0; i < sizes.length && !out; i++) {
-          for (var j = 0; j < quals.length; j++) {
-            var S = sizes[i];
-            var cv = document.createElement('canvas');
-            cv.width = cv.height = S;
-            var ctx = cv.getContext('2d');
-            var side = Math.min(img.width, img.height);
-            ctx.drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, S, S);
-            var d = cv.toDataURL('image/jpeg', quals[j]);
-            if (d.length < 60000) { out = d; break; }
-          }
-        }
-        if (!out) { note.textContent = 'That image is very large. Try a smaller one, or paste a link instead.'; return; }
-        state.teacher.photo = out;
-        state.teacher.show = true;
-        note.textContent = 'Photo added.';
-        renderPickers(); renderScalars(); updateOutput();
-      };
-      img.onerror = function () { note.textContent = 'That image could not be read.'; };
-      img.src = fr.result;
-    };
-    fr.onerror = function () { note.textContent = 'That file could not be read.'; };
-    fr.readAsDataURL(file);
   }
 
   function renderScalars() {
@@ -1007,6 +1018,10 @@
     var p = e.target.getAttribute('data-path');
     if (!p) return;
     setPath(p, e.target.type === 'checkbox' ? e.target.checked : e.target.value);
+    if (p === 'teacher.photo') {
+      if (String(e.target.value).trim()) state.teacher.show = true;
+      renderPickers();
+    }
     updateOutput();
   });
   document.getElementById('form').addEventListener('change', function (e) {
@@ -1023,11 +1038,6 @@
     state.teacher[pp] = e.target.value;
     if (pp === 'house' && e.target.value) state.teacher.show = true;
     renderPickers(); renderScalars(); updateOutput();
-  });
-
-  document.getElementById('photoFile').addEventListener('change', function (e) {
-    loadPhotoFile(e.target.files && e.target.files[0]);
-    e.target.value = '';
   });
 
   var NEW_ITEM = {
@@ -1052,12 +1062,6 @@
       if (confirm('Clear everything and start from a blank form?')) { state = blankState(); redrawAll(); }
     }
     else if (act === 'tab')  { showTab(btn.getAttribute('data-tab')); }
-    else if (act === 'pickPhoto') { document.getElementById('photoFile').click(); }
-    else if (act === 'clearPhoto') {
-      state.teacher.photo = '';
-      document.getElementById('photoNote').textContent = '';
-      renderPickers(); updateOutput();
-    }
     else if (act === 'copy') { doCopy(); }
     else if (act === 'download') { doDownload(); }
   });
