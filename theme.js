@@ -123,6 +123,16 @@ var OAO = (function () {
         cpHeading: 'On the Wall',
         heroLede: 'No rush and no guesswork. What you need this week is right here, and the rest of the year is laid out below whenever you want to look ahead.'
       }
+    },
+    natural: {
+      label: 'Natural', blurb: 'Rooted and seasonal. Botanical motifs, patient pace.',
+      radius: 12, ornament: 'botanical', mono: false,
+      voice: {
+        tagline: 'The year, season by season.',
+        trailNote: 'Each unit grows out of the one before it.',
+        cpHeading: 'From the Field Notebook',
+        heroLede: 'This subject rewards patient attention. Each unit below asks you to look at something longer than is comfortable, and to write down what you actually notice.'
+      }
     }
   };
 

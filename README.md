@@ -14,7 +14,7 @@ A self-serve builder that turns a short form into a Canvas course home page for 
 | Personalized to subject / style / house | no | yes |
 | Breaks if this repo goes away | no | yes |
 
-The split exists because **Canvas strips `<style>` and `<script>` blocks from page content.** A pasted page can therefore have no `:hover`, no transitions, no animation, and no media queries — only inline `style` attributes. Everything interactive (the mouse-reactive constellation, count-up stats, scroll reveals, the clickable module trail, the light/dark toggle) requires either JS or a stylesheet, so it can only exist on a hosted page shown through an iframe.
+The split exists because **Canvas strips `<style>` and `<script>` blocks from page content.** A pasted page can therefore have no `:hover`, no transitions, no animation, and no media queries — only inline `style` attributes. Everything interactive (the per-style hero background, count-up stats, scroll reveals, the clickable module trail, hover lifts, the light/dark toggle) requires either JS or a stylesheet, so it can only exist on a hosted page shown through an iframe.
 
 ## Files
 
@@ -47,7 +47,24 @@ Three layers, in priority order:
 
 So a Latin page and a PE page never converge, however the two teachers answer the personality questions. The builder shows teachers exactly what their subject locked in, so the hierarchy is visible rather than mysterious.
 
-Styles available: Practical, Scholarly, Philosophical, Whimsical, Fantastical, Techy, Homey. Deliberately no childish register — the warmest option is "Homey", which is warm rather than cute.
+Styles available: Practical, Scholarly, Philosophical, Whimsical, Fantastical, Techy, Homey, Natural. Deliberately no childish register — the warmest options are "Homey" and "Natural", which are warm rather than cute.
+
+### Hero backgrounds
+
+Each style carries its own quiet background in the hero, tinted by the teacher's accent. All are pure CSS with no animation and no canvas, so they cost nothing at runtime and survive `prefers-reduced-motion` untouched.
+
+| Style | Background |
+|---|---|
+| Practical | near-invisible horizontal rules |
+| Scholarly | a ruled page, like a kept ledger |
+| Philosophical | concentric ripples widening from a corner |
+| Whimsical | scattered points of light, irregularly placed |
+| Fantastical | a heraldic lattice off a crest field |
+| Techy | blueprint grid, minor lines with a heavier major |
+| Homey | soft overlapping washes, no hard edges |
+| Natural | botanical tile — leaf sprigs and drifting stems |
+
+`Natural` is an inline SVG data URI applied through `mask-image`, so the foliage takes `--accent` rather than being a fixed-color image. Every pattern sits under `.glow`, whose downward darkening keeps it clear of the headline; if you add a pattern, check it at the top of the hero where it is strongest.
 
 ## Accent colors and contrast
 
