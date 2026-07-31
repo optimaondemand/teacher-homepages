@@ -20,7 +20,7 @@
     font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
     background: var(--page);
     color: var(--navy);
-    font-size: 15px;
+    font-size: 16px;
     line-height: 1.45;
   }
 
@@ -204,13 +204,10 @@
 
         <hr style="border:none; border-top:1px solid var(--line); margin:6px 0 14px;" />
 
-        <label class="f"><span>Your photo &mdash; paste a link</span>
-          <input type="text" data-path="teacher.photo" id="photoUrl" placeholder="https://&hellip;/my-photo.jpg" /></label>
-        <p class="hint">To get a link: in Canvas open <strong>Files</strong>, upload your photo, click it, and copy the address from your browser's address bar. Publish the file (the green check) so students can see it.</p>
-
-        <div class="orline">or</div>
+        <label class="f" style="margin-bottom:4px;"><span>Your photo</span></label>
+        <p class="hint">Pick a photo from your computer. It gets shrunk to a small square and built straight into the page, so there is nothing to upload and no link that can break later.</p>
         <div class="photoRow">
-          <button type="button" data-action="pickPhoto">Choose a photo from this computer&hellip;</button>
+          <button type="button" data-action="pickPhoto">Choose a photo&hellip;</button>
           <input type="file" id="photoFile" accept="image/*" style="display:none;" />
           <span class="sizenote" id="photoNote"></span>
         </div>
@@ -263,6 +260,14 @@
         <p class="hint">One card per module. Link each to that module's intro page (Canvas &rsaquo; Pages &rsaquo; the intro page &rsaquo; copy the URL), or to the module itself in the Modules list.</p>
         <label class="f"><span>Section heading</span>
           <input type="text" data-path="labels.modulesHeading" placeholder="Course Modules" /></label>
+        <label class="chk"><input type="checkbox" data-path="modulesAll.show" />
+          <span>Show a &ldquo;See all modules&rdquo; button under the cards</span></label>
+        <div class="row">
+          <label class="f"><span>Button text</span>
+            <input type="text" data-path="modulesAll.label" placeholder="See all modules" /></label>
+          <label class="f"><span>Link to your Modules page</span>
+            <input type="text" data-path="modulesAll.url" placeholder="https://&hellip;/courses/000/modules" /></label>
+        </div>
         <div id="list-modules"></div>
         <button type="button" class="add" data-action="add" data-list="modules">+ Add module</button>
         <hr style="border:none; border-top:1px solid var(--line); margin:18px 0 14px;" />
@@ -393,7 +398,10 @@
     plain:   { label: 'Plain edge',     blurb: 'Square, with a simple accent border.', radius: '2px' }
   };
 
-  var STORE_KEY = 'optima-course-home-builder-v2';
+  // v3: a saved v2 state could carry teacher.show === false, which is the bug
+  // teachers hit. The loader merges saved values over defaults, so bumping the
+  // key is what actually hands everyone the corrected default.
+  var STORE_KEY = 'optima-course-home-builder-v3';
 
   // ------------------------------------------------------------------ state
   function blankState() {
@@ -421,8 +429,9 @@
       ],
       modules: [ { title: '', url: '' } ],
       spacer: { show: false, text: '' },
+      modulesAll: { show: true, label: 'See all modules', url: '' },
       commonplace: { show: true, heading: "This Week's Idea Worth Keeping", quote: '', author: '', prompt: '' },
-      teacher: { show: false, blurb: '', pageUrl: '', photo: '', frame: 'circle', house: '' }
+      teacher: { show: true, blurb: '', pageUrl: '', photo: '', frame: 'circle', house: '' }
     };
   }
 
@@ -528,18 +537,18 @@
 
   // -------------------------------------------------------- HTML generation
   var S = {
-    wrap:      "max-width: 960px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #0e1c42;",
+    wrap:      "max-width: 960px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #0e1c42; font-size: 17px; line-height: 1.5;",
     header:    'background: #0E1C42; border-bottom: 5px solid #55C8E8; padding: 24px 34px; border-radius: 10px 10px 0 0;',
     body:      'background: #F4F6FB; padding: 24px; border-radius: 0 0 10px 10px;',
     tile:      'box-sizing: border-box; flex: 1; min-width: 190px; text-decoration: none; background: #FFFFFF; border: 1px solid #D0D9E8; border-top: 4px solid #55C8E8; border-radius: 8px; padding: 22px 16px; text-align: center; display: block;',
     modCard:   'flex: 1 1 280px; text-decoration: none; background: #FFFFFF; border: 1px solid #D0D9E8; border-left: 5px solid #0E1C42; border-radius: 8px; padding: 16px 18px; display: flex; align-items: center; gap: 14px;',
     modNum:    'width: 34px; height: 34px; border-radius: 50%; background: #0E1C42; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;',
-    eyebrow:   'font-size: 11px; letter-spacing: 1px; color: #6b7a99;',
+    eyebrow:   'font-size: 12px; letter-spacing: 1px; color: #6b7a99;',
     footer:    'background: #0E1C42; border-top: 3px solid #55C8E8; padding: 18px 34px; text-align: center; border-radius: 0 0 10px 10px; margin-top: 4px;'
   };
 
-  var CHIP = 'background: rgba(255,255,255,0.10); border: 1px solid rgba(85,200,232,0.45); border-radius: 20px; padding: 5px 14px; font-size: 13px; color: #ffffff;';
-  var CHIP_LABEL = 'color: #55c8e8; letter-spacing: 0.5px; font-size: 11px; text-transform: uppercase; margin-right: 7px;';
+  var CHIP = 'background: rgba(255,255,255,0.10); border: 1px solid rgba(85,200,232,0.45); border-radius: 20px; padding: 6px 15px; font-size: 15px; color: #ffffff;';
+  var CHIP_LABEL = 'color: #55c8e8; letter-spacing: 0.5px; font-size: 12px; text-transform: uppercase; margin-right: 7px;';
 
   function build() {
     var c = state.course;
@@ -577,9 +586,9 @@
     h.push('        <div style="font-size: 12px; color: #55c8e8;">An Education Experience Company</div>');
     h.push('      </div>');
     h.push('    </div>');
-    h.push('    <div style="font-size: 36px; color: #ffffff; margin-bottom: 4px; letter-spacing: 0.5px;">' + esc(title) + '</div>');
+    h.push('    <div style="font-size: 40px; color: #ffffff; margin-bottom: 4px; letter-spacing: 0.5px;">' + esc(title) + '</div>');
     if (String(c.tagline || '').trim())
-      h.push('    <div style="font-size: 14px; color: rgba(255,255,255,0.75);">' + esc(c.tagline) + '</div>');
+      h.push('    <div style="font-size: 16px; color: rgba(255,255,255,0.75);">' + esc(c.tagline) + '</div>');
 
     // section / time / teacher chips
     var chips = [];
@@ -620,8 +629,8 @@
       h.push('      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">');
       h.push('        <span style="font-size: 20px;">&#128226;</span>');
       h.push('        <div>');
-      h.push('          <div style="font-size: 11px; letter-spacing: 1px; color: #E0A82E; font-weight: 600;">' + esc((L.announcementsEyebrow || 'ANNOUNCEMENTS').toUpperCase()) + '</div>');
-      h.push('          <div style="font-size: 18px; color: #0e1c42;">' + esc(L.announcementsHeading || 'Latest Updates') + '</div>');
+      h.push('          <div style="font-size: 11px; letter-spacing: 1px; color: #E0A82E; font-weight: 600; font-size: 12px;">' + esc((L.announcementsEyebrow || 'ANNOUNCEMENTS').toUpperCase()) + '</div>');
+      h.push('          <div style="font-size: 21px; color: #0e1c42;">' + esc(L.announcementsHeading || 'Latest Updates') + '</div>');
       h.push('        </div>');
       h.push('      </div>');
       anns.forEach(function (a, i) {
@@ -629,12 +638,12 @@
         var mb = last ? '' : ' margin-bottom: 12px;';
         if (a.pinned) {
           h.push('      <div style="background: #FDF6E7; border-left: 4px solid #E0A82E; border-radius: 4px; padding: 12px 16px;' + mb + '">');
-          h.push('        <div style="font-size: 12px; color: #b07d1a; margin-bottom: 4px;">' + esc(a.when) + '</div>');
+          h.push('        <div style="font-size: 13.5px; color: #b07d1a; margin-bottom: 5px;">' + esc(a.when) + '</div>');
         } else {
           h.push('      <div style="border-left: 3px solid #D0D9E8; padding: 4px 16px;' + mb + '">');
-          h.push('        <div style="font-size: 12px; color: #6b7a99; margin-bottom: 4px;">' + esc(a.when) + '</div>');
+          h.push('        <div style="font-size: 13.5px; color: #6b7a99; margin-bottom: 5px;">' + esc(a.when) + '</div>');
         }
-        h.push('        <div style="font-size: 15px; color: #333;">' + escML(a.text) + '</div>');
+        h.push('        <div style="font-size: 17px; color: #333; line-height: 1.5;">' + escML(a.text) + '</div>');
         h.push('      </div>');
       });
       h.push('    </div>');
@@ -653,9 +662,9 @@
         h.push('      <a href="' + href(t.url) + '"' + tgt + ' style="' + S.tile + '">');
         if (String(t.icon || '').trim())
           h.push('        <div style="font-size: 30px; margin-bottom: 8px;">' + esc(t.icon) + '</div>');
-        h.push('        <div style="font-size: 17px; color: #0e1c42;">' + esc(t.label) + '</div>');
+        h.push('        <div style="font-size: 19px; color: #0e1c42;">' + esc(t.label) + '</div>');
         if (String(t.desc || '').trim())
-          h.push('        <div style="font-size: 12px; color: #6b7a99; margin-top: 4px;">' + esc(t.desc) + '</div>');
+          h.push('        <div style="font-size: 14px; color: #6b7a99; margin-top: 5px;">' + esc(t.desc) + '</div>');
         h.push('      </a>');
       });
       h.push('    </div>');
@@ -698,16 +707,16 @@
       h.push('      </div>');
 
       h.push('      <div style="flex: 1 1 300px; min-width: 0;">');
-      h.push('        <div style="font-size: 11px; letter-spacing: 1px; color: #6b7a99;">YOUR TEACHER</div>');
-      h.push('        <div style="font-size: 22px; color: #0e1c42; margin-top: 2px;">' + esc(who) + '</div>');
+      h.push('        <div style="font-size: 12px; letter-spacing: 1px; color: #6b7a99;">YOUR TEACHER</div>');
+      h.push('        <div style="font-size: 25px; color: #0e1c42; margin-top: 3px;">' + esc(who) + '</div>');
       if (String(c.teacherTitle || '').trim())
-        h.push('        <div style="font-size: 13px; color: #6b7a99;">' + esc(c.teacherTitle) + '</div>');
+        h.push('        <div style="font-size: 15px; color: #6b7a99;">' + esc(c.teacherTitle) + '</div>');
       if (String(tc.blurb || '').trim())
-        h.push('        <div style="font-size: 15px; color: #333; margin-top: 12px;">' + escML(tc.blurb) + '</div>');
+        h.push('        <div style="font-size: 17px; color: #333; margin-top: 13px; line-height: 1.5;">' + escML(tc.blurb) + '</div>');
 
       // links
       var tlinks = [];
-      var PILL = 'display: inline-block; text-decoration: none; font-size: 14px; color: #0e1c42; border: 1px solid #D0D9E8; border-radius: 24px; padding: 8px 16px; margin: 0 8px 8px 0;';
+      var PILL = 'display: inline-block; text-decoration: none; font-size: 16px; color: #0e1c42; border: 1px solid #D0D9E8; border-radius: 24px; padding: 10px 20px; margin: 0 8px 8px 0;';
       if (String(tc.pageUrl || '').trim())
         tlinks.push('<a href="' + href(tc.pageUrl) + '" style="' + PILL + '">More about me &rarr;</a>');
       if (String(c.teacherEmail || '').trim())
@@ -724,8 +733,8 @@
         h.push('          <div style="background: #0E1C42; border-radius: 8px; padding: 4px; border-left: 3px solid ' + H2.color + '; flex-shrink: 0; line-height: 0;"><img src="' + CREST_BASE + H2.img + '" alt="' + esc(H2.label) + ' house crest" style="width: 46px; height: 46px; object-fit: contain; display: block;" /></div>');
         h.push('          <div>');
         h.push('            <div style="font-size: 11px; letter-spacing: 1px; color: #6b7a99;">' + esc((String(c.teacherName || '').trim() ? who + ' is in' : 'Your teacher is in').toUpperCase()) + '</div>');
-        h.push('            <div style="font-size: 16px; color: #0e1c42;">House ' + esc(H2.label) + '</div>');
-        h.push('            <div style="font-size: 12.5px; color: #6b7a99;">' + esc(H2.virtue) + '</div>');
+        h.push('            <div style="font-size: 18px; color: #0e1c42;">House ' + esc(H2.label) + '</div>');
+        h.push('            <div style="font-size: 14px; color: #6b7a99;">' + esc(H2.virtue) + '</div>');
         h.push('          </div>');
         h.push('        </div>');
       }
@@ -736,13 +745,15 @@
 
     // ---- modules
     var mods = state.modules.filter(function (m) { return String(m.title || '').trim(); });
-    if (mods.length) {
+    var ma = state.modulesAll || { show: false };
+    if (mods.length || ma.show) {
       h.push('    <!-- ===================== COURSE MODULES ===================== -->');
       h.push('    <div style="display: flex; align-items: baseline; justify-content: space-between; border-bottom: 2px solid #D0D9E8; padding-bottom: 8px; margin-bottom: 16px;">');
-      h.push('      <div style="font-size: 20px; color: #0e1c42;">' + esc(L.modulesHeading || 'Course Modules') + '</div>');
+      h.push('      <div style="font-size: 24px; color: #0e1c42;">' + esc(L.modulesHeading || 'Course Modules') + '</div>');
       if (String(c.moduleNote || '').trim())
-        h.push('      <div style="font-size: 13px; color: #6b7a99;">' + esc(c.moduleNote) + '</div>');
+        h.push('      <div style="font-size: 15px; color: #6b7a99;">' + esc(c.moduleNote) + '</div>');
       h.push('    </div>');
+      if (mods.length) {
       h.push('');
       h.push('    <div style="display: flex; flex-wrap: wrap; gap: 14px;">');
       mods.forEach(function (m, i) {
@@ -752,19 +763,30 @@
         h.push('        <div style="' + S.modNum + '">' + n + '</div>');
         h.push('        <div>');
         h.push('          <div style="' + S.eyebrow + '">MODULE ' + n + '</div>');
-        h.push('          <div style="font-size: 16px; color: #0e1c42;">' + esc(m.title) + '</div>');
+        h.push('          <div style="font-size: 18px; color: #0e1c42;">' + esc(m.title) + '</div>');
         h.push('        </div>');
         h.push('      </a>');
       });
       if (state.spacer.show && String(state.spacer.text || '').trim()) {
         h.push('');
         h.push('      <!-- Closing note card -->');
-        h.push('      <div style="flex: 1 1 280px; border-radius: 8px; padding: 16px 18px; display: flex; align-items: center; gap: 12px; color: #6b7a99; font-size: 13px; border: 1px dashed #C4CFE0;">');
+        h.push('      <div style="flex: 1 1 280px; border-radius: 8px; padding: 16px 18px; display: flex; align-items: center; gap: 12px; color: #6b7a99; font-size: 15px; border: 1px dashed #C4CFE0;">');
         h.push('        <span style="font-size: 22px;">&#10145;</span>');
         h.push('        <div>' + escML(state.spacer.text) + '</div>');
         h.push('      </div>');
       }
       h.push('    </div>');
+      }
+
+      // "See all modules" — the way out to the full Modules page, so a student
+      // who wants the whole list is never stuck picking from these cards.
+      if (ma.show) {
+        h.push('');
+        h.push('    <!-- SEE ALL MODULES  -> link to the course Modules page -->');
+        h.push('    <div style="margin-top: 20px;">');
+        h.push('      <a href="' + href(ma.url) + '" style="display: inline-block; text-decoration: none; background: #0E1C42; color: #ffffff; border: 2px solid #55C8E8; border-radius: 28px; padding: 14px 30px; font-size: 17px;">' + esc(ma.label || 'See all modules') + ' &rarr;</a>');
+        h.push('    </div>');
+      }
       h.push('');
     }
 
@@ -777,18 +799,18 @@
       h.push('        <span style="font-size: 20px;">&#10024;</span>');
       h.push('        <div>');
       h.push('          <div style="font-size: 11px; letter-spacing: 1px; color: #55c8e8; font-weight: 600;">' + esc((L.commonplaceEyebrow || 'COMMONPLACE CORNER').toUpperCase()) + '</div>');
-      h.push('          <div style="font-size: 18px; color: #ffffff;">' + esc(cp.heading || "This Week's Idea Worth Keeping") + '</div>');
+      h.push('          <div style="font-size: 21px; color: #ffffff;">' + esc(cp.heading || "This Week's Idea Worth Keeping") + '</div>');
       h.push('        </div>');
       h.push('      </div>');
       if (String(cp.quote || '').trim()) {
         h.push('      <div style="border-left: 4px solid #55c8e8; padding: 4px 18px; margin-bottom: 14px;">');
-        h.push('        <div style="font-size: 17px; color: #ffffff; font-style: italic;">&#8220;' + esc(cp.quote) + '&#8221;</div>');
+        h.push('        <div style="font-size: 20px; color: #ffffff; font-style: italic; line-height: 1.4;">&#8220;' + esc(cp.quote) + '&#8221;</div>');
         if (String(cp.author || '').trim())
-          h.push('        <div style="font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 6px;">&mdash; ' + esc(cp.author) + '</div>');
+          h.push('        <div style="font-size: 15px; color: rgba(255,255,255,0.6); margin-top: 8px;">&mdash; ' + esc(cp.author) + '</div>');
         h.push('      </div>');
       }
       if (String(cp.prompt || '').trim())
-        h.push('      <div style="font-size: 14px; color: rgba(255,255,255,0.85); line-height: 1.5;">' + escML(cp.prompt) + '</div>');
+        h.push('      <div style="font-size: 16px; color: rgba(255,255,255,0.85); line-height: 1.55;">' + escML(cp.prompt) + '</div>');
       h.push('    </div>');
       h.push('');
     }
@@ -802,10 +824,10 @@
     var footLine = '<span style="color: #55c8e8;">Optima Academy Online</span> &middot; ' + esc(title);
     if (String(c.section || '').trim()) footLine += ' &middot; ' + esc(c.section);
     if (String(c.teacherName || '').trim()) footLine += ' &middot; ' + esc(c.teacherName);
-    h.push('    <div style="font-size: 16px; color: #ffffff; margin-bottom: 6px;">' + footLine + '</div>');
+    h.push('    <div style="font-size: 18px; color: #ffffff; margin-bottom: 7px;">' + footLine + '</div>');
     if (String(L.footerNote || '').trim())
-      h.push('    <div style="font-size: 13px; color: rgba(255,255,255,0.75); margin-bottom: 8px;">' + esc(L.footerNote) + '</div>');
-    h.push('    <div style="font-size: 12px; color: rgba(255,255,255,0.4);">&copy; Optima Academy Online &middot; An Education Experience Company</div>');
+      h.push('    <div style="font-size: 15px; color: rgba(255,255,255,0.75); margin-bottom: 9px;">' + esc(L.footerNote) + '</div>');
+    h.push('    <div style="font-size: 13px; color: rgba(255,255,255,0.4);">&copy; Optima Academy Online &middot; An Education Experience Company</div>');
     h.push('  </div>');
     h.push('');
     h.push('</div>');
@@ -944,7 +966,6 @@
         if (!out) { note.textContent = 'That image is very large. Try a smaller one, or paste a link instead.'; return; }
         state.teacher.photo = out;
         state.teacher.show = true;
-        document.getElementById('photoUrl').value = '';
         note.textContent = 'Photo added.';
         renderPickers(); renderScalars(); updateOutput();
       };
@@ -986,7 +1007,6 @@
     var p = e.target.getAttribute('data-path');
     if (!p) return;
     setPath(p, e.target.type === 'checkbox' ? e.target.checked : e.target.value);
-    if (p === 'teacher.photo') { renderPickers(); document.getElementById('photoNote').textContent = ''; }
     updateOutput();
   });
   document.getElementById('form').addEventListener('change', function (e) {
@@ -1035,7 +1055,6 @@
     else if (act === 'pickPhoto') { document.getElementById('photoFile').click(); }
     else if (act === 'clearPhoto') {
       state.teacher.photo = '';
-      document.getElementById('photoUrl').value = '';
       document.getElementById('photoNote').textContent = '';
       renderPickers(); updateOutput();
     }
