@@ -1,97 +1,71 @@
 # Optima Teacher Home Pages
 
-A self-serve builder that turns a short form into a Canvas course home page for Optima Academy Online. Teachers open one page, answer questions about their course, and leave with something to paste into Canvas.
+A self-serve builder that turns a short form into a Canvas course home page for Optima Academy Online. Teachers fill in their course details, switch on the sections they want, and paste the result into a Canvas page.
 
 **Builder:** https://optimaondemand.github.io/teacher-homepages/
 
-## Two kinds of page
+## One page style, customized by content
 
-| | Standard page | Make it mine |
+Every course home page uses the standard Optima layout — navy chrome, the owl, cyan accents, gold for announcements. Teachers do not choose a visual style. They customize by choosing **which sections appear and what goes in them**:
+
+| Section | Optional | What a teacher fills in |
 |---|---|---|
-| What teachers paste | ~15 KB of inline-styled HTML | one `<iframe>` line |
-| Where it lives | inside the Canvas page | `home.html` on GitHub Pages |
-| Animation, hover, dark mode | no | yes |
-| Personalized to subject / style / house | no | yes |
-| Breaks if this repo goes away | no | yes |
+| Header | always | Course name, tagline, term, section, meeting time, their name / role / email |
+| Announcements | yes | Any number of dated entries, one pinnable for the gold highlight |
+| Quick-access tiles | yes | Any number, each with an icon, label, description, link, new-tab toggle |
+| **Meet the teacher** | yes | Photo in a choice of frame, a sentence or two, a link to their About Me page, and their house |
+| Module cards | yes | Any number, auto-numbered, each linking to a module intro page |
+| Closing note | yes | A line after the last module |
+| Commonplace Corner | yes | Quote, attribution, and what students should do with it |
+| Footer | always | An optional extra line |
 
-The split exists because **Canvas strips `<style>` and `<script>` blocks from page content.** A pasted page can therefore have no `:hover`, no transitions, no animation, and no media queries — only inline `style` attributes. Everything interactive (the per-style hero background, count-up stats, scroll reveals, the clickable module trail, hover lifts, the light/dark toggle) requires either JS or a stylesheet, so it can only exist on a hosted page shown through an iframe.
+An earlier version of this repo also offered animated, per-subject "personalized" pages hosted here and embedded via iframe. That was more configuration than the job needed and has been removed; it is recoverable from git history if it is ever wanted back (`git log -- home.html`).
 
 ## Files
 
 | File | Role |
 |---|---|
-| `index.html` | The builder. Both modes, live preview, copy buttons. |
-| `home.html` | The hosted personalized page. Reads its entire configuration from the URL fragment. |
-| `theme.js` | Shared theme vocabulary — subjects, styles, accents, houses, config encoding. Loaded by both of the above so they cannot drift. |
-| `houses/*.png` | The four house crests, cropped and downscaled to 240px badges from the official artwork. |
+| `index.html` | The whole builder. Self-contained: no build step, no CDN, no external fonts. |
+| `houses/*.png` | The four house crests, cropped and downscaled to 240px badges from the official artwork. **Served from GitHub Pages and linked absolutely** from every pasted page. |
 
-## How a personalized page works with no per-teacher file
+## Why the crests must stay hosted here
 
-The builder encodes the whole configuration as base64url and hangs it off the URL after `#`:
+A pasted Canvas page cannot resolve a relative path back to wherever the builder happened to be running, so the generated HTML references crests by absolute URL:
 
 ```
-home.html#eyJjb3Vyc2UiOnsidGl0bGUiOiJBbGdlYnJhIDEi...
+https://optimaondemand.github.io/teacher-homepages/houses/odysseus.png
 ```
 
-A URL fragment is never sent to the server, so one static file renders unlimited distinct teacher pages. There is no database, no per-teacher commit, and no write access from the browser. It also means **nothing is stored** — the link *is* the page. If a teacher loses the link, they rebuild it in the builder.
+**Do not rename or move `houses/`.** Every page a teacher has already pasted points at these exact URLs, and Canvas keeps its copy of that HTML — breaking these paths breaks live course home pages with no way to fix them centrally.
 
-Practical limits: a full page config runs 3–5 KB of URL. The builder warns past 8 KB and suggests trimming announcements.
+## The teacher photo
 
-## The governing rule: subject outranks style
+There is no server here, so the builder cannot host an uploaded file. Two paths, both real:
 
-Three layers, in priority order:
+1. **Paste a link** (recommended). Teachers upload to Canvas **Files**, open the file, and copy the address. Adds nothing to the page weight. The file must be published or students will see a broken image.
+2. **Choose a file from this computer.** The builder centre-crops it square, steps down through 360 → 200px and quality 0.82 → 0.5 until the result is under ~60 KB, and writes it into the page as a `data:` URI. Nothing external to break, at the cost of a larger paste.
 
-1. **Brand** — navy chrome, the owl, Wix Madefor, and the seven-color accent set. Not negotiable by anyone.
-2. **Subject matter** — decides what one module is called (`Book`, `Liber`, `Investigation`, `Studio`, `Movement`…), what the module sequence is titled (`The Reading Path`, `The Cursus`, `The Field Log`…), the motif vocabulary, and the default accent.
-3. **Teacher style** — changes *voice and ornament only*: microcopy, corner radius, ornament density. It cannot rename a unit or swap the motifs.
+If a Canvas release ever starts stripping `data:` URIs from page HTML, option 2 will show a broken image and option 1 will still work — that is the fallback to point teachers at.
 
-So a Latin page and a PE page never converge, however the two teachers answer the personality questions. The builder shows teachers exactly what their subject locked in, so the hierarchy is visible rather than mysterious.
+Frames: Circle, Arch, Rounded square, Plain edge. With no photo, the frame fills with the teacher's initials. Honorific-plus-surname names ("Ms. Rivera") would otherwise yield a single letter, so those pair the honorific with the surname for a two-letter monogram ("MR").
 
-Styles available: Practical, Scholarly, Philosophical, Whimsical, Fantastical, Techy, Homey, Natural. Deliberately no childish register — the warmest options are "Homey" and "Natural", which are warm rather than cute.
+## Houses belong to the teacher
 
-### Hero backgrounds
+Four houses, virtues taken from the crest ribbons: **Galahad** (Perseverance), **Cincinnatus** (Courage), **Nightingale** (Service), **Odysseus** (Self-Governance).
 
-Each style carries its own quiet background in the hero, tinted by the teacher's accent. All are pure CSS with no animation and no canvas, so they cost nothing at runtime and survive `prefers-reduced-motion` untouched.
+The crest appears **inside the Meet the Teacher card**, captioned "*[Name]* is in", so it plainly reads as the teacher's house. It is deliberately not in the page header, where it would read as though the whole course belonged to a house. House color is used only as a hairline on the crest plate, so it never becomes a competing accent.
 
-| Style | Background |
-|---|---|
-| Practical | near-invisible horizontal rules |
-| Scholarly | a ruled page, like a kept ledger |
-| Philosophical | concentric ripples widening from a corner |
-| Whimsical | scattered points of light, irregularly placed |
-| Fantastical | a heraldic lattice off a crest field |
-| Techy | blueprint grid, minor lines with a heavier major |
-| Homey | soft overlapping washes, no hard edges |
-| Natural | botanical tile — leaf sprigs and drifting stems |
+The crest artwork carries a dark vignette, so it is set on a navy plate rather than floated on white, where it read as a dark blob.
 
-`Natural` is an inline SVG data URI applied through `mask-image`, so the foliage takes `--accent` rather than being a fixed-color image. Every pattern sits under `.glow`, whose downward darkening keeps it clear of the headline; if you add a pattern, check it at the top of the hero where it is strongest.
+## Conventions the output has to keep
 
-## Accent colors and contrast
-
-Accents come from the Optima 2025 Brand Guide only. Each carries two pre-computed variants because the base hex is often unusable as text:
-
-| Accent | Base | On navy (`--accent-ink`) | On white (`--accent-dark`) |
-|---|---|---|---|
-| Bitstream Blue | `#55C8E8` | `#55C8E8` (8.6:1) | `#33788B` (5.0:1) |
-| Gateway Gold | `#C7922C` | `#C7922C` (6.0:1) | `#8B661E` (5.2:1) |
-| Portal Purple | `#67308F` | `#9C78B6` (4.6:1) | `#67308F` (8.8:1) |
-| Pixel Pink | `#A53E97` | `#BB6EB1` (4.7:1) | `#A53E97` (5.6:1) |
-| Gamer Green | `#76C043` | `#76C043` (7.4:1) | `#4C7C2B` (5.0:1) |
-| Odyssey Orange | `#F78F1E` | `#F78F1E` (7.1:1) | `#A05C13` (5.2:1) |
-| Deep Bitstream | `#0E5568` | `#62909C` (4.7:1) | `#0E5568` (8.3:1) |
-
-Portal Purple on navy is **1.9:1** at its base value — never use `--accent` for text on the navy chrome. Use `--accent-ink` on dark surfaces, `--accent-dark` on light ones, `--accent` only for fills, borders, and gradients, and `--on-accent` for text sitting on an accent-filled shape (it flips to white for dark accents automatically).
-
-Gold is reserved for announcements and the primary button. When a teacher picks gold as their accent, the announcement rail steps aside to cyan so only two accents are ever on screen at once.
-
-## Houses
-
-Four houses, virtues taken from the crest ribbons: **Galahad** (Perseverance), **Cincinnatus** (Courage), **Nightingale** (Service), **Odysseus** (Self-Governance). Selecting one adds a crest badge to the hero. House color is used only inside that badge, so it never becomes a third accent.
+- **Every style is inline.** Canvas strips `<style>` and `<script>` from page content, so a pasted page can have no `:hover`, no transitions, no animation, and no media queries.
+- **Output is pure ASCII.** Emoji, curly quotes, and dashes are all emitted as numeric character references so Canvas's encoding handling cannot mangle them.
+- **Tiles carry explicit `box-sizing: border-box`.** The original template's content-box `min-width: 200px` pushed the fourth tile onto its own row.
+- Editing a page in Canvas's rich-text view can scramble the inline formatting. Teachers should come back to the builder and re-paste instead.
 
 ## Maintenance
 
-- The Tech Help tile is pre-filled with the tech-support Teams meeting. It lives in `TEAMS_TECH_HELP` near the top of the script block in `index.html`.
-- Don't rename `home.html` — its filename is baked into every iframe a teacher has already pasted.
-- Editing `theme.js` changes pages that are **already live**, since the config in a teacher's URL is only data. Adding a subject or style is safe; renaming a key is not, because existing links reference it.
-- The standard-page generator is a straight port of `course-home-builder.html` in the `optima-widgets` repo; its output is byte-identical. If you fix a bug in one, fix it in both.
-- No build step, no frameworks. `home.html` loads Wix Madefor from Google Fonts; everything else is local.
+- The Tech Help tile is pre-filled with the tech-support Teams meeting, in `TEAMS_TECH_HELP` near the top of the script block.
+- Work in progress is kept in `localStorage` under `optima-teacher-homepage-builder-v2`; bump that key if the state shape changes incompatibly.
+- `course-home-builder.html` in the `optima-widgets` repo is the ancestor of this builder and is now **behind** it (no Meet the Teacher section). Treat this repo as canonical and retire that copy rather than maintaining both.

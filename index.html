@@ -110,32 +110,8 @@
   code.k { background: #EDF1F9; border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; font-family: Consolas, monospace; font-size: 12.5px; }
   .toolbar { display: flex; gap: 9px; flex-wrap: wrap; margin-bottom: 18px; }
 
-  /* ---------- standard vs personalized ---------- */
-  .modeswitch { display: flex; gap: 12px; margin-bottom: 18px; }
-  .modeswitch button {
-    flex: 1; text-align: left; padding: 14px 16px; border: 2px solid var(--line);
-    border-radius: 10px; background: #fff; line-height: 1.35;
-  }
-  .modeswitch button strong { display: block; font-size: 14.5px; margin-bottom: 3px; }
-  .modeswitch button span { font-size: 12.5px; color: var(--muted); }
-  .modeswitch button[aria-pressed=true] { border-color: var(--navy); background: #EDF1F9; }
-  .modeswitch button[aria-pressed=true] strong { color: var(--navy); }
-
-  body:not(.fancy) .only-fancy { display: none !important; }
-  body.fancy .only-standard { display: none !important; }
-
-  .swatches { display: flex; flex-wrap: wrap; gap: 9px; }
-  .swatch { position: relative; }
-  .swatch input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
-  .swatch span {
-    display: flex; align-items: center; gap: 8px; padding: 7px 13px 7px 9px;
-    border: 2px solid var(--line); border-radius: 22px; font-size: 13px; cursor: pointer; background: #fff;
-  }
-  .swatch i { width: 17px; height: 17px; border-radius: 50%; display: block; flex-shrink: 0; }
-  .swatch input:checked + span { border-color: var(--navy); background: #EDF1F9; font-weight: 600; }
-  .swatch input:focus-visible + span { outline: 2px solid var(--cyan); outline-offset: 2px; }
-
-  .picks { display: grid; gap: 9px; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); }
+  /* ---------- house / frame pickers ---------- */
+  .picks { display: grid; gap: 9px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
   .pick { position: relative; }
   .pick input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
   .pick span {
@@ -146,17 +122,11 @@
   .pick span em { font-style: normal; color: var(--muted); font-size: 12.5px; }
   .pick input:checked + span { border-color: var(--navy); background: #EDF1F9; }
   .pick input:focus-visible + span { outline: 2px solid var(--cyan); outline-offset: 2px; }
-
-  .locked {
-    background: #EDF1F9; border: 1px dashed #B9C6DC; border-radius: 8px;
-    padding: 12px 14px; font-size: 13px; color: var(--muted); margin-bottom: 12px;
-  }
-  .locked b { color: var(--navy); }
-  .warn { background: #FDF3E3; border: 1px solid #E3C98A; border-radius: 8px; padding: 11px 14px; font-size: 13px; margin-bottom: 12px; }
-  #embed { width: 100%; height: 200px; font-family: Consolas, 'Courier New', monospace; font-size: 12px; border: none; padding: 14px; resize: vertical; }
-  #embed:focus { outline: none; }
-  .linkrow { display: flex; gap: 9px; align-items: center; padding: 0 16px 14px; flex-wrap: wrap; }
-  .linkrow a { font-size: 13px; }
+  .orline { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 12.5px; margin: 4px 0 10px; }
+  .orline::before, .orline::after { content: ''; flex: 1; border-top: 1px solid var(--line); }
+  .photoRow { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .photoRow img { width: 62px; height: 62px; object-fit: cover; border-radius: 50%; border: 3px solid var(--cyan); }
+  .sizenote { font-size: 12.5px; color: var(--muted); }
 </style>
 </head>
 <body>
@@ -164,7 +134,7 @@
 <header class="app">
   <div class="brand">Optima Academy Online</div>
   <h1>Course Home Page Builder</h1>
-  <p>Fill in your course details once. Take the standard Optima page, or make it yours &mdash; either way you end up with something to paste into Canvas.</p>
+  <p>Fill in your course details, switch on the sections you want, then paste the generated HTML into a Canvas page and set it as your course home.</p>
 </header>
 
 <div class="layout">
@@ -172,69 +142,10 @@
   <!-- ============================ FORM ============================ -->
   <div class="col-form" id="form">
 
-    <div class="modeswitch" role="group" aria-label="Page style">
-      <button type="button" data-action="mode" data-mode="standard" aria-pressed="true">
-        <strong>Standard page</strong>
-        <span>The Optima house layout. You paste HTML straight into a Canvas page.</span>
-      </button>
-      <button type="button" data-action="mode" data-mode="fancy" aria-pressed="false">
-        <strong>Make it mine</strong>
-        <span>Animated, personalized to your subject and style. You paste one line.</span>
-      </button>
-    </div>
-
     <div class="toolbar">
       <button type="button" data-action="loadExample">Load example (Algebra 1)</button>
       <button type="button" data-action="reset">Start blank</button>
     </div>
-
-    <!-- ============ PERSONALIZATION (fancy only) ============ -->
-    <section class="card only-fancy">
-      <h2><span><span class="step">&#10022;</span>Your style</span></h2>
-      <div class="body">
-        <p class="hint">Two of these questions set the page's structure, and two make it yours. Subject comes first on purpose &mdash; it decides what a unit is called and which motifs appear, so a Latin page never ends up looking like a PE page.</p>
-
-        <label class="f"><span>1. What do you teach? (this outranks everything below)</span>
-          <select data-path="subject" id="subjectSel"></select></label>
-        <div class="locked" id="subjectLocked"></div>
-
-        <label class="f"><span>2. How would you describe your classroom?</span></label>
-        <div class="picks" id="stylePicks" style="margin-bottom:14px;"></div>
-
-        <label class="f"><span>3. Your accent color <em style="font-style:normal;text-transform:none;letter-spacing:0;font-weight:400;">&mdash; all from the Optima brand kit</em></span></label>
-        <div class="swatches" id="accentSwatches" style="margin-bottom:16px;"></div>
-
-        <label class="f"><span>4. Your house</span></label>
-        <div class="picks" id="housePicks"></div>
-      </div>
-    </section>
-
-    <section class="card only-fancy">
-      <h2><span><span class="step">&#10022;</span>The opening</span></h2>
-      <div class="body">
-        <p class="hint">The big hero at the top of your page. Leave the headline and opening paragraph blank and they'll be written from your subject and style.</p>
-        <div class="row">
-          <label class="f"><span>Florida course number (optional)</span>
-            <input type="text" data-path="course.courseNumber" placeholder="1200310" /></label>
-          <label class="f"><span>Headline (blank = course name)</span>
-            <input type="text" data-path="heroHeadline" placeholder="A Year of Patterns" /></label>
-        </div>
-        <label class="f"><span>Words in the headline to color with your accent</span>
-          <input type="text" data-path="accentPhrase" placeholder="Patterns" /></label>
-        <label class="f"><span>Opening paragraph (blank = written from your style)</span>
-          <textarea data-path="lede" placeholder="Leave blank and your style writes this for you."></textarea></label>
-        <hr style="border:none; border-top:1px solid var(--line); margin:6px 0 14px;" />
-        <p class="hint" style="margin-bottom:10px;">Two extra numbers for the counting row beside your module count. Skip if you'd rather not.</p>
-        <div class="row">
-          <label class="f"><span>Number</span><input type="text" data-path="stats.0.n" placeholder="24" /></label>
-          <label class="f"><span>Label</span><input type="text" data-path="stats.0.l" placeholder="Primary sources" /></label>
-        </div>
-        <div class="row">
-          <label class="f"><span>Number</span><input type="text" data-path="stats.1.n" placeholder="6" /></label>
-          <label class="f"><span>Label</span><input type="text" data-path="stats.1.l" placeholder="Studio projects" /></label>
-        </div>
-      </div>
-    </section>
 
     <!-- 1. Course -->
     <section class="card">
@@ -274,10 +185,50 @@
       </div>
     </section>
 
+    <!-- 3. Meet the teacher -->
+    <section class="card">
+      <h2>
+        <span><span class="step">3</span>Meet the teacher</span>
+        <label class="chk" style="margin:0; font-size:13px; font-weight:400;">
+          <input type="checkbox" data-path="teacher.show" /> Show section
+        </label>
+      </h2>
+      <div class="body">
+        <p class="hint">An optional block with your photo, your house, and a link to a fuller page about you. Everything here is optional &mdash; leave the photo out and your initials appear in the frame instead.</p>
+
+        <label class="f"><span>A sentence or two about you</span>
+          <textarea data-path="teacher.blurb" placeholder="I have taught mathematics for eleven years and still think the quadratic formula is beautiful. Ask me about hiking."></textarea></label>
+
+        <label class="f"><span>Link to your &ldquo;About me&rdquo; Canvas page</span>
+          <input type="text" data-path="teacher.pageUrl" placeholder="https://optimaacademyonline.instructure.com/courses/000/pages/meet-your-teacher" /></label>
+
+        <hr style="border:none; border-top:1px solid var(--line); margin:6px 0 14px;" />
+
+        <label class="f"><span>Your photo &mdash; paste a link</span>
+          <input type="text" data-path="teacher.photo" id="photoUrl" placeholder="https://&hellip;/my-photo.jpg" /></label>
+        <p class="hint">To get a link: in Canvas open <strong>Files</strong>, upload your photo, click it, and copy the address from your browser's address bar. Publish the file (the green check) so students can see it.</p>
+
+        <div class="orline">or</div>
+        <div class="photoRow">
+          <button type="button" data-action="pickPhoto">Choose a photo from this computer&hellip;</button>
+          <input type="file" id="photoFile" accept="image/*" style="display:none;" />
+          <span class="sizenote" id="photoNote"></span>
+        </div>
+        <div class="photoRow" id="photoPrev" style="margin-top:12px;"></div>
+
+        <label class="f" style="margin-top:14px;"><span>Frame shape</span></label>
+        <div class="picks" id="framePicks"></div>
+
+        <label class="f" style="margin-top:16px;"><span>Your house</span></label>
+        <p class="hint">This is shown as <em>your</em> house, not the course's.</p>
+        <div class="picks" id="housePicks"></div>
+      </div>
+    </section>
+
     <!-- 3. Announcements -->
     <section class="card">
       <h2>
-        <span><span class="step">3</span>Announcements</span>
+        <span><span class="step">4</span>Announcements</span>
         <label class="chk" style="margin:0; font-size:13px; font-weight:400;">
           <input type="checkbox" data-path="showAnnouncements" /> Show section
         </label>
@@ -297,7 +248,7 @@
 
     <!-- 4. Tiles -->
     <section class="card">
-      <h2><span><span class="step">4</span>Quick-access tiles</span></h2>
+      <h2><span><span class="step">5</span>Quick-access tiles</span></h2>
       <div class="body">
         <p class="hint">Paste the full Canvas URL for each destination &mdash; open the page in Canvas and copy the address bar. The Tech Help tile is pre-filled with the Optima tech support Teams meeting.</p>
         <div id="list-tiles"></div>
@@ -307,7 +258,7 @@
 
     <!-- 5. Modules -->
     <section class="card">
-      <h2><span><span class="step">5</span>Module cards</span></h2>
+      <h2><span><span class="step">6</span>Module cards</span></h2>
       <div class="body">
         <p class="hint">One card per module. Link each to that module's intro page (Canvas &rsaquo; Pages &rsaquo; the intro page &rsaquo; copy the URL), or to the module itself in the Modules list.</p>
         <label class="f"><span>Section heading</span>
@@ -322,18 +273,10 @@
       </div>
     </section>
 
-    <section class="card only-fancy">
-      <h2><span><span class="step">&#10022;</span>What to expect</span></h2>
-      <div class="body">
-        <p class="hint">Three short cards explaining how your course runs. Students read these once at the start of the year and then stop noticing them, which is exactly right.</p>
-        <div id="list-pillars"></div>
-      </div>
-    </section>
-
     <!-- 6. Commonplace -->
     <section class="card">
       <h2>
-        <span><span class="step">6</span>Commonplace Corner</span>
+        <span><span class="step">7</span>Commonplace Corner</span>
         <label class="chk" style="margin:0; font-size:13px; font-weight:400;">
           <input type="checkbox" data-path="commonplace.show" /> Show section
         </label>
@@ -356,7 +299,7 @@
 
     <!-- 7. Footer -->
     <section class="card">
-      <h2><span><span class="step">7</span>Footer line</span></h2>
+      <h2><span><span class="step">8</span>Footer line</span></h2>
       <div class="body">
         <p class="hint">The footer already carries the school name, your course name, and the copyright line. Add one more line here if you want &mdash; a support email, an office-hours reminder, a class motto.</p>
         <label class="f"><span>Extra footer line (optional)</span>
@@ -365,22 +308,7 @@
     </section>
 
     <!-- How to use -->
-    <section class="card only-fancy">
-      <h2><span>Putting it in Canvas</span></h2>
-      <div class="body">
-        <ol class="steps">
-          <li>Click <strong>Copy embed code</strong> in the panel to the right.</li>
-          <li>In Canvas, go to <strong>Pages &rsaquo; + Page</strong> and title it <em>Course Home</em>.</li>
-          <li>In the editor toolbar, switch to HTML view &mdash; the <code class="k">&lt;/&gt;</code> button on the right end.</li>
-          <li>Paste, then click <strong>Save</strong>.</li>
-          <li>From <strong>Pages</strong>, open the page's <code class="k">&hellip;</code> menu and choose <strong>Use as Front Page</strong>.</li>
-          <li>Go to <strong>Home &rsaquo; Choose Home Page</strong> and pick <strong>Pages Front Page</strong>.</li>
-        </ol>
-        <p class="hint" style="margin:14px 0 0;">Your page lives at a web address rather than inside the Canvas page, which is what lets it animate &mdash; Canvas won't run the code needed for that on its own pages. Nothing is stored anywhere: every choice you made is carried in the address itself. Come back here to change anything, then paste the new line over the old one.</p>
-      </div>
-    </section>
-
-    <section class="card only-standard">
+    <section class="card">
       <h2><span>Putting it in Canvas</span></h2>
       <div class="body">
         <ol class="steps">
@@ -402,22 +330,13 @@
     <div class="card" style="margin-bottom:0;">
       <div class="tabs" role="tablist">
         <button type="button" role="tab" id="tab-preview" aria-selected="true" data-action="tab" data-tab="preview">Preview</button>
-        <button type="button" role="tab" id="tab-code" aria-selected="false" data-action="tab" data-tab="code" class="only-standard">HTML to paste</button>
-        <button type="button" role="tab" id="tab-embed" aria-selected="false" data-action="tab" data-tab="embed" class="only-fancy">Line to paste</button>
+        <button type="button" role="tab" id="tab-code" aria-selected="false" data-action="tab" data-tab="code">HTML to paste</button>
       </div>
       <div id="pane-preview"><iframe id="previewFrame" title="Course home page preview"></iframe></div>
       <div id="pane-code" hidden><textarea id="code" readonly spellcheck="false"></textarea></div>
-      <div id="pane-embed" hidden>
-        <textarea id="embed" readonly spellcheck="false"></textarea>
-        <div class="linkrow">
-          <a href="#" id="openLive" target="_blank" rel="noopener">Open your page in a new tab &rarr;</a>
-          <span class="hint" style="margin:0;" id="urlNote"></span>
-        </div>
-      </div>
       <div class="outbar">
-        <button type="button" class="primary only-standard" data-action="copy">Copy HTML</button>
-        <button type="button" class="primary only-fancy" data-action="copyEmbed">Copy embed code</button>
-        <button type="button" class="only-standard" data-action="download">Download .html</button>
+        <button type="button" class="primary" data-action="copy">Copy HTML</button>
+        <button type="button" data-action="download">Download .html</button>
         <span class="flash" id="flash">Copied</span>
         <span class="grow"></span>
         <span class="hint" style="margin:0;" id="sizeNote"></span>
@@ -427,7 +346,6 @@
 
 </div>
 
-<script src="theme.js"></script>
 <script>
 (function () {
   'use strict';
@@ -456,7 +374,26 @@
     ['✨', 'Sparkles']
   ];
 
-  var STORE_KEY = 'optima-teacher-homepage-builder-v1';
+  // Crests are served from this repo's GitHub Pages, because a pasted Canvas
+  // page cannot resolve a relative path back to wherever the builder was run.
+  var CREST_BASE = 'https://optimaondemand.github.io/teacher-homepages/houses/';
+
+  var HOUSES = {
+    galahad:     { label: 'Galahad',     virtue: 'Perseverance',    color: '#1E4620', img: 'galahad.png' },
+    cincinnatus: { label: 'Cincinnatus', virtue: 'Courage',         color: '#8C1A0E', img: 'cincinnatus.png' },
+    nightingale: { label: 'Nightingale', virtue: 'Service',         color: '#10467F', img: 'nightingale.png' },
+    odysseus:    { label: 'Odysseus',    virtue: 'Self-Governance', color: '#4A2472', img: 'odysseus.png' }
+  };
+
+  // Frame shapes, as border-radius values applied inline to the portrait.
+  var FRAMES = {
+    circle:  { label: 'Circle',         blurb: 'A clean round portrait.',              radius: '50%' },
+    arch:    { label: 'Arch',           blurb: 'Rounded top, squared base.',           radius: '75px 75px 10px 10px' },
+    rounded: { label: 'Rounded square', blurb: 'Soft corners.',                        radius: '12px' },
+    plain:   { label: 'Plain edge',     blurb: 'Square, with a simple accent border.', radius: '2px' }
+  };
+
+  var STORE_KEY = 'optima-course-home-builder-v2';
 
   // ------------------------------------------------------------------ state
   function blankState() {
@@ -482,23 +419,10 @@
         { icon: '🔧', label: 'Tech Help',        desc: 'Live support with the tech team',   url: TEAMS_TECH_HELP, blank: true },
         { icon: '📚', label: 'Study Hall',       desc: 'Office hours & support',            url: '', blank: false }
       ],
-      modules: [ { title: '', url: '', question: '' } ],
+      modules: [ { title: '', url: '' } ],
       spacer: { show: false, text: '' },
       commonplace: { show: true, heading: "This Week's Idea Worth Keeping", quote: '', author: '', prompt: '' },
-
-      // ---- personalized ("Make it mine") only ----
-      mode: 'standard',
-      subject: 'elective',
-      style: 'practical',
-      accent: '',            // '' = inherit the subject's default accent
-      house: '',
-      heroHeadline: '', accentPhrase: '', lede: '',
-      stats: [ { n: '', l: '' }, { n: '', l: '' } ],
-      pillars: [
-        { ic: '🧭', h: 'Self-paced mastery', p: 'Move ahead when the work shows you are ready, not when the calendar says so.' },
-        { ic: '💬', h: 'Feedback you can use', p: 'Every major piece comes back with notes on what to change and one thing to keep.' },
-        { ic: '🎯', h: 'One thing at a time', p: 'Each unit asks for one new skill, practiced until it holds.' }
-      ]
+      teacher: { show: false, blurb: '', pageUrl: '', photo: '', frame: 'circle', house: '' }
     };
   }
 
@@ -517,15 +441,18 @@
       { pinned: false, when: 'Monday, Aug 10 · 8:30 AM',   text: 'Set up your online calculator and headset from the Tech Help tile before our first VR lesson.' }
     ];
     s.modules = [
-      { title: 'Laws of Exponents & Radicals', url: '', question: 'When does a rule stop being a shortcut and start being a proof?' },
-      { title: 'One-Variable Equations & Inequalities', url: '', question: 'What does it mean for two things to be equal?' },
-      { title: 'Linear Equations & Functions', url: '', question: 'Why does a straight line describe so much of the world?' },
-      { title: 'Linear Inequalities & Absolute Value Equations', url: '', question: 'How do we describe a range instead of a point?' },
-      { title: 'Systems of Linear Equations & Inequalities', url: '', question: 'When do two conditions agree, and when can they never?' }
+      { title: 'Laws of Exponents & Radicals', url: '' },
+      { title: 'One-Variable Equations & Inequalities', url: '' },
+      { title: 'Linear Equations & Functions', url: '' },
+      { title: 'Linear Inequalities & Absolute Value Equations', url: '' },
+      { title: 'Systems of Linear Equations & Inequalities', url: '' }
     ];
-    s.subject = 'math';
-    s.accentPhrase = '';
     s.spacer = { show: true, text: 'Modules 6–11 continue in Semester 2 and unlock in the spring.' };
+    s.teacher = {
+      show: true,
+      blurb: 'I have taught mathematics for eleven years and I still think the quadratic formula is beautiful. Ask me about hiking, or about why dividing by zero breaks everything.',
+      pageUrl: '', photo: '', frame: 'circle', house: 'odysseus'
+    };
     s.commonplace.quote = 'Pure mathematics is, in its way, the poetry of logical ideas.';
     s.commonplace.author = 'Albert Einstein';
     s.commonplace.prompt = 'Copy this week’s line into your commonplace book. In Study Hall, share one place you saw its idea at work — in a problem you solved, a pattern you noticed, or something outside class.';
@@ -735,6 +662,78 @@
       h.push('');
     }
 
+    // ---- meet the teacher
+    var tc = state.teacher;
+    var hasTeacherBits = String(c.teacherName || '').trim() || String(tc.blurb || '').trim() ||
+                         String(tc.photo || '').trim() || String(tc.pageUrl || '').trim() || tc.house;
+    if (tc.show && hasTeacherBits) {
+      var who = String(c.teacherName || '').trim() || 'Your teacher';
+      var fr = FRAMES[tc.frame] || FRAMES.circle;
+
+      // Initials for the no-photo frame. Most Optima teachers go by honorific
+      // plus surname, which leaves a single letter; pair it with the honorific
+      // so the monogram reads as one ("MR") rather than a lone character.
+      var hon = (who.match(/^(mr|mrs|ms|miss|dr|prof|professor)/i) || [''])[0];
+      var bare = who.replace(/^(mr|mrs|ms|miss|dr|prof|professor)\.?\s+/i, '').split(/\s+/);
+      var initials;
+      if (bare.length > 1) {
+        initials = bare[0].charAt(0) + bare[1].charAt(0);
+      } else if (hon) {
+        initials = hon.charAt(0) + bare[0].charAt(0);
+      } else {
+        initials = bare[0].slice(0, 2);
+      }
+      initials = (initials || 'OA').toUpperCase();
+
+      h.push('    <!-- ===================== MEET THE TEACHER ===================== -->');
+      h.push('    <div style="background: #FFFFFF; border: 1px solid #D0D9E8; border-top: 4px solid #55C8E8; border-radius: 8px; padding: 24px 26px; margin-bottom: 22px; display: flex; flex-wrap: wrap; gap: 26px; align-items: flex-start;">');
+
+      // portrait, or a monogram when there is no photo
+      h.push('      <div style="flex: 0 0 auto;">');
+      if (String(tc.photo || '').trim()) {
+        h.push('        <img src="' + href(tc.photo) + '" alt="' + esc(who) + '" style="width: 150px; height: 150px; object-fit: cover; border-radius: ' + fr.radius + '; border: 4px solid #55C8E8; display: block;" />');
+      } else {
+        h.push('        <div style="width: 150px; height: 150px; border-radius: ' + fr.radius + '; border: 4px solid #55C8E8; background: #EDF1F9; color: #0e1c42; font-size: 46px; text-align: center; line-height: 142px; letter-spacing: 1px;">' + esc(initials) + '</div>');
+      }
+      h.push('      </div>');
+
+      h.push('      <div style="flex: 1 1 300px; min-width: 0;">');
+      h.push('        <div style="font-size: 11px; letter-spacing: 1px; color: #6b7a99;">YOUR TEACHER</div>');
+      h.push('        <div style="font-size: 22px; color: #0e1c42; margin-top: 2px;">' + esc(who) + '</div>');
+      if (String(c.teacherTitle || '').trim())
+        h.push('        <div style="font-size: 13px; color: #6b7a99;">' + esc(c.teacherTitle) + '</div>');
+      if (String(tc.blurb || '').trim())
+        h.push('        <div style="font-size: 15px; color: #333; margin-top: 12px;">' + escML(tc.blurb) + '</div>');
+
+      // links
+      var tlinks = [];
+      var PILL = 'display: inline-block; text-decoration: none; font-size: 14px; color: #0e1c42; border: 1px solid #D0D9E8; border-radius: 24px; padding: 8px 16px; margin: 0 8px 8px 0;';
+      if (String(tc.pageUrl || '').trim())
+        tlinks.push('<a href="' + href(tc.pageUrl) + '" style="' + PILL + '">More about me &rarr;</a>');
+      if (String(c.teacherEmail || '').trim())
+        tlinks.push('<a href="mailto:' + esc(c.teacherEmail) + '" style="' + PILL + '">Email me</a>');
+      if (tlinks.length)
+        h.push('        <div style="margin-top: 14px;">' + tlinks.join('') + '</div>');
+
+      // the teacher's house, said plainly
+      if (tc.house && HOUSES[tc.house]) {
+        var H2 = HOUSES[tc.house];
+        h.push('        <div style="display: flex; align-items: center; gap: 13px; margin-top: 16px; border-top: 1px solid #D0D9E8; padding-top: 14px;">');
+        // The crest art has a dark vignette baked in, so it is set on a navy
+        // plate rather than floated on white, where it read as a dark blob.
+        h.push('          <div style="background: #0E1C42; border-radius: 8px; padding: 4px; border-left: 3px solid ' + H2.color + '; flex-shrink: 0; line-height: 0;"><img src="' + CREST_BASE + H2.img + '" alt="' + esc(H2.label) + ' house crest" style="width: 46px; height: 46px; object-fit: contain; display: block;" /></div>');
+        h.push('          <div>');
+        h.push('            <div style="font-size: 11px; letter-spacing: 1px; color: #6b7a99;">' + esc((String(c.teacherName || '').trim() ? who + ' is in' : 'Your teacher is in').toUpperCase()) + '</div>');
+        h.push('            <div style="font-size: 16px; color: #0e1c42;">House ' + esc(H2.label) + '</div>');
+        h.push('            <div style="font-size: 12.5px; color: #6b7a99;">' + esc(H2.virtue) + '</div>');
+        h.push('          </div>');
+        h.push('        </div>');
+      }
+      h.push('      </div>');
+      h.push('    </div>');
+      h.push('');
+    }
+
     // ---- modules
     var mods = state.modules.filter(function (m) { return String(m.title || '').trim(); });
     if (mods.length) {
@@ -871,7 +870,6 @@
         '<div class="item-head"><span class="item-title">Module ' + (i + 1) + '</span>' + tools('modules', i, state.modules.length) + '</div>' +
         '<label class="f"><span>Module title</span><input type="text" data-path="modules.' + i + '.title" value="' + escAttr(x.title) + '" placeholder="Laws of Exponents &amp; Radicals" /></label>' +
         '<label class="f"><span>Link to the module intro page</span><input type="url" data-path="modules.' + i + '.url" value="' + escAttr(x.url) + '" placeholder="https://optimaacademyonline.instructure.com/courses/000/pages/module-1-intro" /></label>' +
-        '<label class="f only-fancy"><span>Guiding question (optional)</span><input type="text" data-path="modules.' + i + '.question" value="' + escAttr(x.question) + '" placeholder="When does a rule stop being a shortcut and start being a proof?" /></label>' +
         '</div>';
     }).join('');
     document.getElementById('list-modules').innerHTML = m;
@@ -881,136 +879,87 @@
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
-  // ------------------------------------------------- personalization pickers
+  // -------------------------------------------------- frame & house pickers
   function renderPickers() {
-    // subject
-    var sel = document.getElementById('subjectSel');
-    var opts = [];
-    for (var k in OAO.SUBJECTS) {
-      opts.push('<option value="' + k + '"' + (state.subject === k ? ' selected' : '') + '>' +
-        escAttr(OAO.SUBJECTS[k].label) + '</option>');
+    var fp = [];
+    for (var f in FRAMES) {
+      fp.push('<label class="pick"><input type="radio" name="framepick" value="' + f + '"' +
+        (state.teacher.frame === f ? ' checked' : '') + ' data-pickpath="frame" />' +
+        '<span><b>' + escAttr(FRAMES[f].label) + '</b><em>' + escAttr(FRAMES[f].blurb) + '</em></span></label>');
     }
-    sel.innerHTML = opts.join('');
+    document.getElementById('framePicks').innerHTML = fp.join('');
 
-    // what the subject locks in
-    var sub = OAO.SUBJECTS[state.subject] || OAO.SUBJECTS.elective;
-    document.getElementById('subjectLocked').innerHTML =
-      'Because you teach <b>' + escAttr(sub.label) + '</b>, one module is called a <b>' + escAttr(sub.unit) +
-      '</b>, the sequence is titled <b>' + escAttr(sub.trail) + '</b>, and your motifs are ' +
-      sub.motifs.join(' ') + '. Your style below changes the wording and the ornament, not these.';
-
-    // style
-    var sp = [];
-    for (var s in OAO.STYLES) {
-      sp.push('<label class="pick"><input type="radio" name="stylepick" value="' + s + '"' +
-        (state.style === s ? ' checked' : '') + ' data-pickpath="style" />' +
-        '<span><b>' + escAttr(OAO.STYLES[s].label) + '</b><em>' + escAttr(OAO.STYLES[s].blurb) + '</em></span></label>');
-    }
-    document.getElementById('stylePicks').innerHTML = sp.join('');
-
-    // accent — default marker shows which one the subject picked
-    var aw = ['<label class="swatch"><input type="radio" name="accentpick" value=""' +
-      (state.accent === '' ? ' checked' : '') + ' data-pickpath="accent" />' +
-      '<span><i style="background:' + OAO.ACCENTS[sub.accent].base + '"></i>' +
-      'Match my subject (' + escAttr(OAO.ACCENTS[sub.accent].name) + ')</span></label>'];
-    for (var a in OAO.ACCENTS) {
-      aw.push('<label class="swatch"><input type="radio" name="accentpick" value="' + a + '"' +
-        (state.accent === a ? ' checked' : '') + ' data-pickpath="accent" />' +
-        '<span><i style="background:' + OAO.ACCENTS[a].base + '"></i>' + escAttr(OAO.ACCENTS[a].name) + '</span></label>');
-    }
-    document.getElementById('accentSwatches').innerHTML = aw.join('');
-
-    // house
     var hp = ['<label class="pick"><input type="radio" name="housepick" value=""' +
-      (state.house === '' ? ' checked' : '') + ' data-pickpath="house" />' +
-      '<span><b>Leave it off</b><em>No crest on the page.</em></span></label>'];
-    for (var h in OAO.HOUSES) {
-      var H = OAO.HOUSES[h];
-      hp.push('<label class="pick"><input type="radio" name="housepick" value="' + h + '"' +
-        (state.house === h ? ' checked' : '') + ' data-pickpath="house" />' +
+      (state.teacher.house === '' ? ' checked' : '') + ' data-pickpath="house" />' +
+      '<span><b>Leave it off</b><em>No crest shown.</em></span></label>'];
+    for (var k in HOUSES) {
+      var H = HOUSES[k];
+      hp.push('<label class="pick"><input type="radio" name="housepick" value="' + k + '"' +
+        (state.teacher.house === k ? ' checked' : '') + ' data-pickpath="house" />' +
         '<span><b><span style="display:inline-block;width:11px;height:11px;border-radius:50%;background:' +
         H.color + ';margin-right:7px;"></span>' + escAttr(H.label) + '</b><em>' + escAttr(H.virtue) + '</em></span></label>');
     }
     document.getElementById('housePicks').innerHTML = hp.join('');
 
-    // pillars
-    document.getElementById('list-pillars').innerHTML = state.pillars.map(function (p, i) {
-      return '<div class="item">' +
-        '<div class="item-head"><span class="item-title">Card ' + (i + 1) + '</span></div>' +
-        '<div class="row">' +
-          '<label class="f" style="flex:0 0 96px;"><span>Icon</span><input type="text" data-path="pillars.' + i + '.ic" value="' + escAttr(p.ic) + '" /></label>' +
-          '<label class="f"><span>Heading</span><input type="text" data-path="pillars.' + i + '.h" value="' + escAttr(p.h) + '" /></label>' +
-        '</div>' +
-        '<label class="f"><span>One sentence</span><textarea data-path="pillars.' + i + '.p">' + escAttr(p.p) + '</textarea></label>' +
-        '</div>';
-    }).join('');
-  }
-
-  // --------------------------------------------------- personalized page URL
-  // Where home.html lives once this repo is published. When the builder is
-  // opened from its own GitHub Pages URL we derive the base from the current
-  // location, so a fork or a rename keeps working with no edit here.
-  var PAGES_FALLBACK = 'https://optimaondemand.github.io/teacher-homepages/';
-  function pagesBase() {
-    if (location.protocol === 'http:' || location.protocol === 'https:') {
-      return location.href.replace(/[^\/]*$/, '');
+    // photo preview + what the photo is costing the paste
+    var prev = document.getElementById('photoPrev');
+    var ph = String(state.teacher.photo || '').trim();
+    if (ph) {
+      var kb = ph.indexOf('data:') === 0 ? ' &middot; adds about ' + Math.round(ph.length / 1024) + ' KB to the paste' : '';
+      prev.innerHTML = '<img src="' + escAttr(ph) + '" alt="" />' +
+        '<span class="sizenote">' + (ph.indexOf('data:') === 0 ? 'Photo is built into the page' : 'Photo loads from a link') + kb + '</span>' +
+        '<button type="button" data-action="clearPhoto">Remove photo</button>';
+    } else {
+      prev.innerHTML = '<span class="sizenote">No photo yet &mdash; your initials will fill the frame.</span>';
     }
-    return PAGES_FALLBACK;
   }
 
-  function fancyCfg() {
-    return {
-      course: state.course, labels: state.labels,
-      announcements: state.showAnnouncements ? state.announcements : [],
-      tiles: state.tiles, modules: state.modules,
-      commonplace: state.commonplace,
-      subject: state.subject, style: state.style,
-      accent: state.accent, house: state.house,
-      heroHeadline: state.heroHeadline, accentPhrase: state.accentPhrase, lede: state.lede,
-      stats: state.stats, pillars: state.pillars
+  // ------------------------------------------------------------ photo intake
+  // There is no server here, so a chosen file cannot be hosted. It is shrunk
+  // and written into the page itself as a data URI, which a pasted Canvas page
+  // can display without depending on anything else. A pasted link stays a link.
+  function loadPhotoFile(file) {
+    var note = document.getElementById('photoNote');
+    if (!file) return;
+    if (!/^image\//.test(file.type)) { note.textContent = 'That does not look like an image file.'; return; }
+    note.textContent = 'Shrinking your photo…';
+    var fr = new FileReader();
+    fr.onload = function () {
+      var img = new Image();
+      img.onload = function () {
+        // square centre-crop, then step down until the result is a sane size
+        var sizes = [360, 300, 240, 200], quals = [0.82, 0.72, 0.62, 0.5], out = null;
+        for (var i = 0; i < sizes.length && !out; i++) {
+          for (var j = 0; j < quals.length; j++) {
+            var S = sizes[i];
+            var cv = document.createElement('canvas');
+            cv.width = cv.height = S;
+            var ctx = cv.getContext('2d');
+            var side = Math.min(img.width, img.height);
+            ctx.drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, S, S);
+            var d = cv.toDataURL('image/jpeg', quals[j]);
+            if (d.length < 60000) { out = d; break; }
+          }
+        }
+        if (!out) { note.textContent = 'That image is very large. Try a smaller one, or paste a link instead.'; return; }
+        state.teacher.photo = out;
+        state.teacher.show = true;
+        document.getElementById('photoUrl').value = '';
+        note.textContent = 'Photo added.';
+        renderPickers(); renderScalars(); updateOutput();
+      };
+      img.onerror = function () { note.textContent = 'That image could not be read.'; };
+      img.src = fr.result;
     };
-  }
-
-  function liveUrl() { return pagesBase() + 'home.html#' + OAO.encodeCfg(fancyCfg()); }
-
-  // A pasted iframe cannot resize itself — Canvas will not run the script that
-  // would report the height back. So estimate generously from the content.
-  function estHeight() {
-    var mods = state.modules.filter(function (m) { return m.title; }).length;
-    var anns = state.showAnnouncements ? state.announcements.filter(function (a) { return a.text || a.when; }).length : 0;
-    var tiles = state.tiles.filter(function (t) { return t.label; }).length;
-    var pil = state.pillars.filter(function (p) { return p.h || p.p; }).length;
-    var h = 640;                                  // hero
-    h += anns ? 150 + anns * 96 : 0;
-    h += tiles ? 150 + Math.ceil(tiles / 4) * 190 : 0;
-    h += mods ? 200 + 180 + 240 : 0;              // heading + rail + panel
-    h += pil ? 150 + Math.ceil(pil / 3) * 220 : 0;
-    h += (state.commonplace.show && (state.commonplace.quote || state.commonplace.prompt)) ? 330 : 0;
-    h += 220;                                     // footer
-    return Math.round(h / 10) * 10;
-  }
-
-  function buildEmbed() {
-    var u = liveUrl(), h = estHeight(), t = state.course.title || 'Course';
-    return '<!-- ' + t + ' - Course Home (Optima Academy Online) -->\n' +
-      '<p style="margin:0;">\n' +
-      '  <iframe src="' + u + '"\n' +
-      '    title="' + String(t).replace(/"/g, '') + ' course home"\n' +
-      '    width="100%" height="' + h + '" style="border:none; display:block; width:100%;"\n' +
-      '    allowfullscreen></iframe>\n' +
-      '</p>\n' +
-      '<p style="font-size:0.85em; color:#6b7a99; margin:6px 0 0;">\n' +
-      '  If this does not load, <a href="' + u + '" target="_blank" rel="noopener">open the course home in a new tab</a>.\n' +
-      '</p>';
+    fr.onerror = function () { note.textContent = 'That file could not be read.'; };
+    fr.readAsDataURL(file);
   }
 
   function renderScalars() {
     var nodes = document.querySelectorAll('#form [data-path]');
     for (var i = 0; i < nodes.length; i++) {
       var el = nodes[i], p = el.getAttribute('data-path');
-      // these lists are re-rendered wholesale with their values already inline;
-      // everything else (including stats.N.x) needs its value set here
-      if (/^(announcements|tiles|modules|pillars)\./.test(p)) continue;
+      if (/\.\d+\./.test(p)) continue; // list items are rendered wholesale
       var v = getPath(p);
       if (el.type === 'checkbox') el.checked = !!v; else el.value = v == null ? '' : v;
     }
@@ -1021,73 +970,23 @@
   var frameEl = document.getElementById('previewFrame');
   var sizeEl = document.getElementById('sizeNote');
 
-  var embedEl = document.getElementById('embed');
-  var fancy = false;
-
-  // Reloading the live preview.
-  //
-  // Assigning an iframe src that differs from the current one ONLY after the
-  // '#' is a same-document navigation: the browser moves the fragment and
-  // renders nothing new, so every selection appeared to be ignored until a
-  // manual refresh. A differing query string forces a genuine reload, and
-  // home.html ignores query parameters, so the rendered page is unaffected.
-  // The counter stays out of the embed snippet teachers copy.
-  var previewSeq = 0, previewTimer = null;
-  function schedulePreview(u) {
-    clearTimeout(previewTimer);
-    previewTimer = setTimeout(function () {
-      var i = u.indexOf('#');
-      previewSeq++;
-      frameEl.setAttribute('src', u.slice(0, i) + '?p=' + previewSeq + u.slice(i));
-    }, 320);   // debounced so typing does not reload on every keystroke
-  }
-
   function updateOutput() {
     var html = build();
     codeEl.value = html;
-
-    if (fancy) {
-      var snip = buildEmbed(), u = liveUrl();
-      embedEl.value = snip;
-      document.getElementById('openLive').href = u;
-      // The whole configuration rides in the URL. Browsers and Canvas handle
-      // long URLs fine, but flag it before it gets genuinely unreasonable.
-      var note = Math.round(u.length / 100) / 10 + ' KB link · ' + estHeight() + 'px tall';
-      if (u.length > 8000) note += ' · very long — consider trimming announcements';
-      document.getElementById('urlNote').textContent = note;
-      frameEl.removeAttribute('srcdoc');
-      schedulePreview(u);
-      sizeEl.textContent = OAO.SUBJECTS[state.subject].label + ' · ' + OAO.STYLES[state.style].label;
-    } else {
-      // drop any queued fancy reload, or it would land on top of the srcdoc
-      clearTimeout(previewTimer);
-      frameEl.removeAttribute('src');
-      frameEl.srcdoc = '<!DOCTYPE html><html><head><meta charset="utf-8" /></head>' +
-        '<body style="margin:0; padding:14px; background:#e8ecf5;">' + html + '</body></html>';
-      var kb = Math.max(1, Math.round(html.length / 1024));
-      sizeEl.textContent = kb + ' KB · ' + state.modules.filter(function (m) { return m.title; }).length + ' modules';
-    }
+    frameEl.srcdoc = '<!DOCTYPE html><html><head><meta charset="utf-8" /></head>' +
+      '<body style="margin:0; padding:14px; background:#e8ecf5;">' + html + '</body></html>';
+    var kb = Math.max(1, Math.round(html.length / 1024));
+    sizeEl.textContent = kb + ' KB · ' + state.modules.filter(function (m) { return m.title; }).length + ' modules';
     save();
   }
 
-  function applyMode() {
-    fancy = (state.mode === 'fancy');
-    document.body.classList.toggle('fancy', fancy);
-    var btns = document.querySelectorAll('button[data-action=mode]');
-    for (var i = 0; i < btns.length; i++) {
-      btns[i].setAttribute('aria-pressed', btns[i].getAttribute('data-mode') === state.mode ? 'true' : 'false');
-    }
-    showTab('preview');
-  }
-
-  function redrawAll() {
-    renderLists(); renderPickers(); renderScalars(); applyMode(); updateOutput();
-  }
+  function redrawAll() { renderLists(); renderPickers(); renderScalars(); updateOutput(); }
 
   document.getElementById('form').addEventListener('input', function (e) {
     var p = e.target.getAttribute('data-path');
     if (!p) return;
     setPath(p, e.target.type === 'checkbox' ? e.target.checked : e.target.value);
+    if (p === 'teacher.photo') { renderPickers(); document.getElementById('photoNote').textContent = ''; }
     updateOutput();
   });
   document.getElementById('form').addEventListener('change', function (e) {
@@ -1097,10 +996,24 @@
     updateOutput();
   });
 
+  // frame / house radios sit outside the data-path scheme
+  document.getElementById('form').addEventListener('change', function (e) {
+    var pp = e.target.getAttribute('data-pickpath');
+    if (!pp) return;
+    state.teacher[pp] = e.target.value;
+    if (pp === 'house' && e.target.value) state.teacher.show = true;
+    renderPickers(); renderScalars(); updateOutput();
+  });
+
+  document.getElementById('photoFile').addEventListener('change', function (e) {
+    loadPhotoFile(e.target.files && e.target.files[0]);
+    e.target.value = '';
+  });
+
   var NEW_ITEM = {
     announcements: function () { return { pinned: false, when: '', text: '' }; },
     tiles: function () { return { icon: '✨', label: '', desc: '', url: '', blank: false }; },
-    modules: function () { return { title: '', url: '', question: '' }; }
+    modules: function () { return { title: '', url: '' }; }
   };
 
   document.addEventListener('click', function (e) {
@@ -1119,19 +1032,15 @@
       if (confirm('Clear everything and start from a blank form?')) { state = blankState(); redrawAll(); }
     }
     else if (act === 'tab')  { showTab(btn.getAttribute('data-tab')); }
+    else if (act === 'pickPhoto') { document.getElementById('photoFile').click(); }
+    else if (act === 'clearPhoto') {
+      state.teacher.photo = '';
+      document.getElementById('photoUrl').value = '';
+      document.getElementById('photoNote').textContent = '';
+      renderPickers(); updateOutput();
+    }
     else if (act === 'copy') { doCopy(); }
-    else if (act === 'copyEmbed') { doCopyEmbed(); }
     else if (act === 'download') { doDownload(); }
-    else if (act === 'mode') { state.mode = btn.getAttribute('data-mode'); applyMode(); updateOutput(); }
-  });
-
-  // radio pickers (style / accent / house) live outside the data-path scheme
-  document.getElementById('form').addEventListener('change', function (e) {
-    var p = e.target.getAttribute('data-pickpath');
-    if (!p) return;
-    state[p] = e.target.value;
-    renderPickers();
-    updateOutput();
   });
 
   function swap(arr, i, j) {
@@ -1140,10 +1049,10 @@
   }
 
   function showTab(which) {
-    ['preview', 'code', 'embed'].forEach(function (t) {
-      document.getElementById('tab-' + t).setAttribute('aria-selected', which === t ? 'true' : 'false');
-      document.getElementById('pane-' + t).hidden = (which !== t);
-    });
+    document.getElementById('tab-preview').setAttribute('aria-selected', which === 'preview');
+    document.getElementById('tab-code').setAttribute('aria-selected', which === 'code');
+    document.getElementById('pane-preview').hidden = (which !== 'preview');
+    document.getElementById('pane-code').hidden = (which !== 'code');
   }
 
   function flash(msg) {
@@ -1162,22 +1071,6 @@
       var ok = false;
       try { ok = document.execCommand('copy'); } catch (e) {}
       codeEl.setAttribute('readonly', 'readonly');
-      flash(ok ? 'Copied to clipboard' : 'Press Ctrl+C to copy');
-    }
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function () { flash('Copied to clipboard'); }, fallback);
-    } else { fallback(); }
-  }
-
-  function doCopyEmbed() {
-    var text = embedEl.value;
-    function fallback() {
-      showTab('embed');
-      embedEl.removeAttribute('readonly');
-      embedEl.select();
-      var ok = false;
-      try { ok = document.execCommand('copy'); } catch (e) {}
-      embedEl.setAttribute('readonly', 'readonly');
       flash(ok ? 'Copied to clipboard' : 'Press Ctrl+C to copy');
     }
     if (navigator.clipboard && navigator.clipboard.writeText) {
