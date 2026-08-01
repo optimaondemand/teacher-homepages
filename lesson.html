@@ -1,0 +1,2390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Lesson Page Builder &middot; Optima Academy Online</title>
+<meta name="description" content="Build an Optima-branded Canvas lesson page." />
+<style>
+  :root {
+    --navy: #0E1C42;
+    --cyan: #55C8E8;
+    --gold: #E0A82E;
+    --page: #F4F6FB;
+    --line: #D0D9E8;
+    --muted: #6b7a99;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+    background: var(--page);
+    color: var(--navy);
+    font-size: 16px;
+    line-height: 1.45;
+  }
+
+  /* ---------- page chrome ---------- */
+  header.app {
+    background: var(--navy);
+    border-bottom: 5px solid var(--cyan);
+    padding: 18px 26px;
+  }
+  header.app .brand { font-size: 13px; color: var(--cyan); letter-spacing: 1px; text-transform: uppercase; }
+  header.app h1 { margin: 4px 0 2px; font-size: 26px; color: #fff; font-weight: 600; }
+  header.app p { margin: 0; font-size: 13px; color: rgba(255,255,255,.75); max-width: 900px; }
+  header.app .sibling { margin-top: 11px; font-size: 13px; }
+  header.app .sibling a { color: var(--cyan); }
+
+  .layout { display: flex; align-items: flex-start; gap: 22px; padding: 22px; max-width: 1720px; margin: 0 auto; }
+  .col-form { flex: 1 1 560px; min-width: 420px; }
+  .col-out  { flex: 1 1 640px; min-width: 420px; position: sticky; top: 22px; }
+  @media (max-width: 1100px) {
+    .layout { flex-direction: column; }
+    .col-form, .col-out { min-width: 0; width: 100%; position: static; }
+  }
+
+  /* ---------- cards ---------- */
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 18px; overflow: hidden; }
+  .card > h2 {
+    margin: 0; padding: 13px 18px; font-size: 15px; font-weight: 600;
+    background: #EDF1F9; border-bottom: 1px solid var(--line); color: var(--navy);
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  }
+  .card > h2 .step {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 50%; background: var(--navy);
+    color: #fff; font-size: 12px; margin-right: 9px; flex-shrink: 0;
+  }
+  .card .body { padding: 16px 18px 18px; }
+  .hint { font-size: 12.5px; color: var(--muted); margin: 0 0 14px; }
+  .hint.tight { margin-bottom: 8px; }
+
+  /* ---------- fields ---------- */
+  label.f { display: block; margin-bottom: 12px; }
+  label.f > span { display: block; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+  input[type=text], input[type=url], input[type=number], textarea, select {
+    width: 100%; padding: 8px 10px; font: inherit; font-size: 14px;
+    border: 1px solid var(--line); border-radius: 6px; background: #fff; color: var(--navy);
+  }
+  input:focus, textarea:focus, select:focus { outline: 2px solid var(--cyan); outline-offset: -1px; border-color: var(--cyan); }
+  textarea { min-height: 62px; resize: vertical; line-height: 1.45; }
+  textarea.tall { min-height: 130px; }
+  textarea.code { font-family: Consolas, 'Courier New', monospace; font-size: 12.5px; min-height: 110px; }
+  .row { display: flex; gap: 12px; }
+  .row > * { flex: 1; min-width: 0; }
+  .chk { display: flex; align-items: flex-start; gap: 8px; font-size: 13.5px; margin-bottom: 10px; }
+  .chk input { margin-top: 3px; flex-shrink: 0; }
+
+  /* ---------- repeatable items ---------- */
+  .item { border: 1px solid var(--line); border-left: 4px solid var(--cyan); border-radius: 7px; padding: 13px 14px 4px; margin-bottom: 12px; background: #FBFCFE; }
+  .item .item-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; gap: 10px; }
+  .item .item-title { font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--muted); text-transform: uppercase; }
+  .item .tools { display: flex; gap: 5px; flex-shrink: 0; }
+
+  /* a Part holds blocks, so it gets a heavier frame than the blocks inside it */
+  .part { border: 1px solid #B9C6DC; border-left: 5px solid var(--navy); border-radius: 8px; padding: 14px 15px 6px; margin-bottom: 16px; background: #F7F9FD; }
+  .part > .item-head .item-title { color: var(--navy); font-size: 12.5px; }
+  .block { border: 1px solid var(--line); border-left: 4px solid var(--gold); border-radius: 7px; padding: 12px 13px 2px; margin-bottom: 10px; background: #fff; }
+  .block .item-title { color: #8a6417; }
+  .blockbar { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 12px; }
+  .blockbar button { border-style: dashed; border-color: #B9C6DC; color: var(--muted); font-size: 12.5px; padding: 6px 10px; }
+  .blockbar button:hover { color: var(--navy); border-color: var(--cyan); }
+  .empty { font-size: 12.5px; color: var(--muted); font-style: italic; margin: 2px 0 10px; }
+
+  button {
+    font: inherit; cursor: pointer; border-radius: 6px; border: 1px solid var(--line);
+    background: #fff; color: var(--navy); padding: 6px 11px; font-size: 13px;
+  }
+  button:hover { background: #EDF1F9; }
+  button.mini { padding: 2px 8px; font-size: 13px; line-height: 1.5; }
+  button.danger:hover { background: #FBE9E9; border-color: #E3A3A3; color: #8C2C2C; }
+  button.primary { background: var(--navy); border-color: var(--navy); color: #fff; font-weight: 600; padding: 9px 16px; }
+  button.primary:hover { background: #16295c; }
+  button.add { border-style: dashed; border-color: #B9C6DC; color: var(--muted); width: 100%; padding: 9px; }
+  button.add:hover { color: var(--navy); border-color: var(--cyan); }
+  button[disabled] { opacity: .4; cursor: default; }
+
+  /* ---------- output ---------- */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--line); background: #EDF1F9; flex-wrap: wrap; }
+  .tabs button {
+    border: none; border-radius: 0; background: transparent; padding: 12px 15px;
+    font-size: 13.5px; font-weight: 600; color: var(--muted); border-bottom: 3px solid transparent;
+  }
+  .tabs button[aria-selected=true] { color: var(--navy); border-bottom-color: var(--cyan); background: #fff; }
+  #previewFrame { width: 100%; height: 760px; border: none; display: block; background: #fff; }
+  .codebox { width: 100%; height: 680px; font-family: Consolas, 'Courier New', monospace; font-size: 12px; line-height: 1.45; white-space: pre; border: none; border-radius: 0; padding: 14px; }
+  .codebox:focus { outline: none; }
+  .outbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 13px 16px; border-top: 1px solid var(--line); background: #FBFCFE; }
+  .outbar .grow { flex: 1; }
+  .flash { font-size: 13px; color: #1E7A46; font-weight: 600; opacity: 0; transition: opacity .2s; }
+  .flash.show { opacity: 1; }
+  .panenote { font-size: 12.5px; color: var(--muted); padding: 11px 16px; border-bottom: 1px solid var(--line); background: #FBFCFE; margin: 0; }
+
+  ol.steps { margin: 0; padding-left: 20px; font-size: 13.5px; }
+  ol.steps li { margin-bottom: 7px; }
+  code.k { background: #EDF1F9; border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; font-family: Consolas, monospace; font-size: 12.5px; }
+  .toolbar { display: flex; gap: 9px; flex-wrap: wrap; margin-bottom: 18px; }
+
+  /* ---------- pre-publish checklist ---------- */
+  ul.checks { list-style: none; margin: 0; padding: 0; font-size: 13.5px; }
+  ul.checks li { border-left: 4px solid var(--line); padding: 9px 13px; margin-bottom: 9px; background: #FBFCFE; border-radius: 0 6px 6px 0; }
+  ul.checks li.warn { border-left-color: #C0392B; background: #FDECEC; }
+  ul.checks li.note { border-left-color: var(--gold); background: #FDF6E7; }
+  ul.checks li.ok   { border-left-color: #2A9D5C; background: #F1FAF3; }
+  ul.checks li b { display: block; margin-bottom: 2px; }
+  .photoRow { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .photoRow img { max-width: 92px; max-height: 62px; object-fit: cover; border-radius: 5px; border: 1px solid var(--line); }
+  .sizenote { font-size: 12.5px; color: var(--muted); }
+
+  /* ---------- standards picker ---------- */
+  .stdbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 0 0 10px; }
+  .stdbar .grow { flex: 1; min-width: 140px; }
+  .stdlist { border: 1px solid var(--line); border-radius: 7px; max-height: 300px; overflow: auto; background: #FBFCFE; }
+  .stdlist label {
+    display: flex; align-items: flex-start; gap: 9px; padding: 9px 12px;
+    border-bottom: 1px solid #EDF1F9; font-size: 13.5px; cursor: pointer;
+  }
+  .stdlist label:last-child { border-bottom: none; }
+  .stdlist label:hover { background: #fff; }
+  .stdlist input { margin-top: 3px; flex-shrink: 0; }
+  .stdlist b { font-family: Consolas, monospace; font-size: 12.5px; color: var(--navy); }
+  .stdlist .txt { color: var(--muted); display: block; margin-top: 2px; line-height: 1.4; }
+  .stdlist .none { padding: 14px 13px; font-size: 13px; color: var(--muted); font-style: italic; }
+  .stdlist label.on { background: #EDF1F9; }
+</style>
+</head>
+<body>
+
+<header class="app">
+  <div class="brand">Optima Academy Online</div>
+  <h1>Lesson Page Builder</h1>
+  <p>Build a lesson page that looks like the ones in our courses. Fill in what you have, skip what you do not, and paste the generated HTML into a Canvas page. Every section below is optional except the lesson details in the header.</p>
+  <div class="sibling"><a href="index.html">&larr; Course Home Page Builder</a></div>
+</header>
+
+<div class="layout">
+
+  <!-- ============================ FORM ============================ -->
+  <div class="col-form" id="form">
+
+    <div class="toolbar">
+      <button type="button" data-action="loadExample">Load example lesson</button>
+      <button type="button" data-action="reset">Start blank</button>
+    </div>
+
+    <!-- 1. Lesson details -->
+    <section class="card">
+      <h2><span><span class="step">1</span>Lesson details</span></h2>
+      <div class="body">
+        <p class="hint">These fill the navy header and the strip of labels beneath it. Anything you leave blank drops out of the strip.</p>
+        <label class="f"><span>Course name (shown large, in capitals)</span>
+          <input type="text" data-path="meta.course" placeholder="BIOLOGY" /></label>
+        <div class="row">
+          <label class="f"><span>Quarter</span>
+            <input type="text" data-path="meta.q" placeholder="1" /></label>
+          <label class="f"><span>Module number</span>
+            <input type="text" data-path="meta.moduleNumber" placeholder="3" /></label>
+          <label class="f"><span>Lesson number</span>
+            <input type="text" data-path="meta.lessonNumber" placeholder="3.02" /></label>
+        </div>
+        <label class="f"><span>Module title / theme</span>
+          <input type="text" data-path="meta.moduleTitle" placeholder="Cells and the Work They Do" /></label>
+        <label class="f"><span>Lesson title</span>
+          <input type="text" data-path="meta.lessonTitle" placeholder="Why Does a Cell Divide?" /></label>
+        <label class="f"><span>Grade level</span>
+          <select data-path="meta.grade">
+            <option value="">(not set)</option>
+            <option value="6">6th grade</option>
+            <option value="7">7th grade</option>
+            <option value="8">8th grade</option>
+            <option value="9">9th grade</option>
+            <option value="10">10th grade</option>
+            <option value="11">11th grade</option>
+            <option value="12">12th grade</option>
+          </select></label>
+        <p class="hint" style="margin:0;">Grade level does not change the layout. It is carried into the request you can send Claude for an interactive activity, so the activity is pitched at the right level.</p>
+      </div>
+    </section>
+
+    <!-- 2. Today's Focus -->
+    <section class="card">
+      <h2>
+        <span><span class="step">2</span>Today&rsquo;s Focus</span>
+        <label class="chk" style="margin:0; font-size:13px; font-weight:400;">
+          <input type="checkbox" data-path="focus.show" /> Show section
+        </label>
+      </h2>
+      <div class="body">
+        <p class="hint">The gold-topped card that opens every lesson. The hook is a question or a claim in italics; the paragraph underneath says what the student is about to do.</p>
+        <label class="f"><span>Hook line</span>
+          <input type="text" data-path="focus.hook" placeholder="A cell that stops dividing is a cell that stops living." /></label>
+        <label class="f"><span>Opening paragraph</span>
+          <textarea data-path="focus.intro" placeholder="You will follow one cell through a single division and track what has to be copied, sorted, and split before it can happen."></textarea></label>
+      </div>
+    </section>
+
+    <!-- 3. Objectives -->
+    <section class="card">
+      <h2>
+        <span><span class="step">3</span>What students will be able to do</span>
+        <label class="chk" style="margin:0; font-size:13px; font-weight:400;">
+          <input type="checkbox" data-path="objectives.show" /> Show section
+        </label>
+      </h2>
+      <div class="body">
+        <p class="hint">Each line becomes a numbered gold circle under the heading &ldquo;By the end of this lesson you will be able to&hellip;&rdquo;. Write the verb phrase only; the page supplies &ldquo;I will be able to&rdquo;. Do not list standard codes here, they are tracked elsewhere.</p>
+        <div id="list-objectives"></div>
+        <button type="button" class="add" data-action="add" data-list="objectives.items" data-kind="line">+ Add objective</button>
+      </div>
+    </section>
+
+    <!-- 4. Materials -->
+    <section class="card">
+      <h2>
+        <span><span class="step">4</span>What students need</span>
+        <label class="chk" style="margin:0; font-size:13px; font-weight:400;">
+          <input type="checkbox" data-path="materials.show" /> Show section
+        </label>
+      </h2>
+      <div class="body">
+        <p class="hint">Texts, notebooks, links, devices, lab items. One per line.</p>
+        <div id="list-materials"></div>
+        <button type="button" class="add" data-action="add" data-list="materials.items" data-kind="line">+ Add item</button>
+      </div>
+    </section>
+
+    <!-- 5. Lesson content -->
+    <section class="card">
+      <h2><span><span class="step">5</span>Lesson content</span></h2>
+      <div class="body">
+        <p class="hint">The lesson is built out of <strong>Parts</strong>. Each Part is one white card with its own gold heading. Inside a Part you add whatever the content needs: your text, a drawn visual, an image, a video, a call-out box, a reveal box, or an interactive activity. Add as many Parts as the lesson takes.</p>
+        <p class="hint">Two of those are built by Claude rather than typed here: a <strong>drawn visual</strong> and an <strong>interactive activity</strong>. You describe what you want, the <strong>Ask Claude</strong> tab writes the request, and you paste the HTML back. Nothing on this page talks to Claude, so that conversation happens wherever you normally use it, and you can keep asking for changes until it is right.</p>
+        <div id="list-parts"></div>
+        <button type="button" class="add" data-action="add" data-list="parts" data-kind="part">+ Add a Part</button>
+      </div>
+    </section>
+
+    <!-- 6. What you'll do next -->
+    <section class="card">
+      <h2>
+        <span><span class="step">6</span>What students do next</span>
+        <label class="chk" style="margin:0; font-size:13px; font-weight:400;">
+          <input type="checkbox" data-path="next.show" /> Show section
+        </label>
+      </h2>
+      <div class="body">
+        <p class="hint">Point students at the graded work that follows this lesson. Those items live in Canvas as real assignments, quizzes, or discussions; this section is only the signpost.</p>
+        <div id="list-next"></div>
+        <button type="button" class="add" data-action="add" data-list="next.items" data-kind="next">+ Add an item</button>
+      </div>
+    </section>
+
+    <!-- 7. Wrap-up -->
+    <section class="card">
+      <h2>
+        <span><span class="step">7</span>Wrap-up</span>
+        <label class="chk" style="margin:0; font-size:13px; font-weight:400;">
+          <input type="checkbox" data-path="wrapup.show" /> Show section
+        </label>
+      </h2>
+      <div class="body">
+        <label class="f"><span>Heading</span>
+          <input type="text" data-path="wrapup.kicker" placeholder="BEFORE YOU MOVE ON" /></label>
+        <label class="f"><span>Closing paragraph</span>
+          <textarea data-path="wrapup.text" placeholder="You can now say what a cell has to finish before it splits. Keep your diagram out; the next lesson picks it up at the moment the chromosomes line up."></textarea></label>
+      </div>
+    </section>
+
+    <!-- 8. Standards -->
+    <section class="card">
+      <h2>
+        <span><span class="step">8</span>Standards covered</span>
+        <label class="chk" style="margin:0; font-size:13px; font-weight:400;">
+          <input type="checkbox" data-path="standards.show" /> Use this section
+        </label>
+      </h2>
+      <div class="body">
+        <p class="hint">Load your standards once, then tick the ones this lesson covers.</p>
+
+        <label class="f"><span>Load your standards list</span></label>
+        <div class="stdbar">
+          <button type="button" data-action="pickStandards">Choose a file&hellip;</button>
+          <span class="sizenote" id="stdNote"></span>
+        </div>
+        <p class="hint tight">A <strong>.csv</strong>, <strong>.txt</strong>, <strong>.tsv</strong>, or <strong>.json</strong> file, with the code first and the description after it. If yours is in Word or Excel, select the rows there, copy them, and paste into the box below instead.</p>
+        <label class="f"><span>Or paste them here</span>
+          <textarea id="stdPaste" class="tall" placeholder="SC.912.L.16.8&#9;Explain the relationship between mutation, cell cycle, and uncontrolled cell growth.&#10;SC.912.L.16.14&#9;Describe the cell cycle, including the process of mitosis."></textarea></label>
+        <div class="stdbar">
+          <button type="button" data-action="readStandards">Read these standards</button>
+          <button type="button" data-action="clearLibrary">Clear the list</button>
+        </div>
+
+        <hr style="border:none; border-top:1px solid var(--line); margin:16px 0 14px;" />
+
+        <label class="f" style="margin-bottom:6px;"><span>Which ones does this lesson cover?</span></label>
+        <div class="stdbar">
+          <input type="text" id="stdFilter" class="grow" placeholder="Filter by code or wording&hellip;" />
+          <span class="sizenote" id="stdCount"></span>
+          <button type="button" data-action="clearPicked">Untick all</button>
+        </div>
+        <div class="stdlist" id="stdList"></div>
+
+        <div class="row" style="margin-top:14px;">
+          <label class="f" style="flex:0 0 190px;"><span>Add one by hand</span>
+            <input type="text" id="stdCode" placeholder="SC.912.L.16.14" /></label>
+          <label class="f"><span>Its wording (optional)</span>
+            <input type="text" id="stdText" placeholder="Describe the cell cycle, including the process of mitosis." /></label>
+        </div>
+        <button type="button" class="add" data-action="addStandard">+ Add this standard</button>
+
+        <hr style="border:none; border-top:1px solid var(--line); margin:18px 0 14px;" />
+
+        <label class="f"><span>Where the standards go on the page</span>
+          <select data-path="standards.mode">
+            <option value="comment">In a note inside the code, which students never see (recommended)</option>
+            <option value="visible">In a section at the bottom of the page, which students do see</option>
+          </select></label>
+        <p class="hint" style="margin:0;">Our course pages keep standard codes out of student view, because the codes mean nothing to a student and the objectives above already say what the lesson is for. The note version still travels with the page, so you and anyone who edits it later can see the alignment. Pick the visible version if your department wants students or families to see it.</p>
+        <label class="f" style="margin-top:14px;"><span>Heading, if you show it on the page</span>
+          <input type="text" data-path="standards.heading" placeholder="STANDARDS COVERED" /></label>
+      </div>
+    </section>
+
+    <!-- 9. Footer -->
+    <section class="card">
+      <h2><span><span class="step">9</span>Footer line</span></h2>
+      <div class="body">
+        <p class="hint">The footer already carries the school name, the course, the quarter, and the lesson. Add one more line if you want one.</p>
+        <label class="f"><span>Extra footer line (optional)</span>
+          <input type="text" data-path="footerNote" placeholder="Stuck? Bring your notebook to Study Hall on Thursday." /></label>
+      </div>
+    </section>
+
+    <!-- Checklist -->
+    <section class="card">
+      <h2><span>Before you publish</span></h2>
+      <div class="body">
+        <ul class="checks" id="checks"></ul>
+      </div>
+    </section>
+
+    <!-- How to use -->
+    <section class="card">
+      <h2><span>Putting it in Canvas</span></h2>
+      <div class="body">
+        <ol class="steps">
+          <li>Open the <strong>HTML to paste</strong> tab on the right and click <strong>Copy</strong>.</li>
+          <li>In Canvas, go to <strong>Pages &rsaquo; + Page</strong> and title it with the lesson number and title.</li>
+          <li>In the editor toolbar, switch to HTML view, the <code class="k">&lt;/&gt;</code> button on the right end.</li>
+          <li>Select everything already in the box, delete it, then paste. Click <strong>Save</strong>.</li>
+          <li>Add the page to its module in <strong>Modules</strong>, and publish it.</li>
+        </ol>
+        <p class="hint" style="margin:14px 0 0;">Every style is written inline because Canvas strips <code class="k">&lt;style&gt;</code> blocks. Editing the page afterwards in Canvas&rsquo;s rich-text view can scramble that formatting, so come back here to make changes and re-paste.</p>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ============================ OUTPUT ============================ -->
+  <div class="col-out">
+    <div class="card" style="margin-bottom:0;">
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" id="tab-preview" aria-selected="true" data-action="tab" data-tab="preview">Preview</button>
+        <button type="button" role="tab" id="tab-canvas" aria-selected="false" data-action="tab" data-tab="canvas">HTML to paste</button>
+        <button type="button" role="tab" id="tab-ask" aria-selected="false" data-action="tab" data-tab="ask">Ask Claude</button>
+      </div>
+
+      <div id="pane-preview">
+        <p class="panenote">This is the page exactly as it will appear in Canvas. Click a reveal box to check that it opens.</p>
+        <iframe id="previewFrame" title="Lesson page preview"></iframe>
+      </div>
+
+      <div id="pane-canvas" hidden>
+        <p class="panenote">Paste this into a Canvas page. It is plain HTML with every style written inline, which is all Canvas keeps.</p>
+        <textarea class="codebox" id="codeCanvas" readonly spellcheck="false"></textarea>
+      </div>
+
+      <div id="pane-ask" hidden>
+        <p class="panenote">Copy this and paste it to Claude. You get HTML back, which goes in the &ldquo;Paste the HTML&rdquo; box of the matching Part.</p>
+        <textarea class="codebox" id="codeAsk" readonly spellcheck="false"></textarea>
+      </div>
+
+      <div class="outbar">
+        <button type="button" class="primary" data-action="copy">Copy</button>
+        <button type="button" data-action="download">Download</button>
+        <span class="flash" id="flash">Copied</span>
+        <span class="grow"></span>
+        <span class="hint" style="margin:0;" id="sizeNote"></span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<input type="file" id="standardsFile" accept=".csv,.tsv,.txt,.md,.json,text/plain,text/csv,application/json" style="display:none;" />
+
+<script>
+(function () {
+  'use strict';
+
+  var STORE_KEY = 'optima-lesson-page-builder-v1';
+
+  // Kicker emoji. Stored raw here and converted to numeric character
+  // references on the way out, because Canvas pages carry no charset
+  // declaration and a raw emoji turns to mojibake without one.
+  var KICKERS = [
+    ['📚', 'Books'],
+    ['📖', 'Open book'],
+    ['🎯', 'Target'],
+    ['📝', 'Memo'],
+    ['🔍', 'Magnifying glass'],
+    ['💡', 'Light bulb'],
+    ['📊', 'Chart'],
+    ['🧪', 'Flask'],
+    ['🧩', 'Puzzle piece'],
+    ['💬', 'Speech bubble'],
+    ['🌍', 'Globe'],
+    ['📜', 'Scroll'],
+    ['💻', 'Laptop'],
+    ['⚡', 'Lightning'],
+    ['🔑', 'Key'],
+    ['🧭', 'Compass'],
+    ['🏛', 'Classical building'],
+    ['🔢', 'Numbers']
+  ];
+
+  var CALLOUTS = {
+    helpful: {
+      label: 'Helpful to know',
+      blurb: 'A shortcut, a connection they tend to miss, a note worth keeping.',
+      defaultLabel: 'HELPFUL TO KNOW',
+      emoji: '💡',
+      box: 'background: #E8F6FB; border-left: 5px solid #2196D0; border-top: 3px solid #55C8E8;',
+      kickerColor: '#1B6A94'
+    },
+    warning: {
+      label: 'Watch out',
+      blurb: 'A common mistake, a trap, a safety note, something that costs points.',
+      defaultLabel: 'WATCH OUT',
+      emoji: '⚠️',
+      box: 'background: #FDECEC; border-left: 5px solid #C0392B; border-top: 3px solid #E74C3C;',
+      kickerColor: '#8A1F16'
+    },
+    ai: {
+      label: 'Worth knowing about AI',
+      blurb: 'What an AI tool can and cannot do for this particular skill. State it plainly and stop. Never tell students they have to use one.',
+      defaultLabel: 'WORTH KNOWING',
+      emoji: '⚠️',
+      box: 'background: #FDECEC; border-left: 5px solid #C0392B; border-top: 3px solid #E74C3C;',
+      kickerColor: '#8A1F16'
+    }
+  };
+
+  // ---------------------------------------------------------------- presets
+  // Drawn visuals and activities a teacher can build here, with no Claude
+  // account and no HTML. Each one is a small form plus a renderer that emits
+  // the same inline-styled, JavaScript-free HTML Canvas keeps. "Ask Claude"
+  // stays available for anything these do not cover, but it is the escape
+  // hatch, not the way in.
+  var DOT = ' &middot; ';
+
+  function rowsWith(b, need) {
+    return (b.rows || []).filter(function (r) {
+      for (var i = 0; i < need.length; i++) if (!t(r[need[i]])) return false;
+      return true;
+    });
+  }
+
+  // A reveal box, which is the only interaction Canvas keeps without scripting.
+  function reveal(h, p, summary, body, indentPx) {
+    h.push(p + '<details style="background: #FFFFFF; border: 1px solid #D0D9E8; border-left: 4px solid #C7922C; border-radius: 6px; padding: 12px 18px; margin: 10px 0' + (indentPx ? ' 10px ' + indentPx + 'px' : '') + ';">');
+    h.push(p + '  <summary style="font-size: 16px; color: #0E1C42; cursor: pointer; list-style: none;"><span style="color: #C7922C;">&#9654;</span>&nbsp; ' + summary + '</summary>');
+    h.push(p + '  <div style="font-size: 16px; color: #1a2340; line-height: 1.6; margin-top: 10px; padding-top: 10px; border-top: 1px solid #EEF1F8;">' + body + '</div>');
+    h.push(p + '</details>');
+  }
+
+  function leadLine(h, p, text) {
+    if (t(text)) h.push(p + '<p style="font-size: 17px; color: #1a2340; line-height: 1.6; margin: 0 0 12px 0;">' + inline(text) + '</p>');
+  }
+
+  var PRESETS = {
+    figure: {
+      table: {
+        label: 'Comparison table',
+        blurb: 'Two things side by side, one row per point of comparison.',
+        scalars: [['h1', 'Heading over the first column', 'A small cell'],
+                  ['h2', 'Heading over the second column', 'A cell twice as wide']],
+        rowName: 'Row',
+        fields: [['a', 'What is being compared', 'Surface area'],
+                 ['b', 'First column', '6 units'],
+                 ['c', 'Second column', '24 units']],
+        need: ['a'],
+        render: function (b, h, p) {
+          var rows = rowsWith(b, ['a']);
+          if (!rows.length) return;
+          h.push(p + '<table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 16px;">');
+          h.push(p + '  <tr>');
+          h.push(p + '    <th style="background: #0E1C42; color: #ffffff; text-align: left; padding: 11px 14px; border: 1px solid #0E1C42; font-size: 15px;"></th>');
+          h.push(p + '    <th style="background: #0E1C42; color: #ffffff; text-align: left; padding: 11px 14px; border: 1px solid #0E1C42; font-size: 15px;">' + inline(b.h1) + '</th>');
+          h.push(p + '    <th style="background: #0E1C42; color: #ffffff; text-align: left; padding: 11px 14px; border: 1px solid #0E1C42; font-size: 15px;">' + inline(b.h2) + '</th>');
+          h.push(p + '  </tr>');
+          rows.forEach(function (r, i) {
+            var bg = (i % 2) ? ' background: #F4F6FA;' : '';
+            h.push(p + '  <tr>');
+            h.push(p + '    <td style="padding: 11px 14px; border: 1px solid #D0D9E8; color: #0e1c42;' + bg + '"><strong>' + inline(r.a) + '</strong></td>');
+            h.push(p + '    <td style="padding: 11px 14px; border: 1px solid #D0D9E8; color: #1a2340;' + bg + '">' + inline(r.b) + '</td>');
+            h.push(p + '    <td style="padding: 11px 14px; border: 1px solid #D0D9E8; color: #1a2340;' + bg + '">' + inline(r.c) + '</td>');
+            h.push(p + '  </tr>');
+          });
+          h.push(p + '</table>');
+          if (t(b.note))
+            h.push(p + '<div style="font-size: 14px; color: #6b7a99; margin: 0 0 14px; line-height: 1.5;">' + inline(b.note) + '</div>');
+        }
+      },
+
+      timeline: {
+        label: 'Timeline',
+        blurb: 'Dated events down the page, in order.',
+        scalars: [['h1', 'Title over the timeline (optional)', 'How the idea developed']],
+        rowName: 'Event',
+        fields: [['a', 'When', '1665'],
+                 ['b', 'What happened', 'Hooke looks at cork through a microscope and names the cell.']],
+        need: ['a', 'b'],
+        render: function (b, h, p) {
+          var rows = rowsWith(b, ['a', 'b']);
+          if (!rows.length) return;
+          h.push(p + '<div style="margin: 16px 0; border-left: 3px solid #D0D9E8; padding-left: 4px;">');
+          if (t(b.h1))
+            h.push(p + '  <div style="font-size: 11px; color: #c7922c; margin: 0 0 12px 16px;">' + esc(String(b.h1).toUpperCase()) + '</div>');
+          rows.forEach(function (r) {
+            h.push(p + '  <div style="display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px;">');
+            h.push(p + '    <div style="min-width: 14px; height: 14px; border-radius: 50%; background: #C7922C; margin-left: -11px; margin-top: 5px; flex-shrink: 0;"></div>');
+            h.push(p + '    <div>');
+            h.push(p + '      <div style="font-size: 15px; color: #c7922c;"><strong>' + inline(r.a) + '</strong></div>');
+            h.push(p + '      <div style="font-size: 17px; color: #1a2340; line-height: 1.6;">' + inline(r.b) + '</div>');
+            h.push(p + '    </div>');
+            h.push(p + '  </div>');
+          });
+          h.push(p + '</div>');
+        }
+      },
+
+      steps: {
+        label: 'Numbered steps',
+        blurb: 'A process, in order, one numbered step at a time.',
+        scalars: [['h1', 'Title over the steps (optional)', 'What has to happen before a cell divides']],
+        rowName: 'Step',
+        fields: [['a', 'Step', 'Copy the DNA'],
+                 ['b', 'What it means (optional)', 'So each new cell gets a full set of instructions.']],
+        need: ['a'],
+        render: function (b, h, p) {
+          var rows = rowsWith(b, ['a']);
+          if (!rows.length) return;
+          h.push(p + '<div style="background: #FFFFFF; border: 1px solid #D0D9E8; border-radius: 8px; padding: 18px 22px; margin: 16px 0;">');
+          if (t(b.h1))
+            h.push(p + '  <div style="font-size: 11px; color: #c7922c; margin-bottom: 14px;">' + esc(String(b.h1).toUpperCase()) + '</div>');
+          rows.forEach(function (r, i) {
+            h.push(p + '  <div style="display: flex; align-items: flex-start; gap: 13px; margin-bottom: 12px;">');
+            h.push(p + '    <div style="min-width: 30px; height: 30px; border-radius: 50%; background: #0E1C42; color: #fff; font-size: 15px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">' + (i + 1) + '</div>');
+            h.push(p + '    <div>');
+            h.push(p + '      <div style="font-size: 18px; color: #0e1c42;"><strong>' + inline(r.a) + '</strong></div>');
+            if (t(r.b))
+              h.push(p + '      <div style="font-size: 16px; color: #1a2340; line-height: 1.55;">' + inline(r.b) + '</div>');
+            h.push(p + '    </div>');
+            h.push(p + '  </div>');
+          });
+          h.push(p + '</div>');
+        }
+      },
+
+      keyidea: {
+        label: 'One idea to remember',
+        blurb: 'A single prominent card for the one thing the lesson turns on.',
+        scalars: [['h1', 'Small label across the top', 'One rule to remember'],
+                  ['note', 'The idea itself, said in one or two sentences', 'A cell divides because of a size problem, not because of age.']],
+        rowName: '',
+        fields: [],
+        need: [],
+        render: function (b, h, p) {
+          if (!t(b.note)) return;
+          h.push(p + '<div style="background: #0E1C42; border-left: 6px solid #C7922C; border-radius: 8px; padding: 22px 26px; margin: 18px 0;">');
+          if (t(b.h1))
+            h.push(p + '  <div style="font-size: 11px; color: #c7922c; margin-bottom: 10px;">' + esc(String(b.h1).toUpperCase()) + '</div>');
+          h.push(p + '  <div style="font-size: 21px; color: #ffffff; line-height: 1.5;">' + inline(b.note) + '</div>');
+          h.push(p + '</div>');
+        }
+      }
+    },
+
+    widget: {
+      selfcheck: {
+        label: 'Self-check questions',
+        blurb: 'Questions the student answers in their notebook, then opens to check.',
+        scalars: [['h1', 'Instruction above the questions', 'Answer each of these in your notebook, then open the box to check.']],
+        rowName: 'Question',
+        fields: [['a', 'Question', 'Why can a cell not simply keep growing?'],
+                 ['b', 'The answer, and why', 'Its surface grows more slowly than its volume, so it cannot move enough in and out to feed itself.']],
+        need: ['a', 'b'],
+        render: function (b, h, p) {
+          var rows = rowsWith(b, ['a', 'b']);
+          if (!rows.length) return;
+          leadLine(h, p, t(b.h1) || 'Answer each of these in your notebook, then open the box to check.');
+          rows.forEach(function (r, i) {
+            reveal(h, p, '<strong>' + (i + 1) + '.</strong> ' + inline(r.a) + ' <span style="color: #6b7a99;">Write your answer first.</span>', inline(r.b));
+          });
+        }
+      },
+
+      match: {
+        label: 'Match the term',
+        blurb: 'Terms the student defines from memory, then opens to check.',
+        scalars: [['h1', 'Instruction above the terms', 'Say what each of these means before you open it.']],
+        rowName: 'Term',
+        fields: [['a', 'Term', 'Metaphase'],
+                 ['b', 'What it means', 'The stage where the copied chromosomes line up down the middle of the cell.']],
+        need: ['a', 'b'],
+        render: function (b, h, p) {
+          var rows = rowsWith(b, ['a', 'b']);
+          if (!rows.length) return;
+          leadLine(h, p, t(b.h1) || 'Say what each of these means before you open it.');
+          rows.forEach(function (r) {
+            reveal(h, p, '<strong>' + inline(r.a) + '</strong> <span style="color: #6b7a99;">Say it in your own words first.</span>', inline(r.b));
+          });
+        }
+      },
+
+      sort: {
+        label: 'Sort into categories',
+        blurb: 'Items the student assigns to a category, then opens to check.',
+        scalars: [['h1', 'Instruction above the items', 'Decide which job each one describes, then open it to check.'],
+                  ['h2', 'The categories, separated by commas', 'Copy, Check, Sort']],
+        rowName: 'Item',
+        fields: [['a', 'The item', 'The cell pauses and will not continue until the damage is repaired.'],
+                 ['b', 'Which category it belongs to', 'Check'],
+                 ['c', 'Why (optional)', 'Pausing to repair is the whole purpose of the checking stage.']],
+        need: ['a', 'b'],
+        render: function (b, h, p) {
+          var rows = rowsWith(b, ['a', 'b']);
+          if (!rows.length) return;
+          leadLine(h, p, t(b.h1) || 'Decide which category each one belongs to, then open it to check.');
+          var cats = String(b.h2 || '').split(',').map(t).filter(Boolean);
+          if (cats.length) {
+            h.push(p + '<div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px;">');
+            cats.forEach(function (c) {
+              h.push(p + '  <div style="background: #EEF1F8; border: 1px solid #D0D9E8; border-radius: 20px; padding: 6px 15px; font-size: 15px; color: #0e1c42;">' + esc(c) + '</div>');
+            });
+            h.push(p + '</div>');
+          }
+          rows.forEach(function (r, i) {
+            var body = '<strong>' + inline(r.b) + '</strong>' + (t(r.c) ? '. ' + inline(r.c) : '');
+            reveal(h, p, '<strong>' + (i + 1) + '.</strong> ' + inline(r.a) + ' <span style="color: #6b7a99;">Decide first.</span>', body);
+          });
+        }
+      },
+
+      worked: {
+        label: 'Worked example',
+        blurb: 'A problem the student attempts, then unfolds one step at a time.',
+        scalars: [['h1', 'The problem or question', 'A cell is 2 units wide. Work out its surface area and its volume.'],
+                  ['note', 'Closing note after the last step (optional)', 'Now try the same thing for a cell 3 units wide.']],
+        rowName: 'Step',
+        fields: [['a', 'Step', 'Work out the surface area'],
+                 ['b', 'What happens in this step', 'Six faces, each 2 by 2, so 6 times 4, which is 24.']],
+        need: ['a', 'b'],
+        render: function (b, h, p) {
+          var rows = rowsWith(b, ['a', 'b']);
+          if (!rows.length) return;
+          if (t(b.h1)) {
+            h.push(p + '<div style="background: #EEF1F8; border-left: 5px solid #0E1C42; border-radius: 7px; padding: 16px 20px; margin: 16px 0 12px;">');
+            h.push(p + '  <div style="font-size: 11px; color: #0e1c42; margin-bottom: 7px;">TRY IT YOURSELF FIRST</div>');
+            h.push(p + '  <div style="font-size: 17px; color: #1a2340; line-height: 1.6;">' + inline(b.h1) + '</div>');
+            h.push(p + '</div>');
+          }
+          rows.forEach(function (r, i) {
+            reveal(h, p, '<strong>Step ' + (i + 1) + '.</strong> ' + inline(r.a), inline(r.b));
+          });
+          if (t(b.note))
+            h.push(p + '<p style="font-size: 16px; color: #1a2340; line-height: 1.6; margin: 12px 0 0 0;">' + inline(b.note) + '</p>');
+        }
+      }
+    }
+  };
+
+  function presetDef(b) {
+    var fam = PRESETS[b.kind];
+    return (fam && fam[b.mode]) || null;
+  }
+
+  var IMG_SIZES = {
+    full:   { label: 'Full width', css: 'width: 100%;' },
+    medium: { label: 'Medium (about two thirds)', css: 'width: 640px;' },
+    small:  { label: 'Small (about a third)', css: 'width: 380px;' }
+  };
+
+  var BLOCK_LABEL = {
+    text: 'Lesson text',
+    figure: 'Drawn visual',
+    visual: 'Image',
+    video: 'Video',
+    callout: 'Call-out box',
+    reveal: 'Reveal box',
+    widget: 'Interactive activity'
+  };
+
+  // Canvas keeps plain, inline-styled HTML and throws away everything else.
+  // Anything on this list in a pasted-in activity will not survive, so the
+  // teacher is told before it reaches a student rather than after.
+  function canvasStrips(html) {
+    var s = String(html || ''), bad = [];
+    if (/<script[\s>]/i.test(s))                      bad.push('a <script> block');
+    if (/<style[\s>]/i.test(s))                       bad.push('a <style> block');
+    if (/\son[a-z]+\s*=/i.test(s))                    bad.push('an onclick or similar handler');
+    if (/\sclass\s*=/i.test(s))                       bad.push('class attributes, which have no styles to point at');
+    if (/<(input|button|form|select|textarea)[\s>]/i.test(s)) bad.push('form controls, which cannot do anything without JavaScript');
+    return bad;
+  }
+
+  // ------------------------------------------------------------------ state
+  function blankState() {
+    return {
+      meta: { course: '', q: '', moduleNumber: '', moduleTitle: '', lessonNumber: '', lessonTitle: '', grade: '' },
+      focus: { show: true, hook: '', intro: '' },
+      objectives: { show: true, items: [''] },
+      materials: { show: true, items: [''] },
+      parts: [ newPart() ],
+      next: { show: true, items: [ { name: '', oneLiner: '', url: '' } ] },
+      wrapup: { show: true, kicker: 'BEFORE YOU MOVE ON', text: '' },
+      standards: { show: true, mode: 'comment', heading: 'STANDARDS COVERED', library: [], selected: [] },
+      footerNote: ''
+    };
+  }
+
+  function newPart() {
+    return { kicker: '📚', label: '', mins: '', blocks: [ newBlock('text') ] };
+  }
+
+  function newRow() { return { a: '', b: '', c: '' }; }
+
+  function newBlock(kind) {
+    if (kind === 'text')    return { kind: 'text', subhead: '', body: '' };
+    if (kind === 'visual')  return { kind: 'visual', url: '', alt: '', caption: '', size: 'full' };
+    if (kind === 'video')   return { kind: 'video', src: '', title: '', notice: '' };
+    if (kind === 'callout') return { kind: 'callout', type: 'helpful', label: '', text: '' };
+    if (kind === 'reveal')  return { kind: 'reveal', summary: '', hidden: '' };
+    if (kind === 'widget')  return { kind: 'widget', mode: 'selfcheck', h1: '', h2: '', note: '', rows: [ newRow(), newRow() ], want: '', html: '', prevHtml: '', change: '' };
+    if (kind === 'figure')  return { kind: 'figure', mode: 'table', h1: '', h2: '', note: '', rows: [ newRow(), newRow() ], want: '', html: '', prevHtml: '', change: '' };
+    return { kind: 'text', subhead: '', body: '' };
+  }
+
+  function exampleState() {
+    var s = blankState();
+    s.meta = {
+      course: 'Biology', q: '1', moduleNumber: '3', moduleTitle: 'Cells and the Work They Do',
+      lessonNumber: '3.02', lessonTitle: 'Why Does a Cell Divide?', grade: '9'
+    };
+    s.focus.hook = 'A cell that stops dividing is a cell on a deadline.';
+    s.focus.intro = 'You will follow one cell through a single division and track what has to be copied, sorted, and split before that division can happen at all.';
+    s.objectives.items = [
+      'explain why a cell cannot simply grow larger forever',
+      'name the three things a cell must finish before it divides',
+      'read a diagram of a dividing cell and say what stage it shows'
+    ];
+    s.materials.items = [
+      'Your science notebook and a pencil',
+      'Chapter 7, pages 141 to 149',
+      'The diagram handout from this module in Canvas Files'
+    ];
+    s.parts = [
+      {
+        kicker: '🔍', label: 'The size problem', mins: '10',
+        blocks: [
+          { kind: 'text', subhead: 'A cell is limited by its own surface',
+            body: 'Everything a cell needs has to cross its outer membrane. Food in, waste out, oxygen in. That traffic is limited by how much membrane there is.\n\nHere is the catch. When a cell doubles in width, its surface grows by about four times, but the volume it has to serve grows by about eight. The inside outruns the outside.\n\nSo a cell that keeps growing eventually cannot feed itself. Dividing is how it gets back to a workable ratio.' },
+          { kind: 'figure', mode: 'table', h1: 'A small cell', h2: 'Twice as wide',
+            note: 'Doubling the width multiplies the surface by four, but the volume by eight.',
+            rows: [
+              { a: 'Width', b: '1 unit', c: '2 units' },
+              { a: 'Surface area', b: '6 units', c: '24 units' },
+              { a: 'Volume', b: '1 unit', c: '8 units' },
+              { a: 'Surface for each unit of volume', b: '6', c: '3' }
+            ], want: '', html: '', prevHtml: '', change: '' },
+          { kind: 'callout', type: 'warning', label: 'COMMON MISTAKE',
+            text: 'Cells do not divide because they are old. They divide because of a size and signal problem. Age is not the trigger.' },
+          { kind: 'visual', url: '', size: 'medium',
+            alt: 'A micrograph of one cell part way through dividing, with the chromosomes lined up down the middle',
+            caption: 'Metaphase. Notice how evenly the pairs are spaced.' }
+        ]
+      },
+      {
+        kicker: '🧩', label: 'Three jobs before the split', mins: '20',
+        blocks: [
+          { kind: 'text', subhead: 'Copy, check, sort',
+            body: 'Before a cell can split, it has to finish three jobs, in order:\n\n- **Copy** the DNA, so each new cell gets a full set.\n- **Check** the copy for damage, and stop everything if it finds any.\n- **Sort** the copies into two matching piles, one for each side.\n\nSkip any one of them and the two new cells are not equal. That is the whole reason the process is slow and heavily policed.' },
+          { kind: 'reveal',
+            summary: 'Write it in your notebook first: which of the three jobs would be most dangerous to skip, and why?',
+            hidden: 'Checking. A cell that skips the copy step makes one cell with no instructions, which simply dies. A cell that skips the check passes damaged instructions forward, and every cell descended from it carries the damage.' },
+          { kind: 'widget', mode: 'sort',
+            h1: 'Each of these describes a cell part way through one of the three jobs. Decide which job, then open it to check.',
+            h2: 'Copy, Check, Sort',
+            rows: [
+              { a: 'The cell pauses and will not go on until a fault is repaired.', b: 'Check',
+                c: 'Stopping everything to fix a fault is the whole purpose of this stage.' },
+              { a: 'Each chromosome now has an identical partner attached to it.', b: 'Copy',
+                c: 'The partner is the new copy. Nothing has been separated yet.' },
+              { a: 'The pairs are pulled to opposite ends of the cell.', b: 'Sort',
+                c: 'This is the sorting itself, one full set heading to each side.' },
+              { a: 'The amount of DNA in the cell has just doubled.', b: 'Copy',
+                c: 'Doubling is what copying does. It happens before anything is checked or moved.' },
+              { a: 'A fault is found, and the cell never divides at all.', b: 'Check',
+                c: 'A cell that fails the check is stopped rather than allowed to pass the fault on.' }
+            ], want: '', html: '', prevHtml: '', change: '' }
+        ]
+      }
+    ];
+    s.next.items = [
+      { name: 'Lesson 3.02 Check', oneLiner: 'Eight questions on the size problem and the three jobs. Two attempts.', url: '' },
+      { name: 'Cell Division Diagram', oneLiner: 'Label a dividing cell and write two sentences on what stage it shows.', url: '' }
+    ];
+    s.wrapup.text = 'You can now say why a cell divides at all, and what it has to finish first. Keep your diagram out. The next lesson picks up at the moment the chromosomes line up.';
+    s.footerNote = 'Stuck? Bring your notebook to Study Hall on Thursday.';
+    return s;
+  }
+
+  var state = load() || exampleState();
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      if (!raw) return null;
+      var s = JSON.parse(raw), b = blankState();
+      for (var k in b) {
+        if (!(k in s) || s[k] == null) { s[k] = b[k]; continue; }
+        if (!Array.isArray(b[k]) && typeof b[k] === 'object') {
+          for (var k2 in b[k]) if (!(k2 in s[k])) s[k][k2] = b[k][k2];
+        }
+      }
+      if (!Array.isArray(s.parts) || !s.parts.length) s.parts = [ newPart() ];
+      s.parts.forEach(function (p) { if (!Array.isArray(p.blocks)) p.blocks = [ newBlock('text') ]; });
+      if (!Array.isArray(s.standards.library)) s.standards.library = [];
+      if (!Array.isArray(s.standards.selected)) s.standards.selected = [];
+      return s;
+    } catch (e) { return null; }
+  }
+  function save() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  function getPath(p) {
+    var parts = p.split('.'), o = state;
+    for (var i = 0; i < parts.length; i++) { if (o == null) return undefined; o = o[parts[i]]; }
+    return o;
+  }
+  function setPath(p, v) {
+    var parts = p.split('.'), o = state;
+    for (var i = 0; i < parts.length - 1; i++) o = o[parts[i]];
+    o[parts[parts.length - 1]] = v;
+  }
+
+  // ------------------------------------------------------- escaping helpers
+  // Canvas is happiest with pure ASCII, so every non-ASCII character (emoji,
+  // curly quotes, dashes) goes out as a numeric character reference.
+  function esc(str) {
+    str = String(str == null ? '' : str);
+    var out = '';
+    for (var i = 0; i < str.length; i++) {
+      var cp = str.codePointAt(i);
+      var ch = String.fromCodePoint(cp);
+      if (cp > 0xFFFF) i++;
+      if (ch === '&') out += '&amp;';
+      else if (ch === '<') out += '&lt;';
+      else if (ch === '>') out += '&gt;';
+      else if (ch === '"') out += '&quot;';
+      else if (cp > 126 || (cp < 32 && ch !== '\n')) out += '&#' + cp + ';';
+      else out += ch;
+    }
+    return out;
+  }
+  function escAttr(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function href(url) { return esc(String(url || '').trim() || '#'); }
+  function t(v) { return String(v == null ? '' : v).trim(); }
+  function slug(s) {
+    return String(s || 'lesson').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'lesson';
+  }
+
+  // ------------------------------------------------- plain text to lesson HTML
+  // Teachers type plain text. A few marks are honoured so they never have to
+  // touch HTML: a blank line starts a paragraph, "- " makes a bullet list,
+  // "1. " a numbered list, "## " a small heading, **bold**, *italic*, and
+  // [text](link). Everything else is escaped and left alone.
+  var P_STYLE  = 'font-size: 17px; color: #1a2340; line-height: 1.65; margin: 0 0 12px 0;';
+  var LI_STYLE = 'font-size: 17px; color: #1a2340; line-height: 1.6; margin-bottom: 7px;';
+  var H4_STYLE = 'font-size: 18px; color: #0e1c42; margin: 16px 0 8px 0;';
+
+  function inline(s) {
+    return esc(s)
+      .replace(/\[([^\]\n]+)\]\((https?:[^)\s]+|\/[^)\s]*)\)/g,
+        '<a href="$2" style="color: #1B6A94;">$1</a>')
+      .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+  }
+
+  function rich(txt, indent) {
+    var pad = indent || '';
+    var chunks = String(txt == null ? '' : txt).replace(/\r/g, '').split(/\n\s*\n/);
+    var out = [];
+    chunks.forEach(function (chunk) {
+      var lines = chunk.split('\n').map(function (l) { return l.replace(/\s+$/, ''); })
+                       .filter(function (l) { return t(l) !== ''; });
+      if (!lines.length) return;
+
+      var bullets = lines.every(function (l) { return /^\s*[-•]\s+/.test(l); });
+      var numbers = lines.every(function (l) { return /^\s*\d+[.)]\s+/.test(l); });
+
+      if (bullets || numbers) {
+        var tag = bullets ? 'ul' : 'ol';
+        out.push(pad + '<' + tag + ' style="margin: 0 0 12px 0; padding-left: 24px;">');
+        lines.forEach(function (l) {
+          var body = l.replace(/^\s*(?:[-•]|\d+[.)])\s+/, '');
+          out.push(pad + '  <li style="' + LI_STYLE + '">' + inline(body) + '</li>');
+        });
+        out.push(pad + '</' + tag + '>');
+        return;
+      }
+      if (lines.length === 1 && /^\s*#{2,3}\s+/.test(lines[0])) {
+        out.push(pad + '<h4 style="' + H4_STYLE + '">' + inline(lines[0].replace(/^\s*#{2,3}\s+/, '')) + '</h4>');
+        return;
+      }
+      out.push(pad + '<p style="' + P_STYLE + '">' + lines.map(inline).join('<br />') + '</p>');
+    });
+    return out;
+  }
+
+  // ------------------------------------------------------------ video helpers
+  // Teachers paste whatever they have: a watch link, a share link, or the whole
+  // <iframe> embed code. All three end up as an embeddable src.
+  function videoSrc(raw) {
+    var v = t(raw);
+    if (!v) return '';
+    if (/<iframe/i.test(v)) {
+      var m0 = v.match(/src\s*=\s*["']([^"']+)["']/i);
+      if (m0) v = m0[1];
+    }
+    if (v.indexOf('//') === 0) v = 'https:' + v;
+    var m = v.match(/(?:youtube\.com\/(?:watch\?(?:[^#]*&)?v=|embed\/|live\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
+    if (m) return 'https://www.youtube.com/embed/' + m[1];
+    m = v.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+    if (m) return 'https://player.vimeo.com/video/' + m[1];
+    return v;
+  }
+  function domainOf(url) {
+    var m = String(url || '').match(/^https?:\/\/([^\/?#]+)/i);
+    return m ? m[1].replace(/^www\./, '') : '';
+  }
+
+  // ------------------------------------------------------------ image linking
+  // Canvas strips images embedded in the page as data: URIs. This was confirmed
+  // on 2026-07-31 with the teacher photo in the course home page builder, so
+  // there is no upload path here either: an image has to be a link to a file
+  // Canvas is hosting. Canvas hands teachers the address of a file's *preview
+  // page*, which is HTML and shows nothing inside an <img>, so normalise it to
+  // the /preview form Canvas's own editor uses.
+  function imgSrc(raw) {
+    var u = t(raw);
+    if (!u) return '';
+    var m = u.match(/^(https?:\/\/[^?#]*?\/files\/\d+)(?:\/(preview|download)[^?#]*)?/i);
+    if (!m) return u.split('#')[0];
+    return m[1] + '/' + (m[2] ? m[2].toLowerCase() : 'preview');
+  }
+
+  // Name the specific mistake rather than emitting a broken image into a lesson.
+  function imgWarning(raw) {
+    var u = t(raw);
+    if (!u) return '';
+    if (/^data:/i.test(u))
+      return 'Canvas strips images pasted in this way. Upload the file to Canvas Files and link it instead.';
+    if (!/^https?:\/\//i.test(u))
+      return 'That does not look like a web address. It should start with https://';
+    if (/\/files\/folder\//i.test(u))
+      return 'That is a Files folder, not one image. Click the image itself, then copy the address.';
+    if (/\/(pages|assignments|modules|discussion_topics|quizzes)\//i.test(u))
+      return 'That looks like a Canvas page rather than a file. Open Files, click your image, and copy that address.';
+    return '';
+  }
+
+  // -------------------------------------------------------- standards intake
+  // Teachers arrive with a standards list in whatever shape their department
+  // keeps it: a CSV export, a tab-separated paste out of Excel, a JSON file,
+  // or a plain list. All of those reduce to a code plus its wording.
+  function looksLikeCode(s) {
+    s = t(s);
+    if (!s || s.length > 32 || /\s/.test(s)) return false;
+    return /\d/.test(s) && /^[A-Za-z0-9][A-Za-z0-9._\-\/]*$/.test(s);
+  }
+
+  function splitCsv(line) {
+    var out = [], cur = '', q = false;
+    for (var i = 0; i < line.length; i++) {
+      var ch = line.charAt(i);
+      if (ch === '"') {
+        if (q && line.charAt(i + 1) === '"') { cur += '"'; i++; }
+        else q = !q;
+      } else if (ch === ',' && !q) { out.push(cur); cur = ''; }
+      else cur += ch;
+    }
+    out.push(cur);
+    return out;
+  }
+
+  function pushStandardLine(out, line) {
+    var s = t(line);
+    if (!s) return;
+    var parts = null;
+    if (s.indexOf('\t') > -1) parts = s.split('\t');
+    else if (s.indexOf(',') > -1) parts = splitCsv(s);
+
+    if (parts && parts.length > 1) {
+      var code0 = t(parts[0]).replace(/^"|"$/g, '');
+      if (looksLikeCode(code0)) {
+        var rest = parts.slice(1).map(function (x) { return t(x).replace(/^"|"$/g, ''); })
+                        .filter(Boolean).join(' ');
+        out.push({ code: code0, text: rest });
+        return;
+      }
+    }
+    var m = s.match(/^([A-Za-z0-9][A-Za-z0-9._\-\/]{2,30})\s*[:\-–—)]?\s+(\S.*)$/);
+    if (m && looksLikeCode(m[1].replace(/[.:]$/, ''))) {
+      out.push({ code: m[1].replace(/[.:]$/, ''), text: t(m[2]) });
+      return;
+    }
+    if (looksLikeCode(s)) { out.push({ code: s, text: '' }); return; }
+    // a heading row, a page number, or a line of prose: leave it out
+  }
+
+  function dedupeStandards(list) {
+    var seen = {}, out = [];
+    list.forEach(function (s) {
+      var code = t(s.code);
+      if (!code) return;
+      if (seen[code] == null) { seen[code] = out.length; out.push({ code: code, text: t(s.text) }); }
+      else if (t(s.text).length > out[seen[code]].text.length) out[seen[code]].text = t(s.text);
+    });
+    return out;
+  }
+
+  function parseStandards(raw) {
+    var text = String(raw == null ? '' : raw).replace(/\r/g, '');
+    var trimmed = text.trim(), out = [];
+    if (trimmed.charAt(0) === '[' || trimmed.charAt(0) === '{') {
+      try {
+        var j = JSON.parse(trimmed);
+        if (Array.isArray(j)) {
+          j.forEach(function (row) {
+            if (typeof row === 'string') { pushStandardLine(out, row); return; }
+            if (!row) return;
+            var code = row.code || row.Code || row.id || row.ID || row.standard || row.Standard || row.benchmark || '';
+            var txt = row.text || row.Text || row.description || row.Description ||
+                      row.wording || row.title || row.Title || row.benchmarkText || '';
+            if (t(code)) out.push({ code: t(code), text: t(txt) });
+          });
+        } else {
+          for (var k in j) if (typeof j[k] === 'string') out.push({ code: t(k), text: t(j[k]) });
+        }
+        if (out.length) return dedupeStandards(out);
+      } catch (e) { /* not JSON after all; fall through to line parsing */ }
+    }
+    text.split('\n').forEach(function (line) { pushStandardLine(out, line); });
+    return dedupeStandards(out);
+  }
+
+  function pickedStandards() {
+    var st = state.standards || {};
+    if (!st.show) return [];
+    var byCode = {};
+    (st.library || []).forEach(function (s) { byCode[s.code] = s; });
+    return (st.selected || []).map(function (c) { return byCode[c] || { code: c, text: '' }; });
+  }
+
+  // Standards as a comment: it stays with the page for whoever edits it next,
+  // and a student never sees anything inside an HTML comment. The "--" swap is
+  // needed because a double hyphen would close the comment early.
+  function standardsComment(pad) {
+    var list = pickedStandards();
+    if (!list.length || state.standards.mode !== 'comment') return [];
+    var out = [];
+    out.push(pad + '<!-- STANDARDS COVERED BY THIS LESSON');
+    out.push(pad + '     A note for you and for whoever edits this page next.');
+    out.push(pad + '     Students never see anything inside an HTML comment.');
+    list.forEach(function (s) {
+      var line = '     ' + s.code + (s.text ? '  ' + s.text : '');
+      out.push(pad + line.replace(/-{2,}/g, '-').replace(/>/g, ')'));
+    });
+    out.push(pad + '-->');
+    return out;
+  }
+
+  function standardsCard(p) {
+    var list = pickedStandards();
+    if (!list.length || state.standards.mode !== 'visible') return [];
+    var out = [];
+    out.push(p + '<!-- ===================== STANDARDS COVERED ===================== -->');
+    out.push(p + '<div style="background: #EEF1F8; border-left: 5px solid #0E1C42; border-radius: 7px; padding: 18px 22px; margin-bottom: 20px;">');
+    out.push(p + '  <div style="font-size: 11px; color: #0e1c42; margin-bottom: 12px;">' +
+      esc((t(state.standards.heading) || 'Standards covered').toUpperCase()) + '</div>');
+    list.forEach(function (s) {
+      out.push(p + '  <div style="margin-bottom: 9px;">');
+      out.push(p + '    <span style="font-size: 15px; color: #0e1c42;"><strong>' + esc(s.code) + '</strong></span>');
+      if (s.text)
+        out.push(p + '    <div style="font-size: 15px; color: #1a2340; line-height: 1.55; margin-top: 2px;">' + esc(s.text) + '</div>');
+      out.push(p + '  </div>');
+    });
+    out.push(p + '</div>');
+    out.push('');
+    return out;
+  }
+
+  // ------------------------------------------------------------ page pieces
+  function courseTitle() { return (t(state.meta.course) || 'Course Name').toUpperCase(); }
+
+  function kickerLine(emoji, text) {
+    return (t(emoji) ? esc(emoji) + ' ' : '') + esc(String(text).toUpperCase());
+  }
+
+  var CARD      = 'background: #FFFFFF; border: 1px solid #D0D9E8; border-radius: 8px; padding: 20px 24px; margin-bottom: 20px;';
+  var CARD_GOLD = 'background: #FFFFFF; border-top: 3px solid #C7922C; border: 1px solid #D0D9E8; border-radius: 8px; padding: 20px 24px; margin-bottom: 20px;';
+  var CARD_NAVY = 'background: #FFFFFF; border-top: 3px solid #0E1C42; border: 1px solid #D0D9E8; border-radius: 8px; padding: 20px 24px; margin-bottom: 20px;';
+  var KICK      = 'font-size: 11px; color: #c7922c; margin-bottom: 14px;';
+  var PILL      = 'background: #FDF3E3; border: 1px solid #C7922C; color: #8a6417; border-radius: 20px; padding: 3px 12px; font-size: 12px; white-space: nowrap;';
+
+  function buildBody() {
+    var m = state.meta, h = [];
+    var pad = '  ';
+
+    // ---- header
+    h.push(pad + '<!-- ===================== HEADER ===================== -->');
+    h.push(pad + '<div style="background: #0E1C42; border-bottom: 5px solid #55C8E8; padding: 22px 34px;">');
+    h.push(pad + '  <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 10px;">');
+    h.push(pad + '    <div style="width: 52px; height: 52px; border-radius: 50%; background: #FFFFFF; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><img src="https://raw.githubusercontent.com/optimaondemand/optima-assets/eeb0b335630058906d52f478028361d352253a93/images/Optima%20Final%20Circle%20-%20Owl%20Only.png" alt="Optima Academy" style="width: 50px; height: 40px; object-fit: contain;" /></div>');
+    h.push(pad + '    <div>');
+    h.push(pad + '      <div style="font-size: 28px; color: #ffffff; line-height: 1.2;">Optima Academy Online</div>');
+    h.push(pad + '      <div style="font-size: 12px; color: #55c8e8;">An Education Experience Company</div>');
+    h.push(pad + '    </div>');
+    h.push(pad + '  </div>');
+    h.push(pad + '  <div style="font-size: 36px; color: #ffffff; margin-bottom: 6px;">' + esc(courseTitle()) + '</div>');
+    h.push(pad + '</div>');
+    h.push('');
+
+    // ---- metadata strip
+    var cells = [];
+    if (t(m.q) || t(m.moduleNumber) || t(m.moduleTitle)) {
+      var qm = [];
+      if (t(m.q)) qm.push('Q' + esc(m.q));
+      if (t(m.moduleNumber)) qm.push('Module ' + esc(m.moduleNumber));
+      cells.push({ label: 'Quarter / Module', value: qm.join(' &middot; ') || esc(m.moduleTitle), sub: qm.length ? esc(m.moduleTitle) : '' });
+    }
+    if (t(m.lessonNumber)) cells.push({ label: 'Lesson', value: 'Lesson ' + esc(m.lessonNumber), sub: '' });
+    if (t(m.lessonTitle))  cells.push({ label: 'Topic', value: esc(m.lessonTitle), sub: '', italic: true });
+    if (t(m.moduleTitle))  cells.push({ label: 'Module Theme', value: esc(m.moduleTitle), sub: '' });
+    if (cells.length) {
+      h.push(pad + '<!-- ===================== LESSON DETAILS ===================== -->');
+      h.push(pad + '<div style="background: #FFFFFF; border-bottom: 2px solid #D0D9E8; display: flex; flex-wrap: wrap;">');
+      cells.forEach(function (c, i) {
+        var edge = (i === cells.length - 1) ? '' : ' border-right: 1px solid #D0D9E8;';
+        h.push(pad + '  <div style="flex: 1; min-width: 140px; padding: 12px 16px;' + edge + '">');
+        h.push(pad + '    <div style="font-size: 11px; color: #6b7a99; margin-bottom: 4px;">' + esc(c.label) + '</div>');
+        h.push(pad + '    <div style="font-size: 17px; color: #0e1c42;' + (c.italic ? ' font-style: italic;' : '') + '">' + c.value + '</div>');
+        if (c.sub) h.push(pad + '    <div style="font-size: 12px; color: #666;">' + c.sub + '</div>');
+        h.push(pad + '  </div>');
+      });
+      h.push(pad + '</div>');
+      h.push('');
+    }
+
+    h.push(pad + '<div style="padding: 24px 34px;">');
+    h.push('');
+    var p = pad + '  ';
+
+    // ---- title strip
+    if (t(m.lessonNumber) || t(m.lessonTitle)) {
+      h.push(p + '<!-- Title strip -->');
+      h.push(p + '<div style="background: #EEF1F8; border-left: 5px solid #0E1C42; border-radius: 7px; padding: 18px 22px; margin-bottom: 20px;">');
+      if (t(m.lessonNumber))
+        h.push(p + '  <div style="font-size: 11px; color: #0e1c42; margin-bottom: 6px;">LESSON ' + esc(m.lessonNumber) + '</div>');
+      if (t(m.lessonTitle))
+        h.push(p + '  <div style="font-size: 22px; color: #0e1c42; margin-bottom: 4px;">' + esc(m.lessonTitle) + '</div>');
+      h.push(p + '  <div style="font-size: 16px; color: #666;">Lesson</div>');
+      h.push(p + '</div>');
+      h.push('');
+    }
+
+    // ---- today's focus
+    var f = state.focus;
+    if (f.show && (t(f.hook) || t(f.intro))) {
+      h.push(p + '<!-- ===================== TODAY\'S FOCUS ===================== -->');
+      h.push(p + '<div style="' + CARD_GOLD + '">');
+      h.push(p + '  <div style="' + KICK + '">' + kickerLine('📖', "Today's Focus") + '</div>');
+      if (t(f.hook))
+        h.push(p + '  <div style="font-size: 20px; color: #0e1c42; font-style: italic; margin-bottom: 10px;">' + inline(f.hook) + '</div>');
+      if (t(f.intro))
+        rich(f.intro, p + '  ').forEach(function (l) { h.push(l); });
+      h.push(p + '</div>');
+      h.push('');
+    }
+
+    // ---- objectives
+    var objs = (state.objectives.items || []).filter(function (x) { return t(x); });
+    if (state.objectives.show && objs.length) {
+      h.push(p + '<!-- ===================== OBJECTIVES ===================== -->');
+      h.push(p + '<div style="' + CARD + '">');
+      h.push(p + '  <div style="' + KICK + '">' + kickerLine('🎯', 'By the end of this lesson you will be able to') + '&hellip;</div>');
+      objs.forEach(function (o, i) {
+        h.push(p + '  <div style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px;">');
+        h.push(p + '    <div style="min-width: 26px; height: 26px; border-radius: 50%; background: #C7922C; color: #fff; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">' + (i + 1) + '</div>');
+        h.push(p + '    <div style="font-size: 18px; color: #1a2340; line-height: 1.65;"><strong>I will be able to</strong> ' + inline(o) + '</div>');
+        h.push(p + '  </div>');
+      });
+      h.push(p + '</div>');
+      h.push('');
+    }
+
+    // ---- materials
+    var mats = (state.materials.items || []).filter(function (x) { return t(x); });
+    if (state.materials.show && mats.length) {
+      h.push(p + '<!-- ===================== WHAT YOU NEED ===================== -->');
+      h.push(p + '<div style="' + CARD + '">');
+      h.push(p + '  <div style="' + KICK + '">' + kickerLine('📋', 'What you need for this lesson') + '</div>');
+      mats.forEach(function (x) {
+        h.push(p + '  <div style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; border-left: 3px solid #D0D9E8; padding-left: 14px;"><span style="color: #c7922c; font-size: 18px; flex-shrink: 0;">&#9654;</span>');
+        h.push(p + '    <div style="font-size: 18px; color: #1a2340; line-height: 1.6;">' + inline(x) + '</div>');
+        h.push(p + '  </div>');
+      });
+      h.push(p + '</div>');
+      h.push('');
+    }
+
+    // ---- parts
+    var shown = 0;
+    (state.parts || []).forEach(function (part) {
+      var blocks = (part.blocks || []).filter(function (b) { return blockHasContent(b); });
+      if (!blocks.length && !t(part.label)) return;
+      shown++;
+      var head = 'PART ' + shown + (t(part.label) ? ' &middot; ' + esc(String(part.label).toUpperCase()) : '');
+      h.push(p + '<!-- ===================== ' + head.replace(/&middot;/g, '-') + ' ===================== -->');
+      h.push(p + '<div style="' + CARD_GOLD + '">');
+      if (t(part.mins)) {
+        h.push(p + '  <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px;">');
+        h.push(p + '    <div style="font-size: 11px; color: #c7922c;">' + (t(part.kicker) ? esc(part.kicker) + ' ' : '') + head + '</div>');
+        h.push(p + '    <div style="' + PILL + '">' + esc(part.mins) + ' min</div>');
+        h.push(p + '  </div>');
+      } else {
+        h.push(p + '  <div style="' + KICK + '">' + (t(part.kicker) ? esc(part.kicker) + ' ' : '') + head + '</div>');
+      }
+      blocks.forEach(function (b) { renderBlock(b, h, p + '  '); });
+      h.push(p + '</div>');
+      h.push('');
+    });
+
+    // ---- what you'll do next
+    var nx = (state.next.items || []).filter(function (x) { return t(x.name) || t(x.oneLiner); });
+    if (state.next.show && nx.length) {
+      h.push(p + '<!-- ===================== WHAT YOU WILL DO NEXT ===================== -->');
+      h.push(p + '<div style="' + CARD_NAVY + '">');
+      h.push(p + '  <div style="font-size: 11px; color: #c7922c; margin-bottom: 16px;">&#10145;&#65039; WHAT YOU&#8217;LL DO NEXT</div>');
+      nx.forEach(function (x, i) {
+        var name = esc(t(x.name) || 'Next step');
+        if (t(x.url)) name = '<a href="' + href(x.url) + '" style="color: #0e1c42;">' + name + '</a>';
+        h.push(p + '  <div style="display: flex; align-items: flex-start; gap: 14px; margin-bottom: 16px;">');
+        h.push(p + '    <div style="min-width: 34px; height: 34px; border-radius: 50%; background: #0E1C42; color: #fff; font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">' + (i + 1) + '</div>');
+        h.push(p + '    <div>');
+        h.push(p + '      <div style="font-size: 18px; color: #0e1c42; margin-bottom: 4px;"><strong>' + name + '</strong></div>');
+        if (t(x.oneLiner))
+          h.push(p + '      <div style="font-size: 16px; color: #1a2340; line-height: 1.55;">' + inline(x.oneLiner) + '</div>');
+        h.push(p + '    </div>');
+        h.push(p + '  </div>');
+      });
+      h.push(p + '</div>');
+      h.push('');
+    }
+
+    // ---- wrap-up
+    var w = state.wrapup;
+    if (w.show && t(w.text)) {
+      h.push(p + '<!-- ===================== WRAP-UP ===================== -->');
+      h.push(p + '<div style="' + CARD_GOLD + '">');
+      h.push(p + '  <div style="' + KICK + '">' + kickerLine('💪', t(w.kicker) || 'Before you move on') + '</div>');
+      rich(w.text, p + '  ').forEach(function (l) { h.push(l); });
+      h.push(p + '</div>');
+      h.push('');
+    }
+
+    // ---- standards, when the teacher chose to show them on the page
+    standardsCard(p).forEach(function (l) { h.push(l); });
+
+    h.push(pad + '</div>');
+    h.push('');
+
+    // ---- footer
+    var foot = '<span style="color: #55c8e8;">Optima Academy Online</span> &middot; ' + esc(courseTitle());
+    if (t(m.q)) foot += ' &middot; Quarter ' + esc(m.q);
+    foot += ' &middot; Student Lesson Page';
+    var sub = [];
+    if (t(m.lessonNumber)) sub.push('Lesson ' + esc(m.lessonNumber));
+    if (t(m.lessonTitle))  sub.push(esc(m.lessonTitle));
+    h.push(pad + '<!-- ===================== FOOTER ===================== -->');
+    h.push(pad + '<div style="background: #0E1C42; border-top: 3px solid #55C8E8; padding: 18px 34px; text-align: center;">');
+    h.push(pad + '  <div style="font-size: 18px; color: #ffffff; margin-bottom: 6px;">' + foot + '</div>');
+    if (sub.length)
+      h.push(pad + '  <div style="font-size: 13px; color: rgba(255,255,255,0.65); margin-bottom: 4px;">' + sub.join(' &middot; ') + '</div>');
+    if (t(state.footerNote))
+      h.push(pad + '  <div style="font-size: 15px; color: rgba(255,255,255,0.75); margin-bottom: 6px;">' + esc(state.footerNote) + '</div>');
+    h.push(pad + '  <div style="font-size: 12px; color: rgba(255,255,255,0.4);">&copy; Optima Academy Online &middot; An Education Experience Company</div>');
+    h.push(pad + '</div>');
+
+    return h;
+  }
+
+  function blockHasContent(b) {
+    if (!b) return false;
+    if (b.kind === 'text')    return !!(t(b.subhead) || t(b.body));
+    // An image with no link yet still renders, as a placeholder box, so the
+    // lesson can be written now and the pictures linked in afterwards.
+    if (b.kind === 'visual')  return !!(t(b.alt) || t(b.caption) || (t(b.url) && !imgWarning(b.url)));
+    if (b.kind === 'figure' || b.kind === 'widget') {
+      if (b.mode === 'ask' || !b.mode) return !!(t(b.html) || t(b.want));
+      var def = presetDef(b);
+      if (!def) return false;
+      if (def.fields.length) return rowsWith(b, def.need).length > 0;
+      return !!(t(b.note) || t(b.h1));
+    }
+    if (b.kind === 'video')   return !!videoSrc(b.src);
+    if (b.kind === 'callout') return !!t(b.text);
+    if (b.kind === 'reveal')  return !!(t(b.summary) && t(b.hidden));
+    return false;
+  }
+
+  function renderBlock(b, h, p) {
+    if (b.kind === 'text') {
+      if (t(b.subhead))
+        h.push(p + '<h3 style="font-size: 20px; color: #0e1c42; margin: 18px 0 8px 0;">' + inline(b.subhead) + '</h3>');
+      rich(b.body, p).forEach(function (l) { h.push(l); });
+      return;
+    }
+
+    if (b.kind === 'figure' || b.kind === 'widget') {
+      var def = presetDef(b);
+      if (def) { def.render(b, h, p); return; }
+      // "Ask Claude" mode: the pasted HTML, or a placeholder until it arrives
+      if (t(b.html)) {
+        h.push(p + '<!-- ' + (b.kind === 'figure' ? 'Drawn visual' : 'Interactive activity') + ' -->');
+        String(b.html).replace(/\r/g, '').split('\n').forEach(function (l) {
+          if (t(l)) h.push(p + l.replace(/\s+$/, ''));
+        });
+      } else {
+        h.push(p + '<div style="background: #EEF1F8; border: 1px dashed #B9C6DC; border-radius: 8px; padding: 16px 20px; margin: 16px 0;">');
+        h.push(p + '  <div style="font-size: 11px; color: #6b7a99; margin-bottom: 7px;">' +
+          (b.kind === 'figure' ? 'VISUAL, NOT DRAWN YET' : 'INTERACTIVE ACTIVITY, NOT BUILT YET') + '</div>');
+        h.push(p + '  <div style="font-size: 15px; color: #1a2340; line-height: 1.55;">' + esc(b.want) + '</div>');
+        h.push(p + '</div>');
+      }
+      return;
+    }
+
+    if (b.kind === 'visual') {
+      var src = imgSrc(b.url), sz = (IMG_SIZES[b.size] || IMG_SIZES.full).css;
+      if (!src || imgWarning(b.url)) {
+        // No link yet. A visible, clearly labelled gap is safer than a broken
+        // image, and it survives the paste so the teacher can see where the
+        // picture goes while they are still uploading it.
+        h.push(p + '<div style="background: #EEF1F8; border: 1px dashed #B9C6DC; border-radius: 8px; padding: 22px 20px; margin: 16px 0; text-align: center;">');
+        h.push(p + '  <div style="font-size: 11px; color: #6b7a99; margin-bottom: 7px;">&#128247; IMAGE TO ADD</div>');
+        h.push(p + '  <div style="font-size: 15px; color: #1a2340; line-height: 1.55;">' + esc(t(b.alt) || t(b.caption) || 'Link this image in the Lesson Page Builder, then paste the page again.') + '</div>');
+        h.push(p + '</div>');
+        return;
+      }
+      h.push(p + '<div style="margin: 16px 0;">');
+      h.push(p + '  <img src="' + escAttr(src) + '" alt="' + esc(b.alt) + '" style="display: block; max-width: 100%; ' + sz + ' border: 1px solid #D0D9E8; border-radius: 8px;" />');
+      if (t(b.caption))
+        h.push(p + '  <div style="font-size: 14px; color: #6b7a99; margin-top: 7px; line-height: 1.5;">' + inline(b.caption) + '</div>');
+      h.push(p + '</div>');
+      return;
+    }
+
+    if (b.kind === 'video') {
+      var vs = videoSrc(b.src);
+      h.push(p + '<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border: 1px solid #D0D9E8; border-radius: 8px; margin: 16px 0;">');
+      h.push(p + '  <iframe src="' + escAttr(vs) + '" title="' + esc(t(b.title) || 'Lesson video') + '" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" allowfullscreen="allowfullscreen" allow="accelerometer; encrypted-media; picture-in-picture; fullscreen"></iframe>');
+      h.push(p + '</div>');
+      if (t(b.notice)) {
+        h.push(p + '<div style="background: #EEF1F8; border-left: 4px solid #0E1C42; border-radius: 6px; padding: 13px 17px; margin: 0 0 16px 0;">');
+        h.push(p + '  <div style="font-size: 11px; color: #0e1c42; margin-bottom: 7px;">&#128065;&#65039; WHILE YOU WATCH</div>');
+        rich(b.notice, p + '  ').forEach(function (l) { h.push(l); });
+        h.push(p + '</div>');
+      }
+      return;
+    }
+
+    if (b.kind === 'callout') {
+      var c = CALLOUTS[b.type] || CALLOUTS.helpful;
+      h.push(p + '<div style="' + c.box + ' border-radius: 6px; padding: 14px 20px; margin: 16px 0;">');
+      h.push(p + '  <div style="font-size: 11px; color: ' + c.kickerColor + '; margin-bottom: 8px;">' + esc(c.emoji) + ' ' + esc((t(b.label) || c.defaultLabel).toUpperCase()) + '</div>');
+      rich(b.text, p + '  ').forEach(function (l) {
+        h.push(l.replace('color: #1a2340', 'color: #0E1C42'));
+      });
+      h.push(p + '</div>');
+      return;
+    }
+
+    if (b.kind === 'reveal') {
+      h.push(p + '<details style="background: #FFFFFF; border: 1px solid #D0D9E8; border-left: 4px solid #C7922C; border-radius: 6px; padding: 12px 18px; margin: 16px 0;">');
+      h.push(p + '  <summary style="font-size: 16px; color: #0E1C42; cursor: pointer; list-style: none;"><span style="color: #C7922C;">&#9654;</span>&nbsp; ' + inline(b.summary) + '</summary>');
+      h.push(p + '  <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #EEF1F8;">');
+      rich(b.hidden, p + '    ').forEach(function (l) { h.push(l); });
+      h.push(p + '  </div>');
+      h.push(p + '</details>');
+      return;
+    }
+
+  }
+
+  // -------------------------------------------------------- the two outputs
+  function buildCanvas() {
+    var h = [];
+    var title = courseTitle() + (t(state.meta.lessonNumber) ? ' - LESSON ' + t(state.meta.lessonNumber) : '');
+    h.push('<!--');
+    h.push('  ============================================================================');
+    h.push('  ' + title + '  (Optima Academy Online)');
+    h.push('  ----------------------------------------------------------------------------');
+    h.push('  HOW TO USE THIS FILE IN CANVAS:');
+    h.push('    1. Select all of this code (Ctrl+A), copy (Ctrl+C).');
+    h.push('    2. In Canvas: Pages > "+ Page" > switch the editor to HTML view');
+    h.push('       (the "</' + '>" button) > paste > Save.');
+    h.push('    3. Add the page to its module, then publish it.');
+    h.push('');
+    h.push('  All styling is inline because Canvas strips <style> and <script> blocks.');
+    h.push('  Editing this page in Canvas\'s rich-text view can scramble the layout.');
+    h.push('  Rebuild it any time with the Lesson Page Builder.');
+    if (videoDomains().length) {
+      h.push('');
+      h.push('  VIDEO: this page embeds video from ' + videoDomains().join(', ') + '.');
+      h.push('  Students can only play video from a domain on Optima\'s approved list.');
+      h.push('  Ask the technology team to approve the domain before you publish.');
+    }
+    h.push('  ============================================================================');
+    h.push('-->');
+    h.push('');
+    standardsComment('').forEach(function (l) { h.push(l); });
+    if (standardsComment('').length) h.push('');
+    h.push('<div style="max-width: 1100px; margin: 0 auto; color: #0e1c42;">');
+    h.push('');
+    buildBody(false).forEach(function (l) { h.push(l); });
+    h.push('');
+    h.push('</div>');
+    h.push('');
+    return h.join('\n');
+  }
+
+  // ------------------------------------------------------- the Claude request
+  function widgetRequests(kind) {
+    var out = [];
+    (state.parts || []).forEach(function (part, pi) {
+      (part.blocks || []).forEach(function (b, bi) {
+        if (b.kind === kind && b.mode === 'ask' && t(b.want) && !t(b.html)) {
+          // the teaching text immediately above the widget, so Claude can see
+          // what the widget is meant to check
+          var above = '';
+          for (var i = bi - 1; i >= 0; i--) {
+            if (part.blocks[i].kind === 'text' && t(part.blocks[i].body)) { above = t(part.blocks[i].body); break; }
+          }
+          out.push({ kind: kind, part: pi + 1, label: t(part.label), want: t(b.want), above: above });
+        }
+      });
+    });
+    return out;
+  }
+
+  function buildAsk() {
+    var m = state.meta;
+    var acts = widgetRequests('widget');
+    var figs = widgetRequests('figure');
+    var reqs = acts.concat(figs);
+    var L = [];
+
+    if (!reqs.length) {
+      return [
+        'Nothing to ask for yet.',
+        '',
+        'Add a "Drawn visual" or an "Interactive activity" block to one of your Parts',
+        'and describe what you want. This box then fills with a request you can paste',
+        'to Claude, in whatever way you already use it.',
+        '',
+        'A drawn visual is a diagram, timeline, labelled figure, or comparison table,',
+        'built into the page itself. There is no picture to upload, nothing to host,',
+        'and no link that can break later.',
+        '',
+        'An activity is worth adding when the lesson turns on something a student can',
+        'practise or decide: sorting items into categories, matching a term to its',
+        'meaning, putting steps in order, or working an example before checking it.',
+        '',
+        'Canvas keeps only plain HTML on a page, so both are built from inline styles,',
+        'and an activity clicks open rather than scoring an answer for the student.'
+      ].join('\n');
+    }
+
+    var want = [];
+    if (figs.length) want.push(figs.length > 1 ? figs.length + ' drawn visuals' : 'a drawn visual');
+    if (acts.length) want.push(acts.length > 1 ? acts.length + ' interactive activities' : 'an interactive activity');
+    L.push('I am building a lesson page for Optima Academy Online and I need ' +
+           want.join(' and ') + ' for it.');
+    L.push('');
+    L.push('Please use the optima-lesson-format skill for the look, and match the');
+    L.push('design tokens: navy #0E1C42, cyan #55C8E8, gold #C7922C, card border');
+    L.push('#D0D9E8, lavender #EEF1F8, body text #1a2340 at 17px with line-height 1.6.');
+    L.push('');
+    L.push('THIS IS THE PART THAT MATTERS. The page is pasted straight into a Canvas');
+    L.push('page, and Canvas throws away everything except plain HTML. So:');
+    L.push('  - No JavaScript at all. No <script>, no onclick, no event handlers.');
+    L.push('  - No <style> block and no class attributes. Every style has to be an');
+    L.push('    inline style="..." attribute, because there is no stylesheet to');
+    L.push('    point a class at.');
+    L.push('  - No form controls. Buttons, inputs, and radios cannot do anything');
+    L.push('    without JavaScript, so they would just sit there dead.');
+    L.push('  - No images, and no inline <svg>. Build a visual out of divs, borders,');
+    L.push('    background colours, and text. There is nowhere to host a picture and');
+    L.push('    Canvas may not keep an svg.');
+    L.push('  - Non-ASCII characters as numeric HTML entities, since the page');
+    L.push('    carries no charset declaration.');
+    L.push('  - No em dashes anywhere a student reads.');
+    L.push('');
+    if (figs.length) {
+      L.push('FOR THE DRAWN VISUALS. Make it legible and label it. It has to hold up');
+      L.push('on a phone, so lay it out with flex-wrap and percentage or max-width');
+      L.push('sizing rather than fixed pixel columns. Use at most two accent colours');
+      L.push('on the navy. Do not name the teaching technique anywhere in it.');
+      L.push('');
+    }
+    if (acts.length) {
+      L.push('FOR THE ACTIVITIES. The interactivity has to come from native <details>');
+      L.push('and <summary> click-to-open boxes, which Canvas does keep and does');
+      L.push('render, plus title="..." hover definitions where a word needs glossing.');
+      L.push('Build the attempt into the visible <summary> line, so the student');
+      L.push('commits before the reveal opens, and put anything that gives the answer');
+      L.push('away inside the hidden part. Do not use a reveal box for an open-ended');
+      L.push('freewrite, where there is no answer to check against.');
+      L.push('');
+    }
+    L.push('Give me the HTML blocks only, one clearly labelled block per request, with');
+    L.push('no surrounding page and no <html>, <head>, or <body> tags. I am pasting');
+    L.push('each one into the Lesson Page Builder.');
+    L.push('');
+    L.push('LESSON');
+    L.push('  Course: ' + (t(m.course) || '(not set)'));
+    L.push('  Grade level: ' + (t(m.grade) ? t(m.grade) + 'th grade' : '(not set)'));
+    var qm = [];
+    if (t(m.q)) qm.push('Q' + t(m.q));
+    if (t(m.moduleNumber)) qm.push('Module ' + t(m.moduleNumber));
+    if (t(m.moduleTitle)) qm.push(t(m.moduleTitle));
+    L.push('  Module: ' + (qm.join(' / ') || '(not set)'));
+    L.push('  Lesson: ' + ([t(m.lessonNumber), t(m.lessonTitle)].filter(Boolean).join(' / ') || '(not set)'));
+    if (t(state.focus.hook) || t(state.focus.intro))
+      L.push('  Focus: ' + [t(state.focus.hook), t(state.focus.intro)].filter(Boolean).join(' '));
+    var objs = (state.objectives.items || []).filter(function (x) { return t(x); });
+    if (objs.length) {
+      L.push('  Objectives:');
+      objs.forEach(function (o) { L.push('    - ' + t(o)); });
+    }
+    var stds = pickedStandards();
+    if (stds.length) {
+      L.push('  Standards this lesson covers (for your context only, do not print');
+      L.push('  the codes in what you build):');
+      stds.forEach(function (s) { L.push('    - ' + s.code + (s.text ? ': ' + s.text : '')); });
+    }
+    L.push('');
+
+    reqs.forEach(function (r, i) {
+      L.push('REQUEST ' + (i + 1) + ' of ' + reqs.length +
+             ' (' + (r.kind === 'figure' ? 'a drawn visual' : 'an interactive activity') + ')');
+      L.push('  Goes in: Part ' + r.part + (r.label ? ' (' + r.label + ')' : ''));
+      L.push('  What I want:');
+      wrapInto(L, r.want, '    ');
+      if (r.above) {
+        L.push('  It comes right after this teaching text, so it should test this and');
+        L.push('  nothing the student has not been taught yet:');
+        L.push('  """');
+        wrapInto(L, r.above, '  ');
+        L.push('  """');
+      }
+      L.push('');
+    });
+
+    L.push('If a request cannot be done without JavaScript, say so and tell me what');
+    L.push('would work better in its place.');
+    return L.join('\n');
+  }
+
+  function wrapInto(arr, text, pad) {
+    String(text || '').replace(/\r/g, '').split('\n').forEach(function (para) {
+      if (!t(para)) { arr.push(''); return; }
+      var words = t(para).split(/\s+/), line = '';
+      words.forEach(function (w) {
+        if ((line + ' ' + w).length > 74 - pad.length) { arr.push(pad + line); line = w; }
+        else line = line ? line + ' ' + w : w;
+      });
+      if (line) arr.push(pad + line);
+    });
+  }
+
+  // ------------------------------------------------------- pre-publish checks
+  function videoDomains() {
+    var seen = {}, out = [];
+    (state.parts || []).forEach(function (part) {
+      (part.blocks || []).forEach(function (b) {
+        if (b.kind !== 'video') return;
+        var d = domainOf(videoSrc(b.src));
+        if (d && !seen[d]) { seen[d] = 1; out.push(d); }
+      });
+    });
+    return out;
+  }
+
+  function countBlocks(kind, test) {
+    var n = 0;
+    (state.parts || []).forEach(function (part) {
+      (part.blocks || []).forEach(function (b) {
+        if (b.kind === kind && (!test || test(b))) n++;
+      });
+    });
+    return n;
+  }
+
+  function renderChecks(canvasHtml) {
+    var out = [];
+
+    var vids = videoDomains();
+    if (vids.length) {
+      out.push(['warn', 'Get the video domain approved',
+        'This page plays video from <strong>' + escAttr(vids.join(', ')) + '</strong>. ' +
+        'Students can only open video from a domain on Optima&rsquo;s approved list, so ask the technology team to add it before you publish. ' +
+        'Then open the page as a student would and confirm the video actually plays.']);
+    }
+
+    var widgetsWanted = countBlocks('widget', function (b) { return b.mode === 'ask' && !t(b.html); });
+    var widgetsStrip  = countBlocks('widget', function (b) { return canvasStrips(b.html).length > 0; });
+    if (widgetsWanted) {
+      out.push(['note', widgetsWanted + (widgetsWanted > 1 ? ' activities are' : ' activity is') + ' still just a description',
+        'Open the <strong>Ask Claude</strong> tab, copy the request, and paste the HTML you get back into the matching Part. ' +
+        'Until then the page shows a dashed placeholder that students should not see.']);
+    }
+    if (widgetsStrip) {
+      out.push(['warn', 'Canvas will break ' + widgetsStrip + (widgetsStrip > 1 ? ' of your activities' : ' of your activities'),
+        'They contain JavaScript, classes, or form controls, none of which survive a paste into Canvas. ' +
+        'Each one is flagged in its own block above. Ask Claude to rebuild it out of click-to-open reveal boxes with inline styles.']);
+    }
+
+    var figsWanted = countBlocks('figure', function (b) { return b.mode === 'ask' && !t(b.html); });
+    var figsStrip  = countBlocks('figure', function (b) { return canvasStrips(b.html).length > 0; });
+    if (figsWanted) {
+      out.push(['note', figsWanted + (figsWanted > 1 ? ' visuals are' : ' visual is') + ' still just a description',
+        'Open the <strong>Ask Claude</strong> tab, copy the request, and paste the HTML you get back into the matching Part. ' +
+        'Until then the page shows a dashed placeholder that students should not see.']);
+    }
+    if (figsStrip) {
+      out.push(['warn', 'Canvas will break ' + figsStrip + (figsStrip > 1 ? ' of your visuals' : ' of your visuals'),
+        'Each one is flagged in its own block above. Ask Claude to rebuild it with inline styles only, no classes and no svg.']);
+    }
+
+    var gaps = countBlocks('visual', function (b) { return !t(b.url); });
+    if (gaps) {
+      out.push(['note', gaps + (gaps > 1 ? ' images are' : ' image is') + ' still a marked gap',
+        'Upload the pictures to your course <strong>Files</strong>, publish them, then come back here, paste each link, and copy the page again. ' +
+        'The gaps are visible to students, so they need filling or removing before you publish.']);
+    }
+
+    var badImg = countBlocks('visual', function (b) { return imgWarning(b.url); });
+    if (badImg) {
+      out.push(['warn', badImg + (badImg > 1 ? ' image links are' : ' image link is') + ' not usable',
+        'Each one is flagged in its own block above, and shows as a marked gap rather than a broken image. ' +
+        'Images have to be links to files uploaded and published in your Canvas course <strong>Files</strong>, or to a picture already public on the web.']);
+    }
+
+    var missingAlt = countBlocks('visual', function (b) {
+      return t(b.url) && !imgWarning(b.url) && !t(b.alt);
+    });
+    if (missingAlt) {
+      out.push(['note', missingAlt + (missingAlt > 1 ? ' images have' : ' image has') + ' no description',
+        'Write a short description of what the image shows. A student using a screen reader gets nothing without it.']);
+    }
+
+    var kb = Math.round(canvasHtml.length / 1024);
+    if (kb > 120) {
+      out.push(['note', 'This page is large (' + kb + ' KB)',
+        'Canvas will take it, but it is slow to load and awkward to edit. A very long lesson is usually better split across two pages.']);
+    }
+
+    if (!t(state.meta.course) || !t(state.meta.lessonTitle)) {
+      out.push(['note', 'Fill in the course name and lesson title',
+        'They set the navy header and the page title, and they are what students look for when they come back to a lesson.']);
+    }
+    if (!state.focus.show || (!t(state.focus.hook) && !t(state.focus.intro))) {
+      out.push(['note', 'Consider adding Today&rsquo;s Focus',
+        'Every lesson in our courses opens with it, so students look for it first. One line that hooks, one short paragraph on what they are about to do.']);
+    }
+
+    if (pickedStandards().length && state.standards.mode === 'visible') {
+      out.push(['note', 'Standard codes will be visible to students',
+        'Our course pages normally keep them in the code note instead, because the codes mean nothing to a student and the objectives already say what the lesson is for. ' +
+        'Keep the visible section only if your department asked for it.']);
+    }
+    if (state.standards.show && (state.standards.library || []).length && !pickedStandards().length) {
+      out.push(['note', 'No standards ticked yet',
+        'Your list is loaded but nothing is selected, so no alignment note goes onto the page.']);
+    }
+
+    var timed = (state.parts || []).filter(function (p) { return t(p.mins); }).length;
+    var real  = (state.parts || []).filter(function (p) {
+      return (p.blocks || []).some(blockHasContent) || t(p.label);
+    }).length;
+    if (real && timed < real) {
+      out.push(['note', 'Add a time estimate to each Part',
+        'The gold minute pills are how students pace themselves and how we spot a lesson that has quietly grown too long. ' +
+        (timed ? (real - timed) + ' of ' + real + ' Parts still have none.' : 'None of your Parts have one yet.')]);
+    }
+
+    if (!out.length) {
+      out.push(['ok', 'Nothing flagged',
+        'Copy the HTML, paste it into a Canvas page, and read it through once as a student before you publish.']);
+    }
+
+    document.getElementById('checks').innerHTML = out.map(function (c) {
+      return '<li class="' + c[0] + '"><b>' + c[1] + '</b>' + c[2] + '</li>';
+    }).join('');
+  }
+
+  // ------------------------------------------------------------ form render
+  function tools(listPath, i, len, kind) {
+    return '<div class="tools">' +
+      '<button type="button" class="mini" data-action="up" data-list="' + listPath + '" data-idx="' + i + '"' + (i === 0 ? ' disabled' : '') + ' title="Move up">&uarr;</button>' +
+      '<button type="button" class="mini" data-action="down" data-list="' + listPath + '" data-idx="' + i + '"' + (i === len - 1 ? ' disabled' : '') + ' title="Move down">&darr;</button>' +
+      '<button type="button" class="mini danger" data-action="del" data-list="' + listPath + '" data-idx="' + i + '" data-kind="' + (kind || '') + '" title="Remove">&times;</button>' +
+      '</div>';
+  }
+
+  function selectOf(path, current, pairs) {
+    var o = ['<select data-path="' + path + '">'];
+    pairs.forEach(function (pr) {
+      o.push('<option value="' + escAttr(pr[0]) + '"' + (pr[0] === current ? ' selected' : '') + '>' + escAttr(pr[1]) + '</option>');
+    });
+    o.push('</select>');
+    return o.join('');
+  }
+
+  function kickerSelect(path, current) {
+    var pairs = KICKERS.map(function (k) { return [k[0], k[0] + '  ' + k[1]]; });
+    pairs.push(['', '(no icon)']);
+    if (current && !KICKERS.some(function (k) { return k[0] === current; })) pairs.push([current, current + '  (custom)']);
+    return selectOf(path, current, pairs);
+  }
+
+  function lineList(elId, listPath, items, label, placeholders) {
+    document.getElementById(elId).innerHTML = items.map(function (x, i) {
+      var ph = placeholders[i % placeholders.length];
+      return '<div class="item">' +
+        '<div class="item-head"><span class="item-title">' + label + ' ' + (i + 1) + '</span>' + tools(listPath, i, items.length, 'line') + '</div>' +
+        '<label class="f"><textarea data-path="' + listPath + '.' + i + '" placeholder="' + escAttr(ph) + '">' + escAttr(x) + '</textarea></label>' +
+        '</div>';
+    }).join('');
+  }
+
+  function renderLists() {
+    lineList('list-objectives', 'objectives.items', state.objectives.items || [], 'Objective',
+      ['explain why a cell cannot simply grow larger forever',
+       'name the three things a cell must finish before it divides',
+       'read a diagram of a dividing cell and say what stage it shows']);
+
+    lineList('list-materials', 'materials.items', state.materials.items || [], 'Item',
+      ['Your science notebook and a pencil',
+       'Chapter 7, pages 141 to 149',
+       'The diagram handout in Canvas Files']);
+
+    // ---- next steps
+    document.getElementById('list-next').innerHTML = (state.next.items || []).map(function (x, i) {
+      return '<div class="item">' +
+        '<div class="item-head"><span class="item-title">Item ' + (i + 1) + '</span>' + tools('next.items', i, state.next.items.length, 'next') + '</div>' +
+        '<label class="f"><span>What it is called in Canvas</span><input type="text" data-path="next.items.' + i + '.name" value="' + escAttr(x.name) + '" placeholder="Lesson 3.02 Check" /></label>' +
+        '<label class="f"><span>One line on what it asks for</span><input type="text" data-path="next.items.' + i + '.oneLiner" value="' + escAttr(x.oneLiner) + '" placeholder="Eight questions on the three jobs. Two attempts." /></label>' +
+        '<label class="f"><span>Link (optional)</span><input type="url" data-path="next.items.' + i + '.url" value="' + escAttr(x.url) + '" placeholder="https://optimaacademyonline.instructure.com/courses/000/assignments/000" /></label>' +
+        '</div>';
+    }).join('');
+
+    // ---- parts
+    document.getElementById('list-parts').innerHTML = (state.parts || []).map(function (part, i) {
+      var bp = 'parts.' + i + '.blocks';
+      var blocks = part.blocks || [];
+      var inner = blocks.map(function (b, j) { return blockForm(b, bp, j, blocks.length); }).join('');
+      if (!blocks.length) inner = '<p class="empty">Nothing in this Part yet. Add something below.</p>';
+      return '<div class="part">' +
+        '<div class="item-head"><span class="item-title">Part ' + (i + 1) + '</span>' + tools('parts', i, state.parts.length, 'part') + '</div>' +
+        '<div class="row">' +
+          '<label class="f" style="flex:0 0 170px;"><span>Icon</span>' + kickerSelect('parts.' + i + '.kicker', part.kicker) + '</label>' +
+          '<label class="f"><span>Part heading</span><input type="text" data-path="parts.' + i + '.label" value="' + escAttr(part.label) + '" placeholder="The size problem" /></label>' +
+          '<label class="f" style="flex:0 0 120px;"><span>Minutes</span><input type="text" data-path="parts.' + i + '.mins" value="' + escAttr(part.mins) + '" placeholder="10" /></label>' +
+        '</div>' +
+        inner +
+        '<div class="blockbar">' +
+          '<button type="button" data-action="add" data-list="' + bp + '" data-kind="text">+ Lesson text</button>' +
+          '<button type="button" data-action="add" data-list="' + bp + '" data-kind="figure">+ Drawn visual</button>' +
+          '<button type="button" data-action="add" data-list="' + bp + '" data-kind="visual">+ Image</button>' +
+          '<button type="button" data-action="add" data-list="' + bp + '" data-kind="video">+ Video</button>' +
+          '<button type="button" data-action="add" data-list="' + bp + '" data-kind="callout">+ Call-out box</button>' +
+          '<button type="button" data-action="add" data-list="' + bp + '" data-kind="reveal">+ Reveal box</button>' +
+          '<button type="button" data-action="add" data-list="' + bp + '" data-kind="widget">+ Interactive activity</button>' +
+        '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  function blockForm(b, listPath, j, len) {
+    var pfx = listPath + '.' + j;
+    var head = '<div class="item-head"><span class="item-title">' + (BLOCK_LABEL[b.kind] || b.kind) + '</span>' +
+               tools(listPath, j, len, 'block') + '</div>';
+    var f = [];
+
+    if (b.kind === 'text') {
+      f.push('<label class="f"><span>Small heading (optional)</span><input type="text" data-path="' + pfx + '.subhead" value="' + escAttr(b.subhead) + '" placeholder="A cell is limited by its own surface" /></label>');
+      f.push('<label class="f"><span>Your lesson text</span><textarea class="tall" data-path="' + pfx + '.body" placeholder="Type or paste your text here.">' + escAttr(b.body) + '</textarea></label>');
+      f.push('<p class="hint" style="margin:0 0 12px;">Leave a blank line between paragraphs. Start lines with <code class="k">-</code> for a bullet list or <code class="k">1.</code> for a numbered one. <code class="k">**bold**</code>, <code class="k">*italic*</code>, and <code class="k">[text](link)</code> all work. Do not write HTML here.</p>');
+    }
+
+    if (b.kind === 'visual') {
+      f.push('<p class="hint tight">A photograph, a scan, or a picture you already have. For a diagram you would rather not hunt for, add a <strong>Drawn visual</strong> block instead and have it built into the page.</p>');
+      f.push('<p class="hint tight"><strong>You do not need the picture yet.</strong> Describe it below and leave the link empty; the page shows a marked gap where it goes. When the image is in Canvas, come back, paste the link, and copy the page again.</p>');
+      f.push('<ol class="steps" style="margin:0 0 14px;">' +
+        '<li>In your Canvas course, open <strong>Files</strong> and drag your pictures in. Several at once is fine.</li>' +
+        '<li>Make sure each one is <strong>published</strong>, the green tick, or students will see nothing.</li>' +
+        '<li>Click a picture, then copy the address from your browser bar.</li>' +
+        '<li>Paste it below. Come back here for the rest whenever you like.</li>' +
+        '</ol>');
+      f.push('<label class="f"><span>Image link, once you have it</span><input type="url" data-path="' + pfx + '.url" value="' + escAttr(b.url) + '" placeholder="https://optimaacademyonline.instructure.com/courses/000/files/000" /></label>');
+      var iw = imgWarning(b.url);
+      if (iw) {
+        f.push('<div style="background:#FDECEC; border-left:4px solid #C0392B; border-radius:6px; padding:11px 14px; font-size:13px; margin:0 0 12px;">' +
+          escAttr(iw) + ' The marked gap stays on the page until this is fixed.</div>');
+      } else if (t(b.url)) {
+        f.push('<div class="photoRow" data-imgcheck="' + escAttr(imgSrc(b.url)) + '" style="margin:0 0 12px;">' +
+          '<span class="sizenote">Checking that link&hellip;</span></div>');
+      }
+      f.push('<label class="f"><span>What the image shows (for screen readers, and shown in the gap until you link it)</span><input type="text" data-path="' + pfx + '.alt" value="' + escAttr(b.alt) + '" placeholder="A cell part way through dividing, with the chromosomes lined up down the middle" /></label>');
+      f.push('<label class="f"><span>Caption under the image (optional)</span><input type="text" data-path="' + pfx + '.caption" value="' + escAttr(b.caption) + '" placeholder="Metaphase. Notice how evenly the pairs are spaced." /></label>');
+      f.push('<label class="f"><span>Size on the page</span>' +
+        selectOf(pfx + '.size', b.size, Object.keys(IMG_SIZES).map(function (k) { return [k, IMG_SIZES[k].label]; })) + '</label>');
+    }
+
+    if (b.kind === 'video') {
+      f.push('<label class="f"><span>Video link or embed code</span><textarea data-path="' + pfx + '.src" placeholder="Paste the video address, or the whole embed code if that is what you have.">' + escAttr(b.src) + '</textarea></label>');
+      var vs = videoSrc(b.src), dm = domainOf(vs);
+      if (dm) {
+        f.push('<div style="background:#FDECEC; border-left:4px solid #C0392B; border-radius:6px; padding:11px 14px; font-size:13px; margin:0 0 12px;">' +
+          '<strong>Before students can watch this:</strong> video plays only from domains on Optima&rsquo;s approved list. ' +
+          'Ask the technology team to approve <code class="k">' + escAttr(dm) + '</code>, then check the page as a student before you publish.</div>');
+      }
+      f.push('<label class="f"><span>Video title</span><input type="text" data-path="' + pfx + '.title" value="' + escAttr(b.title) + '" placeholder="One cell, one division" /></label>');
+      f.push('<label class="f"><span>What students should notice while they watch</span><textarea data-path="' + pfx + '.notice" placeholder="Watch what happens to the chromosomes just before the cell pinches in. Write down the moment you think the split becomes unstoppable.">' + escAttr(b.notice) + '</textarea></label>');
+      f.push('<p class="hint" style="margin:0 0 12px;">Give them something to look for. A video with no task attached gets watched passively, or skipped.</p>');
+    }
+
+    if (b.kind === 'callout') {
+      var c = CALLOUTS[b.type] || CALLOUTS.helpful;
+      f.push('<label class="f"><span>Kind of box</span>' +
+        selectOf(pfx + '.type', b.type, Object.keys(CALLOUTS).map(function (k) { return [k, CALLOUTS[k].label]; })) + '</label>');
+      f.push('<p class="hint tight">' + c.blurb + '</p>');
+      f.push('<label class="f"><span>Label across the top</span><input type="text" data-path="' + pfx + '.label" value="' + escAttr(b.label) + '" placeholder="' + escAttr(c.defaultLabel) + '" /></label>');
+      f.push('<label class="f"><span>What it says</span><textarea data-path="' + pfx + '.text" placeholder="Keep it to two or three sentences.">' + escAttr(b.text) + '</textarea></label>');
+    }
+
+    if (b.kind === 'reveal') {
+      f.push('<p class="hint tight">A box students click to open. Put the instruction in the visible line, so they attempt it before they see the answer.</p>');
+      f.push('<label class="f"><span>The visible line, question and instruction together</span><textarea data-path="' + pfx + '.summary" placeholder="Write it in your notebook first: which of the three jobs would be most dangerous to skip, and why?">' + escAttr(b.summary) + '</textarea></label>');
+      f.push('<label class="f"><span>What appears when they click</span><textarea data-path="' + pfx + '.hidden" placeholder="Checking. A cell that skips the check passes damaged instructions to every cell descended from it.">' + escAttr(b.hidden) + '</textarea></label>');
+    }
+
+    if (b.kind === 'widget' || b.kind === 'figure') {
+      askBlockForm(f, pfx, b);
+    }
+
+    return '<div class="block">' + head + f.join('') + '</div>';
+  }
+
+  // Drawn visuals and interactive activities are either built here from a
+  // preset, which needs nothing but the form, or described and handed to
+  // Claude. The preset is the default, because not every teacher has Claude.
+  function askBlockForm(f, pfx, b) {
+    var isFig = (b.kind === 'figure');
+    var fam = PRESETS[b.kind];
+    var opts = Object.keys(fam).map(function (k) { return [k, fam[k].label]; });
+    opts.push(['ask', 'Something else, ask Claude for it']);
+
+    f.push('<label class="f"><span>What kind</span>' + selectOf(pfx + '.mode', b.mode, opts) + '</label>');
+
+    var def = presetDef(b);
+    if (def) {
+      f.push('<p class="hint tight">' + def.blurb + ' Fill this in and it is built for you, here, with nothing else needed.</p>');
+      presetForm(f, pfx, b, def);
+      return;
+    }
+
+    f.push('<p class="hint tight">' + (isFig
+      ? 'Anything the shapes above do not cover: a labelled diagram, a spectrum, a map.'
+      : 'Anything the shapes above do not cover.') +
+      ' This one needs Claude. Describe it, copy the request from the <strong>Ask Claude</strong> tab, and paste the HTML you get back into the second box. If you do not use Claude, pick one of the shapes above instead.</p>');
+
+    f.push('<label class="f"><span>What you want' + (isFig ? '' : ' it to do') + '</span><textarea data-path="' + pfx + '.want" placeholder="' + escAttr(isFig
+      ? 'Two squares side by side, one twice as wide as the other, labelled with their surface area and their volume, showing that the volume grows faster.'
+      : 'Six short descriptions of a cell mid-division. For each one the student decides which of the three jobs is happening, then opens a box to check.') +
+      '">' + escAttr(b.want) + '</textarea></label>');
+
+    f.push('<label class="f"><span>Paste the HTML from Claude here</span><textarea class="code" data-path="' + pfx + '.html" placeholder="' +
+      escAttr(isFig ? '<div style="display: flex; ...">' : '<details style="..."> ...') + '">' + escAttr(b.html) + '</textarea></label>');
+
+    var strips = canvasStrips(b.html);
+    if (strips.length) {
+      f.push('<div style="background:#FDECEC; border-left:4px solid #C0392B; border-radius:6px; padding:11px 14px; font-size:13px; margin:0 0 12px;">' +
+        '<strong>Canvas will remove part of this.</strong> It contains ' + escAttr(strips.join(', ')) + '. ' +
+        'Ask Claude to rebuild it with no JavaScript and no classes, using inline styles only' +
+        (isFig ? '.' : ', and click-to-open <code class="k">&lt;details&gt;</code> boxes for the interaction.') + '</div>');
+    } else if (t(b.html)) {
+      f.push('<div style="background:#F1FAF3; border-left:4px solid #2A9D5C; border-radius:6px; padding:11px 14px; font-size:13px; margin:0 0 12px;">' +
+        'Nothing in here that Canvas strips. Check it in the preview.</div>');
+    }
+
+    // Revising: the description and the current HTML are both already here, so
+    // round two is one button rather than explaining it all again.
+    if (t(b.html)) {
+      f.push('<label class="f"><span>Not right? Say what to change</span><textarea data-path="' + pfx + '.change" placeholder="' + escAttr(isFig
+        ? 'The labels overlap on a narrow screen, and the second square should be gold rather than cyan.'
+        : 'Make it four items instead of six, and pitch the wording younger.') +
+        '">' + escAttr(b.change) + '</textarea></label>');
+      f.push('<div class="stdbar">' +
+        '<button type="button" data-action="copyRevision" data-target="' + pfx + '">Copy a revision request</button>' +
+        (t(b.prevHtml) && b.prevHtml !== b.html
+          ? '<button type="button" data-action="restorePrev" data-target="' + pfx + '">Put the previous version back</button>'
+          : '') +
+        '</div>');
+      f.push('<p class="hint" style="margin:0 0 12px;">Paste that to Claude in the same conversation, then replace the HTML above with what comes back. The version you are replacing is kept, so you can go back to it if the new one is worse.</p>');
+    }
+  }
+
+  // The form for one preset: its own few labelled fields, then a list of rows.
+  function presetForm(f, pfx, b, def) {
+    def.scalars.forEach(function (s) {
+      var big = (s[0] === 'note' || String(s[2]).length > 58);
+      f.push('<label class="f"><span>' + escAttr(s[1]) + '</span>' +
+        (big
+          ? '<textarea data-path="' + pfx + '.' + s[0] + '" placeholder="' + escAttr(s[2]) + '">' + escAttr(b[s[0]]) + '</textarea>'
+          : '<input type="text" data-path="' + pfx + '.' + s[0] + '" value="' + escAttr(b[s[0]]) + '" placeholder="' + escAttr(s[2]) + '" />') +
+        '</label>');
+    });
+
+    if (!def.fields.length) return;
+
+    var rows = b.rows || [];
+    var listPath = pfx + '.rows';
+    rows.forEach(function (r, i) {
+      var inner = def.fields.map(function (fl) {
+        var big = String(fl[2]).length > 46;
+        return '<label class="f"><span>' + escAttr(fl[1]) + '</span>' +
+          (big
+            ? '<textarea data-path="' + listPath + '.' + i + '.' + fl[0] + '" placeholder="' + escAttr(fl[2]) + '">' + escAttr(r[fl[0]]) + '</textarea>'
+            : '<input type="text" data-path="' + listPath + '.' + i + '.' + fl[0] + '" value="' + escAttr(r[fl[0]]) + '" placeholder="' + escAttr(fl[2]) + '" />') +
+          '</label>';
+      }).join('');
+      f.push('<div class="item"><div class="item-head"><span class="item-title">' + escAttr(def.rowName) + ' ' + (i + 1) + '</span>' +
+        tools(listPath, i, rows.length, 'prow') + '</div>' + inner + '</div>');
+    });
+    f.push('<button type="button" class="add" data-action="add" data-list="' + listPath + '" data-kind="prow">+ Add ' +
+      escAttr(String(def.rowName).toLowerCase()) + '</button>');
+  }
+
+  // ------------------------------------------------------- standards picker UI
+  var stdFilter = '', stdTotal = 0, stdShown = 0;
+
+  function updateStdCount() {
+    var n = (state.standards.selected || []).length;
+    document.getElementById('stdCount').textContent =
+      n + ' ticked of ' + stdTotal + (stdShown === stdTotal ? '' : ' (' + stdShown + ' shown)');
+  }
+
+  function renderStandards() {
+    var st = state.standards;
+    var lib = st.library || [];
+    var sel = st.selected || [];
+    var picked = {};
+    sel.forEach(function (c) { picked[c] = 1; });
+
+    // anything ticked but no longer in the library still needs a row, or a
+    // teacher could never untick it
+    var rows = lib.slice();
+    sel.forEach(function (c) {
+      if (!lib.some(function (s) { return s.code === c; })) rows.push({ code: c, text: '' });
+    });
+
+    var q = stdFilter.toLowerCase();
+    var shown = rows.filter(function (s) {
+      if (!q) return true;
+      return (s.code + ' ' + s.text).toLowerCase().indexOf(q) > -1;
+    });
+
+    var listEl = document.getElementById('stdList');
+    if (!rows.length) {
+      listEl.innerHTML = '<div class="none">No standards loaded yet. Choose a file, paste a list, or add one by hand.</div>';
+    } else if (!shown.length) {
+      listEl.innerHTML = '<div class="none">Nothing matches that filter.</div>';
+    } else {
+      listEl.innerHTML = shown.map(function (s) {
+        var on = !!picked[s.code];
+        return '<label class="' + (on ? 'on' : '') + '">' +
+          '<input type="checkbox" data-stdcode="' + escAttr(s.code) + '"' + (on ? ' checked' : '') + ' />' +
+          '<span><b>' + escAttr(s.code) + '</b>' +
+          (s.text ? '<span class="txt">' + escAttr(s.text) + '</span>' : '') +
+          '</span></label>';
+      }).join('');
+    }
+
+    stdTotal = rows.length;
+    stdShown = shown.length;
+    updateStdCount();
+  }
+
+  function readStandardsText(raw, source) {
+    var found = parseStandards(raw);
+    if (!found.length) {
+      document.getElementById('stdNote').textContent =
+        'Nothing readable in that ' + source + '. Each line needs a code, then its wording.';
+      return;
+    }
+    var lib = state.standards.library || [];
+    state.standards.library = dedupeStandards(lib.concat(found));
+    state.standards.show = true;
+    document.getElementById('stdNote').textContent =
+      found.length + ' standards read from that ' + source + '. ' + state.standards.library.length + ' in the list now.';
+    redrawAll();
+  }
+
+  function renderScalars() {
+    var nodes = document.querySelectorAll('#form [data-path]');
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i], p = el.getAttribute('data-path');
+      if (/\.\d+(\.|$)/.test(p)) continue; // list items are rendered wholesale
+      var v = getPath(p);
+      if (el.type === 'checkbox') el.checked = !!v; else el.value = v == null ? '' : v;
+    }
+  }
+
+  // --------------------------------------------------------------- plumbing
+  var activeTab = 'preview';
+  var frameEl = document.getElementById('previewFrame');
+  var sizeEl = document.getElementById('sizeNote');
+
+  function updateOutput() {
+    var canvasHtml = buildCanvas();
+    document.getElementById('codeCanvas').value = canvasHtml;
+    document.getElementById('codeAsk').value = buildAsk();
+    // The preview is the pasted page in a plain white wrapper, so what a
+    // teacher checks here is exactly what a student will meet in Canvas.
+    frameEl.srcdoc = '<!DOCTYPE html><html><head><meta charset="utf-8" /></head>' +
+      '<body style="margin:0; padding:16px; background:#e8ecf5;">' + canvasHtml + '</body></html>';
+    var parts = (state.parts || []).filter(function (p) {
+      return (p.blocks || []).some(blockHasContent) || t(p.label);
+    }).length;
+    sizeEl.textContent = Math.max(1, Math.round(canvasHtml.length / 1024)) + ' KB · ' +
+      parts + (parts === 1 ? ' Part' : ' Parts');
+    renderChecks(canvasHtml);
+    save();
+  }
+
+  // The preview here is the only place an unpublished or mistyped Canvas file
+  // link gets caught before a student meets a broken image.
+  function checkImageLinks() {
+    var spots = document.querySelectorAll('#form [data-imgcheck]');
+    for (var i = 0; i < spots.length; i++) {
+      (function (spot) {
+        var src = spot.getAttribute('data-imgcheck');
+        var im = new Image();
+        im.onload = function () {
+          spot.innerHTML = '<img src="' + escAttr(src) + '" alt="" />' +
+            '<span class="sizenote" style="color:#1E7A46;">That link works.</span>';
+        };
+        im.onerror = function () {
+          spot.innerHTML = '<span class="sizenote" style="color:#8C2C2C;">' +
+            'That link did not load a picture. Check the file is published in Canvas.</span>';
+        };
+        im.src = src;
+      })(spots[i]);
+    }
+  }
+
+  function redrawAll() { renderLists(); renderStandards(); renderScalars(); checkImageLinks(); updateOutput(); }
+
+  var formEl = document.getElementById('form');
+  var htmlSnapshot = {};
+
+  document.getElementById('stdFilter').addEventListener('input', function (e) {
+    stdFilter = e.target.value;
+    renderStandards();
+  });
+
+  // Ticking a standard repaints only that row and the count. Redrawing the
+  // whole list here would send a long list back to the top on every tick.
+  formEl.addEventListener('change', function (e) {
+    var code = e.target.getAttribute && e.target.getAttribute('data-stdcode');
+    if (!code) return;
+    var sel = state.standards.selected;
+    var at = sel.indexOf(code);
+    if (e.target.checked) { if (at < 0) sel.push(code); }
+    else if (at > -1) sel.splice(at, 1);
+    state.standards.show = true;
+    var row = e.target.parentNode;
+    if (row && row.classList) row.classList.toggle('on', e.target.checked);
+    updateStdCount();
+    renderScalars();
+    updateOutput();
+  });
+
+  document.getElementById('standardsFile').addEventListener('change', function (e) {
+    var file = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    var fr = new FileReader();
+    fr.onload = function () { readStandardsText(fr.result, 'file'); };
+    fr.onerror = function () { document.getElementById('stdNote').textContent = 'That file could not be read.'; };
+    fr.readAsText(file);
+  });
+
+  function onField(e) {
+    var p = e.target.getAttribute('data-path');
+    if (!p) return;
+    setPath(p, e.target.type === 'checkbox' ? e.target.checked : e.target.value);
+
+    // Picking a preset, a call-out kind, or an icon changes what the block's
+    // own form shows, so those redraw straight away.
+    if (/\.(mode|type|kicker)$/.test(p)) {
+      var sel = document.activeElement && document.activeElement.getAttribute
+              ? document.activeElement.getAttribute('data-path') : null;
+      redrawAll();
+      if (sel) {
+        var again = document.querySelector('#form [data-path="' + sel + '"]');
+        if (again) again.focus();
+      }
+      return;
+    }
+
+    // A link or a pasted block gets checked once the teacher has finished
+    // typing, not on every keystroke, so the form does not rebuild underneath
+    // them mid-word.
+    if (e.type === 'change' && /^parts\.\d+\.blocks\.\d+\.(src|url|html)$/.test(p)) {
+      if (/\.html$/.test(p)) {
+        // Keep whatever is being replaced, so a revision that turns out worse
+        // is not a dead end. The snapshot has to be consumed here rather than
+        // on blur, because this redraw replaces the field itself.
+        var snap = htmlSnapshot[p];
+        if (t(snap) && snap !== e.target.value) {
+          var blk = getPath(p.replace(/\.html$/, ''));
+          if (blk) blk.prevHtml = snap;
+        }
+        delete htmlSnapshot[p];
+      }
+      redrawAll();
+      return;
+    }
+    updateOutput();
+  }
+  formEl.addEventListener('input', onField);
+  formEl.addEventListener('change', onField);
+
+  // What each pasted-HTML box held when the teacher started editing it.
+  // Consumed by onField on `change`; see the note there.
+  formEl.addEventListener('focusin', function (e) {
+    var p = e.target.getAttribute && e.target.getAttribute('data-path');
+    if (p && /\.html$/.test(p)) htmlSnapshot[p] = e.target.value;
+  });
+
+  var NEW = {
+    line: function () { return ''; },
+    next: function () { return { name: '', oneLiner: '', url: '' }; },
+    prow: newRow,
+    part: newPart,
+    block: null
+  };
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest ? e.target.closest('button[data-action]') : null;
+    if (!btn) return;
+    var act = btn.getAttribute('data-action');
+    var listPath = btn.getAttribute('data-list');
+    var kind = btn.getAttribute('data-kind');
+    var idx = parseInt(btn.getAttribute('data-idx'), 10);
+    var arr = listPath ? getPath(listPath) : null;
+
+    if (act === 'add') {
+      if (NEW[kind]) arr.push(NEW[kind]());
+      else arr.push(newBlock(kind));
+      redrawAll();
+    }
+    else if (act === 'del') {
+      arr.splice(idx, 1);
+      // top-level lists keep one empty row so the form never looks broken;
+      // blocks inside a Part are allowed to empty out completely
+      if (!arr.length && NEW[kind]) arr.push(NEW[kind]());
+      redrawAll();
+    }
+    else if (act === 'up')   { swap(arr, idx, idx - 1); redrawAll(); }
+    else if (act === 'down') { swap(arr, idx, idx + 1); redrawAll(); }
+    else if (act === 'loadExample') { state = exampleState(); redrawAll(); }
+    else if (act === 'reset') {
+      if (confirm('Clear everything and start from a blank form?')) { state = blankState(); redrawAll(); }
+    }
+    else if (act === 'tab') { showTab(btn.getAttribute('data-tab')); }
+    else if (act === 'copyRevision') { copyRevision(btn.getAttribute('data-target')); }
+    else if (act === 'restorePrev') {
+      var rp = btn.getAttribute('data-target'), blk = getPath(rp);
+      var swapBack = blk.prevHtml;
+      blk.prevHtml = blk.html;
+      blk.html = swapBack;
+      redrawAll();
+      flash('Previous version restored');
+    }
+    else if (act === 'pickStandards') { document.getElementById('standardsFile').click(); }
+    else if (act === 'readStandards') {
+      var box = document.getElementById('stdPaste');
+      if (!t(box.value)) { document.getElementById('stdNote').textContent = 'Paste your standards into the box first.'; return; }
+      readStandardsText(box.value, 'paste');
+      box.value = '';
+    }
+    else if (act === 'clearLibrary') {
+      if (confirm('Clear the whole standards list, including what you have ticked?')) {
+        state.standards.library = [];
+        state.standards.selected = [];
+        document.getElementById('stdNote').textContent = '';
+        redrawAll();
+      }
+    }
+    else if (act === 'clearPicked') { state.standards.selected = []; renderStandards(); updateOutput(); }
+    else if (act === 'addStandard') {
+      var codeEl = document.getElementById('stdCode'), textEl = document.getElementById('stdText');
+      var code = t(codeEl.value);
+      if (!code) { document.getElementById('stdNote').textContent = 'Type the code first.'; return; }
+      state.standards.library = dedupeStandards((state.standards.library || []).concat([{ code: code, text: t(textEl.value) }]));
+      if (state.standards.selected.indexOf(code) < 0) state.standards.selected.push(code);
+      state.standards.show = true;
+      codeEl.value = ''; textEl.value = '';
+      document.getElementById('stdNote').textContent = code + ' added and ticked.';
+      redrawAll();
+    }
+    else if (act === 'copy') { doCopy(); }
+    else if (act === 'download') { doDownload(); }
+  });
+
+  function swap(arr, i, j) {
+    if (j < 0 || j >= arr.length) return;
+    var x = arr[i]; arr[i] = arr[j]; arr[j] = x;
+  }
+
+  function showTab(which) {
+    activeTab = which;
+    ['preview', 'canvas', 'ask'].forEach(function (k) {
+      document.getElementById('tab-' + k).setAttribute('aria-selected', k === which);
+      document.getElementById('pane-' + k).hidden = (k !== which);
+    });
+  }
+
+  function flash(msg) {
+    var f = document.getElementById('flash');
+    f.textContent = msg;
+    f.classList.add('show');
+    setTimeout(function () { f.classList.remove('show'); }, 2400);
+  }
+
+  function currentCode() {
+    if (activeTab === 'ask') return document.getElementById('codeAsk');
+    return document.getElementById('codeCanvas');
+  }
+
+  function doCopy() {
+    if (activeTab === 'preview') showTab('canvas');
+    var el = currentCode(), text = el.value;
+    function fallback() {
+      el.removeAttribute('readonly');
+      el.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (err) {}
+      el.setAttribute('readonly', 'readonly');
+      flash(ok ? 'Copied to clipboard' : 'Press Ctrl+C to copy');
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { flash('Copied to clipboard'); }, fallback);
+    } else { fallback(); }
+  }
+
+  // Round two of an ask. Everything Claude needs is already in the block, so
+  // the teacher never has to describe the whole thing again.
+  function copyRevision(path) {
+    var b = getPath(path);
+    if (!b) return;
+    var isFig = (b.kind === 'figure');
+    var L = [];
+    L.push('This is the ' + (isFig ? 'drawn visual' : 'interactive activity') + ' you built me. It is not quite right.');
+    L.push('');
+    if (t(b.change)) {
+      L.push('WHAT TO CHANGE');
+      wrapInto(L, b.change, '  ');
+      L.push('');
+    }
+    L.push('WHAT I ORIGINALLY ASKED FOR');
+    wrapInto(L, b.want, '  ');
+    L.push('');
+    L.push('THE HTML AS IT STANDS');
+    String(b.html).replace(/\r/g, '').split('\n').forEach(function (l) { L.push('  ' + l); });
+    L.push('');
+    L.push('Same rules as before: no JavaScript, no <style> block, no class');
+    L.push('attributes, no form controls, no images or inline svg, inline styles');
+    L.push('only, and no em dashes. Give me the whole block back, not a patch.');
+    var text = L.join('\n');
+
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (err) {}
+      document.body.removeChild(ta);
+      flash(ok ? 'Revision request copied' : 'Could not copy. Use the Ask Claude tab.');
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { flash('Revision request copied'); }, fallback);
+    } else { fallback(); }
+  }
+
+  function doDownload() {
+    var el = currentCode();
+    var isAsk = (activeTab === 'ask');
+    var base = 'lesson-' + slug(state.meta.lessonNumber || state.meta.lessonTitle || state.meta.course);
+    var name = isAsk ? base + '-activity-request.txt' : base + '.html';
+    var blob = new Blob([el.value], { type: (isAsk ? 'text/plain' : 'text/html') + ';charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+    flash('Downloaded ' + name);
+  }
+
+  redrawAll();
+})();
+</script>
+</body>
+</html>

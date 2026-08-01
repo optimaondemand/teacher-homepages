@@ -1,8 +1,115 @@
-# Optima Teacher Home Pages
+# Optima Teacher Page Builders
 
-A self-serve builder that turns a short form into a Canvas course home page for Optima Academy Online. Teachers fill in their course details, switch on the sections they want, and paste the result into a Canvas page.
+Self-serve builders that turn a short form into a branded Canvas page for Optima Academy Online. Teachers fill in a form and paste the result into Canvas. No build step, no CDN, no external fonts, no server.
 
-**Builder:** https://optimaondemand.github.io/teacher-homepages/
+| Builder | Makes | Link |
+|---|---|---|
+| `index.html` | A course **home page** | https://optimaondemand.github.io/teacher-homepages/ |
+| `lesson.html` | A **lesson page** in the house lesson format | https://optimaondemand.github.io/teacher-homepages/lesson.html |
+
+They are siblings by design and share their conventions (inline styles only, pure-ASCII output, `localStorage` drafts, live preview beside the form). If they are ever merged into one multi-purpose builder, that shared spine is the seam to merge along.
+
+---
+
+# The lesson page builder (`lesson.html`)
+
+Applies the `optima-lesson-format` lesson layout so a teacher's own page sits beside the built curriculum without looking different: navy header, metadata strip, lavender title strip, gold-topped cards, gold minute pills, navy footer.
+
+## Sections
+
+Everything except the header details is optional and drops out of the page when empty.
+
+| Section | What a teacher fills in |
+|---|---|
+| Lesson details | Course, quarter, module number and title, lesson number and title, grade level |
+| Today's Focus | Hook line and an opening paragraph |
+| Objectives | Any number; rendered as numbered gold circles under "By the end of this lesson you will be able to…" |
+| What you need | Any number of materials |
+| **Lesson content** | Any number of **Parts**, each a card with an icon, heading, and minute pill |
+| What students do next | Signposts to the graded Canvas items that follow |
+| Wrap-up | A closing paragraph |
+| Standards covered | A loaded standards list, ticked per lesson (see below) |
+| Footer | An optional extra line |
+
+## Parts are built from blocks
+
+A Part holds any number of blocks, in any order, added from a row of buttons:
+
+| Block | Notes |
+|---|---|
+| **Lesson text** | Optional subhead plus prose. Blank line = paragraph, `- ` = bullets, `1. ` = numbered, `**bold**`, `*italic*`, `[text](link)`. Teachers never write HTML. |
+| **Drawn visual** | A comparison table, timeline, numbered steps, or a one-idea card, built out of divs and inline styles. No file, no hosting, no link that can rot. |
+| **Image** | A link to a published file in Canvas **Files**, or any public image URL. Alt text, caption, three widths. Renders as a marked gap until the link exists. |
+| **Video** | A link or a pasted embed code; YouTube and Vimeo links are converted to their embed form. Includes a "while you watch" notice prompt, because a video with no task attached gets skipped. |
+| **Call-out box** | Helpful (blue), Watch out (red), or the AI-awareness variant. |
+| **Reveal box** | Native `<details>`. The instruction lives in the visible summary so the student commits before the answer opens. |
+| **Interactive activity** | Self-check questions, match the term, sort into categories, or a worked example. All built from `<details>` reveals. |
+
+Drawn visuals and activities both offer a set of ready-made shapes plus an **Ask Claude** escape hatch. See below.
+
+## Everything it emits has to survive Canvas
+
+Canvas throws away `<script>`, `<style>`, and `data:` image sources from pasted page HTML. That single constraint decided three things:
+
+- **There is no hosted-page output.** An earlier draft of this builder emitted a second, GitHub-hosted version carrying the skill's `.optima-widget` CSS and its delegated JS runtime. A teacher cannot deploy to GitHub Pages, so that output was a dead end dressed up as a feature. It was removed rather than shipped.
+- **There is no image upload.** With no server, an uploaded image can only become a `data:` URI, which Canvas strips (confirmed 2026-07-31 with the teacher photo in the home page builder). Images are links, normalised and validated by `imgSrc()` / `imgWarning()`, exactly as `photoSrc()` / `photoWarning()` do next door.
+- **Interactivity means `<details>`.** Canvas keeps and renders native disclosure boxes with no JavaScript, so click-to-open reveals are the interaction the builder can actually deliver.
+
+Note what *is* allowed: an `<img>` pointing at any real URL survives, which this repo's own output proves — pasted pages already pull the owl from `raw.githubusercontent.com` and the crests from our Pages site. Only the `data:` form is blocked.
+
+## Getting images onto a page
+
+Three routes, in the order teachers should reach for them:
+
+1. **Don't use an image.** Most lesson visuals are diagrams, timelines, labelled figures, and comparison tables, which house convention says should be inline HTML/CSS rather than pictures. The **Drawn visual** block builds those into the page. Nothing to upload, nothing to host, no link that can break.
+2. **Write the lesson now, link the picture later.** An Image block with no link yet renders a visible, clearly labelled gap carrying its alt text, so the page can be drafted and previewed before the pictures exist. The teacher bulk-drags them into Canvas Files, publishes them, comes back, pastes the links, and copies the page again. This deliberately keeps teachers *out* of Canvas's rich-text view, which can scramble inline styles.
+3. **Any public image URL** also works and is passed through untouched.
+
+A bad or missing link never emits a broken `<img>`; it degrades to the same marked gap, and the checklist counts how many are outstanding.
+
+## Drawn visuals and activities
+
+**Not every teacher has a Claude account, so nothing here may require one.** Both of these blocks lead with a set of ready-made shapes the builder renders itself, from a small form, with no AI involved at all:
+
+| Drawn visual | Interactive activity |
+|---|---|
+| Comparison table | Self-check questions |
+| Timeline | Match the term |
+| Numbered steps | Sort into categories |
+| One idea to remember | Worked example |
+
+Each is a `PRESETS` entry pairing a field definition with a renderer that emits the same inline-styled, JavaScript-free HTML as everything else. The four activities are all `<details>` reveals underneath, differing in framing: the attempt always sits in the visible summary and the answer in the hidden half. The example lesson the builder loads on first run is built entirely from presets, so a teacher without Claude sees a complete, working page immediately.
+
+`mode: 'ask'` is the escape hatch for anything the shapes do not cover, and it is the last option in the list rather than the first.
+
+### The Ask Claude loop
+
+**Nothing in this repo talks to Claude.** These are static HTML files with no server and no API key. The builder composes a *request* that the teacher pastes into whatever Claude they already use, so there is no API billing attached to the tool and no key to manage; tokens are spent on the teacher's own seat.
+
+The **Ask Claude** tab assembles one prompt covering every outstanding drawn visual and activity, carrying the course, grade, module, lesson, objectives, ticked standards, and the teaching text immediately above each slot, plus the shared constraints (no JavaScript, no `<style>`, no classes, no form controls, no images or inline `<svg>`, inline styles only, entities for non-ASCII, no em dashes) and a section of guidance specific to each kind. The teacher pastes the HTML back into the block.
+
+Because the conversation is the teacher's own, **revising is just carrying on talking**. The builder makes round two one click: each block keeps the original description alongside the current HTML, takes a note of what to change, and copies a revision request bundling all three. The version being replaced is retained, so a revision that comes back worse can be put back with one button.
+
+Pasted HTML is linted by `canvasStrips()` for `<script>`, `<style>`, `on*` handlers, `class` attributes, and form controls, and the block names whichever Canvas will remove. This matters because the failure is silent otherwise: the page pastes fine and the activity is simply dead when a student opens it.
+
+## Standards
+
+Teachers load their department's list once, then tick per lesson. The parser (`parseStandards()`) accepts CSV, tab-separated Excel pastes, JSON (array of objects, array of strings, or a code→text map), and plain `CODE description` lines; header rows and prose lines are skipped rather than imported as junk. Standards can also be added one at a time by hand.
+
+Where they land is a choice, defaulting to the one the curriculum uses:
+
+- **In an HTML comment** (default). Travels with the page for whoever edits it next; a student never sees it. `--` inside a description is collapsed so it cannot close the comment early.
+- **In a visible card** at the foot of the page, for departments that want families to see the alignment.
+
+The skill deliberately keeps standard codes off student-facing pages, on the grounds that the codes mean nothing to a student and the objectives already say what the lesson is for. The builder says so at the choice, then respects the teacher's decision.
+
+## Before you publish
+
+A live checklist under the form flags what would otherwise be found by a student: an unapproved video domain, a visual or activity still sitting as a description, one Canvas will break, an image still showing as a gap, an unusable image link, a missing image description, Parts with no minute pill, a missing Today's Focus, and pages large enough to be worth splitting.
+
+---
+
+# The course home page builder (`index.html`)
 
 ## One page style, customized by content
 
@@ -26,7 +133,8 @@ An earlier version of this repo also offered animated, per-subject "personalized
 
 | File | Role |
 |---|---|
-| `index.html` | The whole builder. Self-contained: no build step, no CDN, no external fonts. |
+| `index.html` | The course home page builder, whole. |
+| `lesson.html` | The lesson page builder, whole. |
 | `houses/*.png` | The four house crests, cropped and downscaled to 240px badges from the official artwork. **Served from GitHub Pages and linked absolutely** from every pasted page. |
 
 ## Why the crests must stay hosted here
@@ -103,5 +211,5 @@ Teachers reported "the photo option does not work." Four defects. Three were in 
 ## Maintenance
 
 - The Tech Help tile is pre-filled with the tech-support Teams meeting, in `TEAMS_TECH_HELP` near the top of the script block.
-- Work in progress is kept in `localStorage` under `optima-course-home-builder-v3`. **Bump this key whenever a default changes**, not only when the shape does: the loader merges saved values over defaults, so a stale saved `false` outlives the fix that changed it. That is precisely what would have kept the photo bug alive for anyone who had already used the builder.
+- Work in progress is kept in `localStorage`, under `optima-course-home-builder-v3` for the home page builder and `optima-lesson-page-builder-v1` for the lesson builder. **Bump the key whenever a default changes**, not only when the shape does: the loader merges saved values over defaults, so a stale saved `false` outlives the fix that changed it. That is precisely what would have kept the photo bug alive for anyone who had already used the builder.
 - `course-home-builder.html` in the `optima-widgets` repo is the ancestor of this builder and is now **behind** it (no Meet the Teacher section). Treat this repo as canonical and retire that copy rather than maintaining both.
