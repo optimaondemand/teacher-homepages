@@ -97,7 +97,19 @@
     font-size: 14px; font-weight: 600; color: var(--muted); border-bottom: 3px solid transparent;
   }
   .tabs button[aria-selected=true] { color: var(--navy); border-bottom-color: var(--cyan); background: #fff; }
-  #previewFrame { width: 100%; height: 720px; border: none; display: block; background: #fff; }
+  /* The preview renders at a real Canvas content width and is scaled down to
+     fit the panel, rather than being squeezed into the panel's own width. A
+     page laid out for 960px looks nothing like itself at 610px, which is what
+     made the preview disagree with what teachers got after pasting. */
+  .pvbar { display: flex; align-items: center; gap: 8px; padding: 9px 14px;
+           border-bottom: 1px solid var(--line); background: #FBFCFE;
+           font-size: 13px; color: var(--muted); flex-wrap: wrap; }
+  .pvbar button { padding: 4px 12px; font-size: 13px; }
+  .pvbar button[aria-pressed=true] { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .pvbar .grow { flex: 1; }
+  #previewWrap { height: 760px; overflow-y: auto; overflow-x: hidden; background: #e8ecf5; }
+  #previewScaler { transform-origin: top left; }
+  #previewFrame { border: none; display: block; background: #fff; }
   #code { width: 100%; height: 640px; font-family: Consolas, 'Courier New', monospace; font-size: 12px; line-height: 1.45; white-space: pre; border: none; border-radius: 0; padding: 14px; }
   #code:focus { outline: none; }
   .outbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 13px 16px; border-top: 1px solid var(--line); background: #FBFCFE; }
@@ -339,7 +351,16 @@
         <button type="button" role="tab" id="tab-preview" aria-selected="true" data-action="tab" data-tab="preview">Preview</button>
         <button type="button" role="tab" id="tab-code" aria-selected="false" data-action="tab" data-tab="code">HTML to paste</button>
       </div>
-      <div id="pane-preview"><iframe id="previewFrame" title="Course home page preview"></iframe></div>
+      <div id="pane-preview">
+        <div class="pvbar">
+          <span>Preview at</span>
+          <button type="button" data-action="pw" data-w="1000" aria-pressed="true">Canvas width</button>
+          <button type="button" data-action="pw" data-w="420" aria-pressed="false">Phone</button>
+          <span class="grow"></span>
+          <span id="pvscale"></span>
+        </div>
+        <div id="previewWrap"><div id="previewScaler"><iframe id="previewFrame" title="Course home page preview"></iframe></div></div>
+      </div>
       <div id="pane-code" hidden><textarea id="code" readonly spellcheck="false"></textarea></div>
       <div class="outbar">
         <button type="button" class="primary" data-action="copy">Copy HTML</button>
@@ -1002,6 +1023,45 @@
   var frameEl = document.getElementById('previewFrame');
   var sizeEl = document.getElementById('sizeNote');
 
+  // Width the preview pretends to be. 1000px is about what a Canvas course page
+  // gives its content on a laptop, which is enough for the 960px page to sit at
+  // full width the way it will once pasted.
+  var previewW = 1000;
+  var scalerEl = document.getElementById('previewScaler');
+  var wrapEl = document.getElementById('previewWrap');
+
+  function fitPreview() {
+    var avail = wrapEl.clientWidth || 600;
+    var scale = Math.min(1, avail / previewW);
+    frameEl.style.width = previewW + 'px';
+    scalerEl.style.width = previewW + 'px';
+    scalerEl.style.transform = 'scale(' + scale + ')';
+    document.getElementById('pvscale').textContent =
+      previewW + 'px wide, shown at ' + Math.round(scale * 100) + '%';
+    return scale;
+  }
+
+  // A transform does not change an element's layout box, so the scaled-away
+  // space is pulled back with negative margins; otherwise the panel would
+  // scroll far past the end of the page.
+  function sizePreviewToContent() {
+    var scale = fitPreview();
+    var h = 700;
+    try {
+      var d = frameEl.contentDocument;
+      if (d && d.documentElement) {
+        h = Math.max(d.body ? d.body.scrollHeight : 0, d.documentElement.scrollHeight, 200);
+      }
+    } catch (err) {}
+    frameEl.style.height = h + 'px';
+    scalerEl.style.height = h + 'px';
+    scalerEl.style.marginBottom = (-(h - h * scale)) + 'px';
+    scalerEl.style.marginRight = (-(previewW - previewW * scale)) + 'px';
+  }
+
+  frameEl.addEventListener('load', sizePreviewToContent);
+  window.addEventListener('resize', sizePreviewToContent);
+
   function updateOutput() {
     var html = build();
     codeEl.value = html;
@@ -1062,6 +1122,14 @@
       if (confirm('Clear everything and start from a blank form?')) { state = blankState(); redrawAll(); }
     }
     else if (act === 'tab')  { showTab(btn.getAttribute('data-tab')); }
+    else if (act === 'pw') {
+      previewW = parseInt(btn.getAttribute('data-w'), 10) || 1000;
+      var pws = document.querySelectorAll('button[data-action=pw]');
+      for (var q = 0; q < pws.length; q++) {
+        pws[q].setAttribute('aria-pressed', pws[q] === btn ? 'true' : 'false');
+      }
+      sizePreviewToContent();
+    }
     else if (act === 'copy') { doCopy(); }
     else if (act === 'download') { doDownload(); }
   });
