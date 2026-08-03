@@ -1031,13 +1031,24 @@
     body:      'background: #F4F6FB; padding: 24px; border-radius: 0 0 10px 10px;',
     tile:      'box-sizing: border-box; flex: 1; min-width: 190px; text-decoration: none; background: #FFFFFF; border: 1px solid #D0D9E8; border-top: 4px solid #55C8E8; border-radius: 8px; padding: 22px 16px; text-align: center; display: block;',
     modCard:   'flex: 1 1 280px; text-decoration: none; background: #FFFFFF; border: 1px solid #D0D9E8; border-left: 5px solid #0E1C42; border-radius: 8px; padding: 16px 18px; display: flex; align-items: center; gap: 14px;',
-    modNum:    'width: 34px; height: 34px; border-radius: 50%; background: #0E1C42; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;',
-    eyebrow:   'font-size: 12px; letter-spacing: 1px; color: #6b7a99;',
+    modNum:    'display: flex; width: 34px; height: 34px; border-radius: 50%; background: #0E1C42; color: #fff; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;',
+    eyebrow:   'display: block; font-size: 12px; letter-spacing: 1px; color: #6b7a99;',
     footer:    'background: #0E1C42; border-top: 3px solid #55C8E8; padding: 18px 34px; text-align: center; border-radius: 0 0 10px 10px; margin-top: 4px;'
   };
 
   var CHIP = 'background: rgba(255,255,255,0.10); border: 1px solid rgba(85,200,232,0.45); border-radius: 20px; padding: 6px 15px; font-size: 15px; color: #ffffff;';
-  var CHIP_LABEL = 'color: #55c8e8; letter-spacing: 0.5px; font-size: 12px; text-transform: uppercase; margin-right: 7px;';
+  // No text-transform here: Canvas's editor drops that property on a round trip,
+  // which left the label in mixed case. The label is uppercased when it is written
+  // instead, so the page does not depend on the property surviving.
+  var CHIP_LABEL = 'color: #55c8e8; letter-spacing: 0.5px; font-size: 12px; margin-right: 7px;';
+
+  // Canvas's rich-text editor treats <a> as inline-only. An <a> wrapping <div>
+  // children gets unwrapped on save - the link vanishes and its children are
+  // promoted to the row, taking the whole card's styling with it. A teacher hit
+  // exactly this on 2026-08-03. So every element inside a link is a <span>, made
+  // to lay out like a block where it needs to. Spans are legal inside a link
+  // under every content model, so there is nothing left to unwrap.
+  var BLOCK = 'display: block; ';
 
   function build() {
     var c = state.course;
@@ -1084,7 +1095,7 @@
     function chip(label, value, inner) {
       if (!String(value || '').trim()) return;
       chips.push('      <div style="' + CHIP + '">' +
-        '<span style="' + CHIP_LABEL + '">' + esc(label) + '</span>' +
+        '<span style="' + CHIP_LABEL + '">' + esc(String(label).toUpperCase()) + '</span>' +
         (inner || esc(value)) + '</div>');
     }
     chip('Term', c.term);
@@ -1150,10 +1161,10 @@
         var tgt = t.blank ? ' target="_blank" rel="noopener"' : '';
         h.push('      <a href="' + href(t.url) + '"' + tgt + ' style="' + S.tile + '">');
         if (String(t.icon || '').trim())
-          h.push('        <div style="font-size: 30px; margin-bottom: 8px;">' + esc(t.icon) + '</div>');
-        h.push('        <div style="font-size: 19px; color: #0e1c42;">' + esc(t.label) + '</div>');
+          h.push('        <span style="' + BLOCK + 'font-size: 30px; margin-bottom: 8px;">' + esc(t.icon) + '</span>');
+        h.push('        <span style="' + BLOCK + 'font-size: 19px; color: #0e1c42;">' + esc(t.label) + '</span>');
         if (String(t.desc || '').trim())
-          h.push('        <div style="font-size: 14px; color: #6b7a99; margin-top: 5px;">' + esc(t.desc) + '</div>');
+          h.push('        <span style="' + BLOCK + 'font-size: 14px; color: #6b7a99; margin-top: 5px;">' + esc(t.desc) + '</span>');
         h.push('      </a>');
       });
       h.push('    </div>');
@@ -1238,11 +1249,11 @@
         var n = i + 1;
         h.push('');
         h.push('      <a href="' + href(m.url) + '" style="' + S.modCard + '">');
-        h.push('        <div style="' + S.modNum + '">' + n + '</div>');
-        h.push('        <div>');
-        h.push('          <div style="' + S.eyebrow + '">MODULE ' + n + '</div>');
-        h.push('          <div style="font-size: 18px; color: #0e1c42;">' + esc(m.title) + '</div>');
-        h.push('        </div>');
+        h.push('        <span style="' + S.modNum + '">' + n + '</span>');
+        h.push('        <span style="' + BLOCK + 'min-width: 0;">');
+        h.push('          <span style="' + S.eyebrow + '">MODULE ' + n + '</span>');
+        h.push('          <span style="' + BLOCK + 'font-size: 18px; color: #0e1c42;">' + esc(m.title) + '</span>');
+        h.push('        </span>');
         h.push('      </a>');
       });
       if (state.spacer.show && String(state.spacer.text || '').trim()) {
@@ -1372,7 +1383,7 @@
     function chip(label, value, inner) {
       if (!String(value || '').trim()) return;
       chips.push('      <div style="' + CHIP + '">' +
-        '<span style="' + CHIP_LABEL + '">' + esc(label) + '</span>' + (inner || esc(value)) + '</div>');
+        '<span style="' + CHIP_LABEL + '">' + esc(String(label).toUpperCase()) + '</span>' + (inner || esc(value)) + '</div>');
     }
     chip('Homeroom', room);
     chip('Term', s.hero.term);

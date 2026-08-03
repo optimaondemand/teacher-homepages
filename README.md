@@ -193,8 +193,34 @@ The crest artwork carries a dark vignette, so it is set on a navy plate rather t
 - **Every style is inline.** Canvas strips `<style>` and `<script>` from page content, so a pasted page can have no `:hover`, no transitions, no animation, and no media queries.
 - **No embedded images.** Canvas strips `data:` image sources from pasted page HTML (confirmed 2026-07-31). Every image in the output must be an absolute URL to something hosted elsewhere — Canvas Files for photos, this repo's Pages for crests.
 - **Output is pure ASCII.** Emoji, curly quotes, and dashes are all emitted as numeric character references so Canvas's encoding handling cannot mangle them.
+- **Never put a block element inside `<a>`.** Everything inside a link is a `<span>`, given `display: block` where it needs to lay out like one. See below — this is the one convention that has actually cost a teacher a broken page.
+- **Do not rely on `text-transform`, `letter-spacing`, `font-weight`, or `object-fit` surviving.** Canvas's rich-text editor drops all four on a round trip. Where the result matters, bake it into the content: chip labels are uppercased when written rather than by CSS.
 - **Tiles carry explicit `box-sizing: border-box`.** The original template's content-box `min-width: 200px` pushed the fourth tile onto its own row.
 - Editing a page in Canvas's rich-text view can scramble the inline formatting. Teachers should come back to the builder and re-paste instead.
+
+## The rich-text editor unwraps links that contain block elements
+
+**2026-08-03.** One tester of several reported that the tile and module-card formatting vanished after pasting. His saved page told the whole story:
+
+| `<a>` element | Contains | Result |
+|---|---|---|
+| Teacher chip, "Email me", "See all modules" | text only | survived |
+| 4 quick-access tiles, 5 module cards | `<div>` children | **unwrapped — link gone, children promoted to the flex row** |
+
+Nine links vanished; every one wrapped block elements. Three survived; every one wrapped only text. The card styling lived on the `<a>`, so losing the link lost the card — leaving twelve loose divs in a flex container, which reads as scattered text.
+
+**His HTML had been round-tripped through the rich-text editor**, and the fingerprints are unambiguous. Nothing here writes CSS this way:
+
+```
+ours:  border: 1px solid #D0D9E8; border-top: 4px solid #E0A82E
+his:   border-width: 4px 1px 1px; border-style: solid; border-color: #e0a82e #d0d9e8 #d0d9e8
+```
+
+That is an editor parsing our styles into a model and re-serializing them. Its schema treats `<a>` as inline-only, so it closed each link before the `<div>` inside it. The same round trip silently dropped `text-transform`, `letter-spacing`, `font-weight`, and `object-fit`.
+
+**Not the server-side sanitizer.** Parsing `<a href="#"><div>x</div></a>` with libxml2 — the parser behind Canvas's server-side sanitizing — keeps the div inside the link. Verified. So the damage happens client-side, in the editor, before the body is ever submitted. Which means it is triggered by *how a teacher edits*, not by the account they are on: the other testers pasted into the HTML view and saved without returning to rich text. **They were one accidental rich-text save away from the same page.**
+
+The fix removes the construct rather than trying to survive it. Every element inside a link is now a `<span>` carrying `display: block` (or `display: flex` for the module number). Spans are valid inside a link under every content model, so there is nothing left to unwrap, and the whole card stays clickable — which styling a wrapper `<div>` and shrinking the link to its text would have given up.
 
 ## Bugs fixed after play-testing
 
