@@ -33,8 +33,23 @@
   header.app .brand { font-size: 13px; color: var(--cyan); letter-spacing: 1px; text-transform: uppercase; }
   header.app h1 { margin: 4px 0 2px; font-size: 26px; color: #fff; font-weight: 600; }
   header.app p { margin: 0; font-size: 13px; color: rgba(255,255,255,.75); max-width: 900px; }
-  header.app .sibling { margin-top: 11px; font-size: 13px; }
-  header.app .sibling a { color: var(--cyan); }
+  /* ---------- which builder you are in ---------- */
+  /* Same strip, same look, as the one on index.html. Course home and Commons are
+     two modes of that page, so they are links with a fragment; this page is its
+     own file. A teacher should not have to know which is which. */
+  .modetabs { display: flex; gap: 6px; margin-top: 14px; flex-wrap: wrap; }
+  .modetabs a, .modetabs button {
+    font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer;
+    text-decoration: none; border-radius: 7px 7px 0 0; padding: 9px 17px;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.16);
+    border-bottom: 3px solid transparent; color: rgba(255,255,255,.72); display: block;
+  }
+  .modetabs a:hover, .modetabs button:hover { background: rgba(255,255,255,0.16); color: #fff; }
+  .modetabs [aria-current=page] {
+    background: var(--page); border-color: var(--page);
+    border-bottom-color: var(--cyan); color: var(--navy);
+  }
+  .modetabs [aria-current=page]:hover { background: var(--page); color: var(--navy); }
 
   .layout { display: flex; align-items: flex-start; gap: 22px; padding: 22px; max-width: 1720px; margin: 0 auto; }
   .col-form { flex: 1 1 560px; min-width: 420px; }
@@ -160,7 +175,11 @@
   <div class="brand">Optima Academy Online</div>
   <h1>Lesson Page Builder</h1>
   <p>Build a lesson page that looks like the ones in our courses. Fill in what you have, skip what you do not, and paste the generated HTML into a Canvas page. Every section below is optional except the lesson details in the header.</p>
-  <div class="sibling"><a href="index.html">&larr; Course Home Page Builder</a></div>
+  <nav class="modetabs" aria-label="Which page are you building">
+    <a href="index.html#course">Course home</a>
+    <a href="index.html#commons">Commons</a>
+    <a href="lesson.html" aria-current="page">Lesson</a>
+  </nav>
 </header>
 
 <div class="layout">

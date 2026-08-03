@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Course Home Page Builder &middot; Optima Academy Online</title>
-<meta name="description" content="Build an Optima-branded Canvas course home page." />
+<title>Optima Page Builders &middot; Optima Academy Online</title>
+<meta name="description" content="Build an Optima-branded Canvas course home page or Optima Commons homeroom page." />
 <style>
   :root {
     --navy: #0E1C42;
@@ -139,21 +139,67 @@
   .photoRow { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
   .photoRow img { width: 62px; height: 62px; object-fit: cover; border-radius: 50%; border: 3px solid var(--cyan); }
   .sizenote { font-size: 12.5px; color: var(--muted); }
+
+  /* ---------- which builder you are in ---------- */
+  /* Course home and Commons are two modes of this one page, so their tabs
+     switch in place. Lesson lives in its own file, so its tab is a real link.
+     Both look identical on purpose: a teacher should not have to know which
+     is which. */
+  .modetabs { display: flex; gap: 6px; margin-top: 14px; flex-wrap: wrap; }
+  .modetabs a, .modetabs button {
+    font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer;
+    text-decoration: none; border-radius: 7px 7px 0 0; padding: 9px 17px;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.16);
+    border-bottom: 3px solid transparent; color: rgba(255,255,255,.72); display: block;
+  }
+  .modetabs a:hover, .modetabs button:hover { background: rgba(255,255,255,0.16); color: #fff; }
+  .modetabs [aria-current=page] {
+    background: var(--page); border-color: var(--page);
+    border-bottom-color: var(--cyan); color: var(--navy);
+  }
+  .modetabs [aria-current=page]:hover { background: var(--page); color: var(--navy); }
+
+  /* ---------- accent swatches ---------- */
+  .swatches { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); }
+  .swatch { position: relative; }
+  .swatch input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+  .swatch span {
+    display: flex; align-items: center; gap: 9px; padding: 10px 12px;
+    border: 2px solid var(--line); border-radius: 9px; background: #fff;
+    font-size: 13.5px; cursor: pointer; height: 100%;
+  }
+  .swatch span i { width: 30px; height: 18px; border-radius: 4px; flex-shrink: 0; display: block; }
+  .swatch input:checked + span { border-color: var(--navy); background: #EDF1F9; }
+  .swatch input:focus-visible + span { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+  /* A pasted poll is the one place a teacher can hand us HTML, so what Canvas
+     will do to it has to be said on the spot, not discovered later. */
+  .lint { font-size: 12.5px; border-radius: 7px; padding: 10px 12px; margin: 0 0 12px; }
+  .lint.bad  { background: #FBE9E9; border: 1px solid #E3A3A3; color: #7A2626; }
+  .lint.ok   { background: #E9F6EE; border: 1px solid #A6D9BC; color: #1E7A46; }
+  .lint ul { margin: 6px 0 0; padding-left: 18px; }
 </style>
 </head>
 <body>
 
 <header class="app">
   <div class="brand">Optima Academy Online</div>
-  <h1>Course Home Page Builder</h1>
-  <p>Fill in your course details, switch on the sections you want, then paste the generated HTML into a Canvas page and set it as your course home.</p>
-  <div style="margin-top:11px; font-size:13px;"><a href="lesson.html" style="color:var(--cyan);">Lesson Page Builder &rarr;</a></div>
+  <h1 id="appTitle">Course Home Page Builder</h1>
+  <p id="appIntro">Fill in your course details, switch on the sections you want, then paste the generated HTML into a Canvas page and set it as your course home.</p>
+  <nav class="modetabs" aria-label="Which page are you building">
+    <button type="button" data-action="mode" data-mode="course"  aria-current="page">Course home</button>
+    <button type="button" data-action="mode" data-mode="commons" aria-current="false">Commons</button>
+    <a href="lesson.html">Lesson</a>
+  </nav>
 </header>
 
 <div class="layout">
 
   <!-- ============================ FORM ============================ -->
   <div class="col-form" id="form">
+
+    <!-- ==================== COURSE HOME MODE ==================== -->
+    <div id="mode-course">
 
     <div class="toolbar">
       <button type="button" data-action="loadExample">Load example (Algebra 1)</button>
@@ -343,6 +389,239 @@
       </div>
     </section>
 
+    </div><!-- /#mode-course -->
+
+    <!-- ==================== OPTIMA COMMONS MODE ==================== -->
+    <div id="mode-commons" hidden>
+
+    <div class="toolbar">
+      <button type="button" data-action="loadExample">Load example Commons</button>
+      <button type="button" data-action="reset">Start blank</button>
+    </div>
+
+    <!-- C1. Commons details -->
+    <section class="card">
+      <h2><span><span class="step">1</span>Your Commons</span></h2>
+      <div class="body">
+        <p class="hint">The Optima Commons is your homeroom's gathering place &mdash; where your students connect with each other and with the wider OAO virtual campus. This is <em>your</em> Commons, so everything below is yours to change.</p>
+        <label class="f"><span>Heading (shown large in the banner)</span>
+          <input type="text" data-path="hero.title" placeholder="Welcome to Optima Commons" /></label>
+        <label class="f"><span>One line about what this page is for</span>
+          <input type="text" data-path="hero.subtitle" placeholder="Your home base for updates, house activities, student events, and support." /></label>
+        <label class="f"><span>Tagline pill</span>
+          <input type="text" data-path="hero.tagline" placeholder="Transforming Wonder into Purpose" /></label>
+        <div class="row">
+          <label class="f"><span>Homeroom name</span>
+            <input type="text" data-path="hero.homeroom" placeholder="Ms. Rivera&rsquo;s Homeroom" /></label>
+          <label class="f"><span>Term</span>
+            <input type="text" data-path="hero.term" placeholder="Fall 2026" /></label>
+        </div>
+        <label class="f"><span>Grade band</span>
+          <input type="text" data-path="hero.band" placeholder="Grades 6&ndash;8" /></label>
+      </div>
+    </section>
+
+    <!-- C2. Accent -->
+    <section class="card">
+      <h2><span><span class="step">2</span>Make it yours</span></h2>
+      <div class="body">
+        <p class="hint">The banner stays Optima navy, so the page always reads as ours. Your accent colours the rule under the banner, the tagline pill, the top edge of every card, and the section underlines. Pick the school colours, or fly your house.</p>
+        <div class="swatches" id="accentPicks"></div>
+      </div>
+    </section>
+
+    <!-- C3. Homeroom teacher -->
+    <section class="card">
+      <h2>
+        <span><span class="step">3</span>You, their homeroom teacher</span>
+        <label class="chk" style="margin:0; font-size:13px; font-weight:400;">
+          <input type="checkbox" data-path="teacher.show" /> Show section
+        </label>
+      </h2>
+      <div class="body">
+        <p class="hint">A short introduction to you, with your house. Your house travels with you, so students learn whose colours they are seeing.</p>
+        <div class="row">
+          <label class="f"><span>Your name (as students should address you)</span>
+            <input type="text" data-path="teacher.name" placeholder="Ms. Rivera" /></label>
+          <label class="f"><span>Your role</span>
+            <input type="text" data-path="teacher.title" placeholder="Homeroom Teacher" /></label>
+        </div>
+        <label class="f"><span>Your email (turns your name into a mailto link)</span>
+          <input type="text" data-path="teacher.email" placeholder="arivera@optimaed.com" /></label>
+        <label class="f"><span>A sentence or two about you</span>
+          <textarea data-path="teacher.blurb" placeholder="I have taught here for six years and I still get excited on the first day. Ask me about hiking, or about my terrible sourdough."></textarea></label>
+
+        <hr style="border:none; border-top:1px solid var(--line); margin:6px 0 14px;" />
+
+        <label class="f"><span>Your photo &mdash; the link to it in Canvas</span>
+          <input type="text" data-path="teacher.photo" placeholder="https://&hellip;.instructure.com/courses/123/files/45678" /></label>
+        <ol class="steps" style="margin-bottom:12px;">
+          <li>In Canvas, open <strong>Files</strong> and upload your photo.</li>
+          <li><strong>Publish it</strong> &mdash; click the grey circle beside it so it becomes a green check. Students cannot see an unpublished file.</li>
+          <li>Click the file to open it, then copy the address out of your browser's address bar and paste it above.</li>
+        </ol>
+        <p class="hint" style="margin-bottom:10px;"><strong>Why a link and not an upload:</strong> Canvas strips out photos that are built directly into a pasted page, so a link is the only way one survives. The same is true of every image on this page.</p>
+        <div class="photoRow" id="cPhotoPrev"><span class="sizenote" id="cPhotoNote"></span></div>
+
+        <label class="f" style="margin-top:14px;"><span>Frame shape</span></label>
+        <div class="picks" id="cFramePicks"></div>
+
+        <label class="f" style="margin-top:16px;"><span>Your house</span></label>
+        <div class="picks" id="cHousePicks"></div>
+      </div>
+    </section>
+
+    <!-- C5. Card sections -->
+    <section class="card">
+      <h2><span><span class="step">4</span>Card sections</span></h2>
+      <div class="body">
+        <p class="hint">This is the body of your Commons. Each <strong>section</strong> is a heading, a line of explanation, and a row of cards &mdash; and each card is an icon, a title, a description, and a button that goes somewhere. Three sections come ready to edit: Start Here, House Community, and Help &amp; Support. Rename them, reorder them, delete the ones you don't want, or add your own.</p>
+        <p class="hint">Paste the full address for each button. Open the page in Canvas and copy it out of the address bar.</p>
+        <div id="list-rows"></div>
+        <button type="button" class="add" data-action="add" data-list="rows" data-kind="row">+ Add a section</button>
+      </div>
+    </section>
+
+    <!-- C6. Flash poll -->
+    <section class="card">
+      <h2>
+        <span><span class="step">5</span>Flash poll</span>
+        <label class="chk" style="margin:0; font-size:13px; font-weight:400;">
+          <input type="checkbox" data-path="poll.show" /> Show section
+        </label>
+      </h2>
+      <div class="body">
+        <p class="hint">A quick question for your homeroom &mdash; a temperature check, a vote on a house event, a would-you-rather. Build the poll wherever you like (Microsoft Forms is the easy one), then bring it in here.</p>
+        <div class="row">
+          <label class="f"><span>Section heading</span>
+            <input type="text" data-path="poll.heading" placeholder="This Week&rsquo;s Flash Poll" /></label>
+          <label class="f"><span>Small label</span>
+            <input type="text" data-path="poll.eyebrow" placeholder="FLASH POLL" /></label>
+        </div>
+        <label class="f"><span>The question, or a line of setup</span>
+          <textarea data-path="poll.intro" placeholder="Which service project should our house take on this quarter? One vote each, closes Friday."></textarea></label>
+
+        <label class="f"><span>How is the poll getting onto the page?</span>
+          <select data-path="poll.mode">
+            <option value="link">A button students click through to (always works)</option>
+            <option value="embed">Embedded in the page (Microsoft Forms and other allowed sites)</option>
+            <option value="html">I have my own HTML for it</option>
+          </select></label>
+
+        <div id="pollLink">
+          <div class="row">
+            <label class="f"><span>Button text</span>
+              <input type="text" data-path="poll.label" placeholder="Cast your vote" /></label>
+            <label class="f"><span>Link to the poll</span>
+              <input type="text" data-path="poll.url" placeholder="https://forms.office.com/r/&hellip;" /></label>
+          </div>
+          <p class="hint" style="margin:0;">This is the reliable one. Canvas cannot break a link.</p>
+        </div>
+
+        <div id="pollEmbed" hidden>
+          <label class="f"><span>Paste the embed code from your poll site</span>
+            <textarea data-path="poll.embed" style="min-height:110px; font-family:Consolas,monospace; font-size:12.5px;" placeholder="&lt;iframe src=&quot;https://forms.office.com/&hellip;&quot; width=&quot;640&quot; height=&quot;480&quot;&gt;&lt;/iframe&gt;"></textarea></label>
+          <p class="hint">In Microsoft Forms: <strong>Collect responses</strong> &rsaquo; <strong>Embed</strong> &rsaquo; copy. Canvas only allows embedded content from sites it has been told to trust, so check the finished page as a student before you rely on it. If it comes up blank, switch to the button above.</p>
+          <div id="pollEmbedLint"></div>
+        </div>
+
+        <div id="pollHtml" hidden>
+          <label class="f"><span>Paste your HTML</span>
+            <textarea data-path="poll.html" style="min-height:130px; font-family:Consolas,monospace; font-size:12.5px;" placeholder="&lt;div style=&quot;&hellip;&quot;&gt;&hellip;&lt;/div&gt;"></textarea></label>
+          <p class="hint">Canvas keeps plain HTML with inline styles and throws the rest away, so a poll that needs JavaScript to count votes cannot work once pasted. What survives is the <em>look</em> of a poll. For one that actually collects answers, use the button or the embed above. Anything below will be missing from what students see:</p>
+          <div id="pollHtmlLint"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- C7. This week -->
+    <section class="card">
+      <h2>
+        <span><span class="step">6</span>What to do this week</span>
+        <label class="chk" style="margin:0; font-size:13px; font-weight:400;">
+          <input type="checkbox" data-path="highlight.show" /> Show section
+        </label>
+      </h2>
+      <div class="body">
+        <p class="hint">The gold panel near the bottom. This is where a student who opens the page not knowing what to do finds out.</p>
+        <label class="f"><span>Heading</span>
+          <input type="text" data-path="highlight.heading" placeholder="Not sure what to do this week?" /></label>
+        <label class="f"><span>What they should do</span>
+          <textarea data-path="highlight.text" placeholder="Start by checking your announcements, look over your course work, and submit at least one assignment in each course to stay present for attendance."></textarea></label>
+        <div class="row">
+          <label class="f"><span>Button text</span>
+            <input type="text" data-path="highlight.label" placeholder="Go to my course work" /></label>
+          <label class="f"><span>Link</span>
+            <input type="text" data-path="highlight.url" placeholder="https://optimadomi.instructure.com/" /></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- C7. Principal -->
+    <section class="card">
+      <h2>
+        <span><span class="step">7</span>Meet your principal</span>
+        <label class="chk" style="margin:0; font-size:13px; font-weight:400;">
+          <input type="checkbox" data-path="principal.show" /> Show section
+        </label>
+      </h2>
+      <div class="body">
+        <p class="hint">This sits at the foot of the page, after the week's work, as the invitation to reach further up. Your principal goes with your grade band, so students see the same face across every homeroom in the band. Leave the photo out and their initials appear instead.</p>
+        <div class="row">
+          <label class="f"><span>Their name</span>
+            <input type="text" data-path="principal.name" placeholder="Dr. Alvarez" /></label>
+          <label class="f"><span>Their title</span>
+            <input type="text" data-path="principal.title" placeholder="Middle School Principal" /></label>
+        </div>
+        <label class="f"><span>Grade band they lead</span>
+          <input type="text" data-path="principal.band" placeholder="Grades 6&ndash;8" /></label>
+        <label class="f"><span>A short word from them (optional)</span>
+          <textarea data-path="principal.note" placeholder="My door is always open. If something is getting in the way of your learning, tell me and we will sort it out together."></textarea></label>
+
+        <hr style="border:none; border-top:1px solid var(--line); margin:6px 0 14px;" />
+
+        <div class="row">
+          <label class="f" style="flex:0 0 190px;"><span>Button text</span>
+            <input type="text" data-path="principal.connectLabel" placeholder="Connect" /></label>
+          <label class="f"><span>Where the button goes</span>
+            <input type="text" data-path="principal.connectUrl" placeholder="https://calendly.com/&hellip;" /></label>
+        </div>
+        <p class="hint">Whatever your principal prefers: a Calendly booking page, a Teams meeting link, a Canvas page, or just their email address. Type a bare email like <code class="k">malvarez@optimaed.com</code> and it becomes a mail link on its own.</p>
+
+        <label class="f"><span>Their photo &mdash; the link to it in Canvas</span>
+          <input type="text" data-path="principal.photo" placeholder="https://&hellip;.instructure.com/courses/123/files/45678" /></label>
+        <div class="photoRow" id="pPhotoPrev"><span class="sizenote" id="pPhotoNote"></span></div>
+      </div>
+    </section>
+
+    <!-- C8. Footer -->
+    <section class="card">
+      <h2><span><span class="step">8</span>Footer line</span></h2>
+      <div class="body">
+        <p class="hint">The footer already carries the school name, your homeroom, and the copyright line. Add one more line here if you want.</p>
+        <label class="f"><span>Extra footer line (optional)</span>
+          <input type="text" data-path="footerNote" placeholder="Homeroom meets Monday mornings &mdash; see you there." /></label>
+      </div>
+    </section>
+
+    <!-- How to use -->
+    <section class="card">
+      <h2><span>Putting it in Canvas</span></h2>
+      <div class="body">
+        <ol class="steps">
+          <li>Click <strong>Copy HTML</strong> in the panel to the right.</li>
+          <li>In your homeroom course in Canvas, go to <strong>Pages &rsaquo; + Page</strong> and title it <em>Optima Commons</em>.</li>
+          <li>In the editor toolbar, switch to HTML view &mdash; the <code class="k">&lt;/&gt;</code> button on the right end.</li>
+          <li>Select everything already in the box, delete it, then paste. Click <strong>Save</strong>.</li>
+          <li>From <strong>Pages</strong>, open the page's <code class="k">&hellip;</code> menu and choose <strong>Use as Front Page</strong>.</li>
+          <li>Go to <strong>Home &rsaquo; Choose Home Page</strong> and pick <strong>Pages Front Page</strong>.</li>
+        </ol>
+        <p class="hint" style="margin:14px 0 0;">Every style is written inline because Canvas strips <code class="k">&lt;style&gt;</code> blocks. Editing the page in Canvas's rich-text view can scramble that formatting &mdash; come back here to make changes, then re-paste.</p>
+      </div>
+    </section>
+
+    </div><!-- /#mode-commons -->
+
   </div>
 
   <!-- ============================ OUTPUT ============================ -->
@@ -360,7 +639,7 @@
           <span class="grow"></span>
           <span id="pvscale"></span>
         </div>
-        <div id="previewWrap"><div id="previewScaler"><iframe id="previewFrame" title="Course home page preview"></iframe></div></div>
+        <div id="previewWrap"><div id="previewScaler"><iframe id="previewFrame" title="Page preview"></iframe></div></div>
       </div>
       <div id="pane-code" hidden><textarea id="code" readonly spellcheck="false"></textarea></div>
       <div class="outbar">
@@ -400,6 +679,12 @@
     ['📊', 'Chart (grades)'],
     ['❓', 'Question mark (FAQ)'],
     ['🗂', 'Card index (resources)'],
+    ['🚀', 'Rocket (start here)'],
+    ['📣', 'Megaphone (announcements)'],
+    ['🏆', 'Trophy (house championship)'],
+    ['🎉', 'Party (events)'],
+    ['💻', 'Laptop (tech help)'],
+    ['🤝', 'Handshake (community)'],
     ['✨', 'Sparkles']
   ];
 
@@ -422,10 +707,31 @@
     plain:   { label: 'Plain edge',     blurb: 'Square, with a simple accent border.', radius: '2px' }
   };
 
+  // The banner stays navy in every case; the accent is what a teacher picks.
+  // Two school colours, then the four houses, because a teacher's house
+  // travels with them and their Commons is the one page where flying it says
+  // something true. `on` is the text colour that survives on top of the accent.
+  var ACCENTS = {
+    cyan:        { label: 'Optima cyan', note: 'The school default.',        color: '#55C8E8', on: '#0E1C42' },
+    gold:        { label: 'Optima gold', note: 'Warmer, still ours.',        color: '#E0A82E', on: '#0E1C42' },
+    galahad:     { label: 'Galahad',     note: 'Perseverance.',              color: '#1E4620', on: '#FFFFFF' },
+    cincinnatus: { label: 'Cincinnatus', note: 'Courage.',                   color: '#8C1A0E', on: '#FFFFFF' },
+    nightingale: { label: 'Nightingale', note: 'Service.',                   color: '#10467F', on: '#FFFFFF' },
+    odysseus:    { label: 'Odysseus',    note: 'Self-Governance.',           color: '#4A2472', on: '#FFFFFF' }
+  };
+  function accent() { return ACCENTS[state.hero && state.hero.accent] || ACCENTS.cyan; }
+
   // v3: a saved v2 state could carry teacher.show === false, which is the bug
   // teachers hit. The loader merges saved values over defaults, so bumping the
   // key is what actually hands everyone the corrected default.
-  var STORE_KEY = 'optima-course-home-builder-v3';
+  //
+  // Course home and Commons save under separate keys, so a teacher can have
+  // work in progress on both and switching tabs never eats either. The course
+  // key is deliberately unchanged from before the Commons tab existed, so
+  // every draft already in a teacher's browser still opens.
+  var STORE_KEY   = 'optima-course-home-builder-v3';
+  var COMMONS_KEY = 'optima-commons-builder-v1';
+  var MODE_KEY    = 'optima-page-builder-mode';
 
   // ------------------------------------------------------------------ state
   function blankState() {
@@ -492,13 +798,136 @@
     return s;
   }
 
-  var state = load() || exampleState();
+  // ---------------------------------------------------------- commons state
+  function blankCommonsState() {
+    return {
+      hero: {
+        title: 'Welcome to Optima Commons', subtitle: '',
+        tagline: 'Transforming Wonder into Purpose',
+        homeroom: '', term: '', band: '', accent: 'cyan'
+      },
+      principal: { show: true, name: '', title: '', band: '', photo: '', note: '',
+                   connectLabel: 'Connect', connectUrl: '' },
+      teacher:   { show: true, name: '', title: 'Homeroom Teacher', email: '', blurb: '',
+                   photo: '', frame: 'circle', house: '' },
+      rows: [ newRow() ],
+      poll: { show: false, eyebrow: 'FLASH POLL', heading: '', intro: '',
+              mode: 'link', label: '', url: '', embed: '', html: '' },
+      highlight: { show: true, heading: '', text: '', label: '', url: '' },
+      footerNote: ''
+    };
+  }
 
-  function load() {
+  // A section is a heading, a line of setup, and a row of cards. Start Here,
+  // House Community and Help & Support are all this same shape, which is why
+  // there is one repeatable section rather than three hard-coded ones.
+  function newRow()  { return { heading: '', intro: '', tint: false, per: 3, cards: [ newCard() ] }; }
+  function newCard() { return { icon: '✨', title: '', desc: '', label: '', url: '', blank: false }; }
+
+  function exampleCommonsState() {
+    var s = blankCommonsState();
+    s.hero.subtitle = 'Your home base for updates, house activities, student events, and support.';
+    s.hero.homeroom = 'Ms. Rivera’s Homeroom';
+    s.hero.term = 'Fall 2026';
+    s.hero.band = 'Grades 6–8';
+
+    s.principal = {
+      show: true, name: 'Dr. Alvarez', title: 'Middle School Principal',
+      band: 'Grades 6–8', photo: '',
+      note: 'My door is always open. If something is getting in the way of your learning, tell me and we will sort it out together.',
+      connectLabel: 'Connect with Dr. Alvarez', connectUrl: ''
+    };
+    s.teacher = {
+      show: true, name: 'Ms. Rivera', title: 'Homeroom Teacher',
+      email: 'arivera@optimaed.com',
+      blurb: 'I have taught here for six years and I still get excited on the first day. Ask me about hiking, or about my terrible sourdough.',
+      photo: '', frame: 'circle', house: 'nightingale'
+    };
+
+    s.rows = [
+      { heading: 'Start Here', intro: 'New to On-Demand learning? Start with the essentials below.',
+        tint: false, per: 3, cards: [
+          { icon: '🚀', title: 'Start Here', desc: 'Learn how to find your way around Canvas.',
+            label: 'Canvas for Students', blank: true,
+            url: 'https://community.instructure.com/en/kb/articles/661192-student-getting-started-resources' },
+          { icon: '📅', title: 'Weekly Expectations', desc: 'What to do each week to stay on track in your courses and keep your attendance.',
+            label: 'View Expectations', url: '', blank: false },
+          { icon: '📣', title: 'Announcements', desc: 'Academic reminders, testing notices, i-Ready updates, and homeroom news.',
+            label: 'Read Announcements', url: '', blank: false }
+        ] },
+      { heading: 'House Community', intro: 'Even though learning happens on your own schedule, you are still part of a larger OAO community. Join your house, take on the challenges, and celebrate school spirit all year.',
+        tint: true, per: 3, cards: [
+          { icon: '🏆', title: 'House Championship', desc: 'See the current standings and cheer on your house in the race for the cup.',
+            label: 'View Leaderboard', blank: true,
+            url: 'https://agreeable-grass-01ca2ac0f.7.azurestaticapps.net/' },
+          { icon: '🎉', title: 'House Events', desc: 'House games, talent shows, socials, and other community activities.',
+            label: 'See Events', url: '', blank: false },
+          { icon: '🧭', title: 'Find Your House', desc: 'Not sure which house you belong to? Start here to learn more and get connected.',
+            label: 'Find My House', url: '', blank: false }
+        ] },
+      { heading: 'Help & Support', intro: 'Need help? These get you to a person quickly.',
+        tint: false, per: 4, cards: [
+          { icon: '💻', title: 'Tech Help', desc: 'Canvas trouble, passwords, devices, and troubleshooting.',
+            label: 'Get Help', url: TEAMS_TECH_HELP, blank: true },
+          { icon: '🎧', title: 'On-Demand Study Halls', desc: 'The facilitator directory and drop-in times, in VR and in Teams.',
+            label: 'View Study Halls', url: '', blank: false },
+          { icon: '📚', title: 'VR Encyclopedia', desc: 'Get to know your VR environment properly.',
+            label: 'Open the Encyclopedia', url: '', blank: false },
+          { icon: '📧', title: 'Canvas Tutorial', desc: 'Get to know the system your courses live in.',
+            label: 'Canvas for Students', url: '', blank: false }
+        ] }
+    ];
+
+    s.poll = {
+      show: true, eyebrow: 'FLASH POLL', heading: 'This Week’s Flash Poll',
+      intro: 'Which service project should our house take on this quarter? One vote each, and it closes Friday.',
+      mode: 'link', label: 'Cast your vote', url: '', embed: '', html: ''
+    };
+
+    s.highlight = {
+      show: true, heading: 'Not sure what to do this week?',
+      text: 'Start by checking your announcements, looking over your course work, and submitting at least one assignment in each course to stay present for attendance.',
+      label: 'Go to my course work', url: ''
+    };
+    return s;
+  }
+
+  // ------------------------------------------------------------------- modes
+  // Course home and Commons are two modes of this one page. `state` always
+  // points at the active one; both live in STATES so switching tabs is free
+  // and neither draft is ever thrown away.
+  var MODES = {
+    course:  { key: STORE_KEY,   blank: blankState,        example: exampleState,
+               title: 'Course Home Page Builder',
+               intro: 'Fill in your course details, switch on the sections you want, then paste the generated HTML into a Canvas page and set it as your course home.' },
+    commons: { key: COMMONS_KEY, blank: blankCommonsState, example: exampleCommonsState,
+               title: 'Optima Commons Builder',
+               intro: 'Build your homeroom’s gathering place — where your students connect with each other and with the OAO virtual campus community. Paste it into Canvas and set it as your homeroom home page.' }
+  };
+
+  // Normally we reopen on whichever builder you used last. A fragment wins over
+  // that, so the lesson page can link straight to "#commons" - still this same
+  // page, no second address for teachers to keep track of.
+  var MODE = 'course';
+  try {
+    var savedMode = localStorage.getItem(MODE_KEY);
+    if (savedMode && MODES[savedMode]) MODE = savedMode;
+  } catch (e) {}
+  var hashMode = String(location.hash || '').replace(/^#/, '');
+  if (MODES[hashMode]) MODE = hashMode;
+
+  var STATES = {
+    course:  load('course')  || exampleState(),
+    commons: load('commons') || exampleCommonsState()
+  };
+  var state = STATES[MODE];
+
+  function load(mode) {
+    var M = MODES[mode];
     try {
-      var raw = localStorage.getItem(STORE_KEY);
+      var raw = localStorage.getItem(M.key);
       if (!raw) return null;
-      var s = JSON.parse(raw), b = blankState();
+      var s = JSON.parse(raw), b = M.blank();
       // merge two levels deep so a saved file from an older version still opens
       for (var k in b) {
         if (!(k in s) || s[k] == null) { s[k] = b[k]; continue; }
@@ -510,11 +939,43 @@
       // that survived in saved work so nobody keeps pasting a photo that cannot
       // render, and so the field is free for a real link.
       if (s.teacher && /^data:/i.test(String(s.teacher.photo || ''))) s.teacher.photo = '';
+      if (s.principal && /^data:/i.test(String(s.principal.photo || ''))) s.principal.photo = '';
       return s;
     } catch (e) { return null; }
   }
   function save() {
-    try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+    try { localStorage.setItem(MODES[MODE].key, JSON.stringify(state)); } catch (e) {}
+    try { localStorage.setItem(MODE_KEY, MODE); } catch (e) {}
+  }
+
+  function setMode(m) {
+    if (!MODES[m] || m === MODE) return;
+    save();                 // keep the draft we are leaving
+    MODE = m;
+    state = STATES[m];
+    applyMode();
+    redrawAll();
+  }
+
+  // Everything that has to change when the tab changes: which form is on
+  // screen, what the page calls itself, and which tab looks pressed.
+  function applyMode() {
+    var M = MODES[MODE];
+    document.getElementById('mode-course').hidden  = (MODE !== 'course');
+    document.getElementById('mode-commons').hidden = (MODE !== 'commons');
+    document.getElementById('appTitle').textContent = M.title;
+    document.getElementById('appIntro').textContent = M.intro;
+    var tabs = document.querySelectorAll('.modetabs button[data-mode]');
+    for (var i = 0; i < tabs.length; i++) {
+      tabs[i].setAttribute('aria-current',
+        tabs[i].getAttribute('data-mode') === MODE ? 'page' : 'false');
+    }
+    document.title = M.title + ' · Optima Academy Online';
+    // Keep the address bar honest without stacking history entries, so a teacher
+    // can bookmark or share the builder they are actually looking at.
+    try {
+      if (history.replaceState) history.replaceState(null, '', '#' + MODE);
+    } catch (e) {}
   }
 
   function getPath(p) {
@@ -706,21 +1167,7 @@
     if (tc.show && hasTeacherBits) {
       var who = String(c.teacherName || '').trim() || 'Your teacher';
       var fr = FRAMES[tc.frame] || FRAMES.circle;
-
-      // Initials for the no-photo frame. Most Optima teachers go by honorific
-      // plus surname, which leaves a single letter; pair it with the honorific
-      // so the monogram reads as one ("MR") rather than a lone character.
-      var hon = (who.match(/^(mr|mrs|ms|miss|dr|prof|professor)/i) || [''])[0];
-      var bare = who.replace(/^(mr|mrs|ms|miss|dr|prof|professor)\.?\s+/i, '').split(/\s+/);
-      var initials;
-      if (bare.length > 1) {
-        initials = bare[0].charAt(0) + bare[1].charAt(0);
-      } else if (hon) {
-        initials = hon.charAt(0) + bare[0].charAt(0);
-      } else {
-        initials = bare[0].slice(0, 2);
-      }
-      initials = (initials || 'OA').toUpperCase();
+      var initials = initialsFor(who);
 
       h.push('    <!-- ===================== MEET THE TEACHER ===================== -->');
       h.push('    <div style="background: #FFFFFF; border: 1px solid #D0D9E8; border-top: 4px solid #55C8E8; border-radius: 8px; padding: 24px 26px; margin-bottom: 22px; display: flex; flex-wrap: wrap; gap: 26px; align-items: flex-start;">');
@@ -867,6 +1314,289 @@
     return h.join('\n');
   }
 
+  // ------------------------------------------------- commons HTML generation
+  // Card rows are laid out with tables rather than flexbox, because a table
+  // cell stretches to the tallest card in its row on its own. Flexbox would
+  // need align-items, and Canvas keeps the markup but not the stylesheet, so
+  // whatever equalises those heights has to be structural.
+  function buildCommons() {
+    var s = state, A = accent(), h = [];
+    var HERO  = String(s.hero.title || 'Welcome to Optima Commons');
+    var room  = String(s.hero.homeroom || '').trim();
+
+    var HEAD = 'background: #0E1C42; border-bottom: 5px solid ' + A.color + '; padding: 24px 34px; border-radius: 10px 10px 0 0;';
+    var FOOT = 'background: #0E1C42; border-top: 3px solid ' + A.color + '; padding: 18px 34px; text-align: center; border-radius: 0 0 10px 10px; margin-top: 4px;';
+    var CARD = 'background: #FFFFFF; border: 1px solid #D0D9E8; border-top: 4px solid ' + A.color + '; border-radius: 8px;';
+    var BTN  = 'display: inline-block; text-decoration: none; background: #0E1C42; color: #ffffff; border: 2px solid ' + A.color + '; border-radius: 24px; padding: 11px 22px; font-size: 16px;';
+    var PILLC = 'display: inline-block; text-decoration: none; font-size: 16px; color: #0e1c42; border: 1px solid #D0D9E8; border-radius: 24px; padding: 10px 20px; margin: 0 8px 8px 0;';
+    var EYE  = 'font-size: 12px; letter-spacing: 1px; color: #6b7a99;';
+
+    h.push('<!--');
+    h.push('  ============================================================================');
+    h.push('  ' + esc(HERO.toUpperCase()) + (room ? '  -  ' + esc(room.toUpperCase()) : ''));
+    h.push('  OPTIMA COMMONS  (Optima Academy Online)');
+    h.push('  ----------------------------------------------------------------------------');
+    h.push('  HOW TO USE THIS FILE IN CANVAS:');
+    h.push('    1. Select all of this code (Ctrl+A), copy (Ctrl+C).');
+    h.push('    2. In Canvas: Pages > "+ Page" > switch the editor to HTML view');
+    h.push('       (the "</' + '>" button) > paste > Save.');
+    h.push('    3. From the Pages list, set this page as the Front Page, then go to');
+    h.push('       Home > "Choose Home Page" > "Pages Front Page".');
+    h.push('');
+    h.push('  All styling is inline because Canvas strips <style> and <script> blocks.');
+    h.push('  Editing this page in Canvas\'s rich-text view can scramble the layout.');
+    h.push('  Rebuild it any time with the Optima Commons Builder.');
+    h.push('  ============================================================================');
+    h.push('-->');
+    h.push('');
+    h.push('<div style="' + S.wrap + '">');
+    h.push('');
+
+    // ---- banner
+    h.push('  <!-- ===================== BANNER ===================== -->');
+    h.push('  <div style="' + HEAD + '">');
+    h.push('    <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 12px;">');
+    h.push('      <div style="width: 52px; height: 52px; border-radius: 50%; background: #FFFFFF; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><img src="https://raw.githubusercontent.com/optimaondemand/optima-assets/eeb0b335630058906d52f478028361d352253a93/images/Optima%20Final%20Circle%20-%20Owl%20Only.png" alt="Optima Academy" style="width: 50px; height: 40px; object-fit: contain;" /></div>');
+    h.push('      <div>');
+    h.push('        <div style="font-size: 24px; color: #ffffff; line-height: 1.2;">Optima Academy Online</div>');
+    h.push('        <div style="font-size: 12px; color: ' + A.color + ';">An Education Experience Company</div>');
+    h.push('      </div>');
+    h.push('    </div>');
+    h.push('    <div style="font-size: 36px; color: #ffffff; margin-bottom: 6px; letter-spacing: 0.5px;">' + esc(HERO) + '</div>');
+    if (String(s.hero.subtitle || '').trim())
+      h.push('    <div style="font-size: 17px; color: rgba(255,255,255,0.78); line-height: 1.5;">' + esc(s.hero.subtitle) + '</div>');
+    if (String(s.hero.tagline || '').trim())
+      h.push('    <div style="font-size: 14px; background: rgba(255,255,255,0.12); border: 1px solid ' + A.color + '; display: inline-block; padding: 8px 15px; border-radius: 999px; color: #ffffff; margin-top: 13px;">' + esc(s.hero.tagline) + '</div>');
+
+    var chips = [];
+    function chip(label, value, inner) {
+      if (!String(value || '').trim()) return;
+      chips.push('      <div style="' + CHIP + '">' +
+        '<span style="' + CHIP_LABEL + '">' + esc(label) + '</span>' + (inner || esc(value)) + '</div>');
+    }
+    chip('Homeroom', room);
+    chip('Term', s.hero.term);
+    chip('Grades', s.hero.band);
+    var tName = String(s.teacher.name || '').trim();
+    if (tName) {
+      var tMail = String(s.teacher.email || '').trim();
+      chip(String(s.teacher.title || '').trim() || 'Your teacher', tName, tMail
+        ? '<a href="mailto:' + esc(tMail) + '" style="color: #ffffff; text-decoration: underline;">' + esc(tName) + '</a>'
+        : esc(tName));
+    }
+    if (chips.length) {
+      h.push('    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px;">');
+      chips.forEach(function (x) { h.push(x); });
+      h.push('    </div>');
+    }
+    h.push('  </div>');
+    h.push('');
+    h.push('  <div style="' + S.body + '">');
+    h.push('');
+
+    // A Connect button takes whatever the principal actually uses - a Calendly
+    // page, a Teams meeting, a Canvas page - so a bare email address is the one
+    // case that needs help to become a working link.
+    function linkOut(u) {
+      u = String(u || '').trim();
+      if (!u) return '';
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(u) ? 'mailto:' + u : u;
+    }
+
+    // ---- a portrait block, used for both the principal and the teacher
+    function person(p, eyebrow, size, extra, link) {
+      var who = String(p.name || '').trim();
+      var src = imgSrc(p.photo), warn = imgWarning(p.photo);
+      var fr = FRAMES[p.frame] || FRAMES.circle;
+      h.push('    <div style="' + CARD + ' padding: 22px 26px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">');
+      h.push('      <div style="flex: 0 0 auto;">');
+      // A link already flagged as broken is not emitted; the monogram is the
+      // better outcome.
+      if (src && !warn) {
+        h.push('        <img src="' + href(src) + '" alt="' + esc(who || eyebrow) + '" style="width: ' + size + 'px; height: ' + size + 'px; object-fit: cover; border-radius: ' + fr.radius + '; border: 4px solid ' + A.color + '; display: block;" />');
+      } else {
+        h.push('        <div style="width: ' + size + 'px; height: ' + size + 'px; border-radius: ' + fr.radius + '; border: 4px solid ' + A.color + '; background: #EDF1F9; color: #0e1c42; font-size: ' + Math.round(size * 0.3) + 'px; text-align: center; line-height: ' + (size - 8) + 'px; letter-spacing: 1px;">' + esc(initialsFor(who)) + '</div>');
+      }
+      h.push('      </div>');
+      h.push('      <div style="flex: 1 1 300px; min-width: 0;">');
+      h.push('        <div style="' + EYE + '">' + esc(eyebrow) + '</div>');
+      h.push('        <div style="font-size: 24px; color: #0e1c42; margin-top: 3px;">' + esc(who || 'To be announced') + '</div>');
+      if (String(p.title || '').trim())
+        h.push('        <div style="font-size: 15px; color: #6b7a99;">' + esc(p.title) + '</div>');
+      if (String(p.band || '').trim())
+        h.push('        <div style="font-size: 15px; color: #6b7a99;">' + esc(p.band) + '</div>');
+      if (String(p.note || p.blurb || '').trim())
+        h.push('        <div style="font-size: 17px; color: #333; margin-top: 12px; line-height: 1.5;">' + escML(p.note || p.blurb) + '</div>');
+      if (link && String(link.label || '').trim()) {
+        var tgt = link.blank ? ' target="_blank" rel="noopener"' : '';
+        h.push('        <div style="margin-top: 15px;"><a href="' + href(linkOut(link.url)) + '"' + tgt +
+          ' style="' + (link.style || PILLC) + '">' + esc(link.label) + '</a></div>');
+      }
+      if (extra) extra();
+      h.push('      </div>');
+      h.push('    </div>');
+      h.push('');
+    }
+
+    var tc = s.teacher;
+    if (tc.show && (tName || String(tc.blurb || '').trim() || tc.house)) {
+      h.push('    <!-- ===================== YOUR HOMEROOM TEACHER ===================== -->');
+      var tMailNow = String(tc.email || '').trim();
+      person(tc, 'YOUR HOMEROOM TEACHER', 150, function () {
+        if (!tc.house || !HOUSES[tc.house]) return;
+        var H = HOUSES[tc.house];
+        h.push('        <div style="display: flex; align-items: center; gap: 13px; margin-top: 16px; border-top: 1px solid #D0D9E8; padding-top: 14px;">');
+        // The crest art carries a dark vignette, so it sits on a navy plate
+        // rather than floating on white, where it read as a dark blob.
+        h.push('          <div style="background: #0E1C42; border-radius: 8px; padding: 4px; border-left: 3px solid ' + H.color + '; flex-shrink: 0; line-height: 0;"><img src="' + CREST_BASE + H.img + '" alt="' + esc(H.label) + ' house crest" style="width: 46px; height: 46px; object-fit: contain; display: block;" /></div>');
+        h.push('          <div>');
+        h.push('            <div style="font-size: 11px; letter-spacing: 1px; color: #6b7a99;">' + esc((tName ? tName + ' is in' : 'Your teacher is in').toUpperCase()) + '</div>');
+        h.push('            <div style="font-size: 18px; color: #0e1c42;">House ' + esc(H.label) + '</div>');
+        h.push('            <div style="font-size: 14px; color: #6b7a99;">' + esc(H.virtue) + '</div>');
+        h.push('          </div>');
+        h.push('        </div>');
+      }, tMailNow ? { label: 'Email ' + (tName || 'me'), url: 'mailto:' + tMailNow } : null);
+    }
+
+    // ---- card sections
+    (s.rows || []).forEach(function (row) {
+      var cards = (row.cards || []).filter(function (c) { return String(c.title || '').trim(); });
+      if (!cards.length && !String(row.heading || '').trim()) return;
+      var per = (parseInt(row.per, 10) === 4) ? 4 : 3;
+      var w = (per === 4) ? '25%' : '33.33%';
+      var tint = !!row.tint;
+
+      h.push('    <!-- ===================== ' + esc(String(row.heading || 'SECTION').toUpperCase()) + ' ===================== -->');
+      if (tint)
+        h.push('    <div style="background: #EDF1F9; border: 1px solid #D0D9E8; border-radius: 10px; padding: 20px 22px; margin-bottom: 22px;">');
+      var pad = tint ? '' : ' margin: 0 12px;';
+      if (String(row.heading || '').trim()) {
+        h.push('      <div style="border-bottom: 2px solid ' + A.color + '; padding-bottom: 8px; margin-bottom: 12px;' + pad + '">');
+        h.push('        <div style="font-size: 24px; color: #0e1c42;">' + esc(row.heading) + '</div>');
+        h.push('      </div>');
+      }
+      if (String(row.intro || '').trim())
+        h.push('      <div style="font-size: 16px; color: #333; line-height: 1.55; margin-bottom: 12px;' + pad + '">' + escML(row.intro) + '</div>');
+
+      if (cards.length) {
+        h.push('      <table role="presentation" style="width: 100%; border-collapse: separate; border-spacing: 12px;">');
+        h.push('        <tbody>');
+        for (var start = 0; start < cards.length; start += per) {
+          var chunk = cards.slice(start, start + per);
+          h.push('          <tr>');
+          chunk.forEach(function (c) {
+            var tgt = c.blank ? ' target="_blank" rel="noopener"' : '';
+            h.push('            <td style="width: ' + w + '; vertical-align: top; ' + CARD + ' padding: 18px;">');
+            if (String(c.icon || '').trim())
+              h.push('              <div style="font-size: 28px; margin-bottom: 9px;">' + esc(c.icon) + '</div>');
+            h.push('              <div style="font-size: 19px; color: #0e1c42; margin-bottom: 7px;">' + esc(c.title) + '</div>');
+            if (String(c.desc || '').trim())
+              h.push('              <div style="font-size: 15px; color: #4b5563; line-height: 1.55; margin-bottom: 14px;">' + escML(c.desc) + '</div>');
+            if (String(c.label || '').trim())
+              h.push('              <a href="' + href(c.url) + '"' + tgt + ' style="' + BTN + ' font-size: 15px; padding: 9px 18px;">' + esc(c.label) + '</a>');
+            h.push('            </td>');
+          });
+          // Empty cells on a short last row, so the cards that are there keep
+          // their width instead of stretching to fill.
+          for (var pad2 = chunk.length; pad2 < per; pad2++)
+            h.push('            <td style="width: ' + w + ';"></td>');
+          h.push('          </tr>');
+        }
+        h.push('        </tbody>');
+        h.push('      </table>');
+      }
+      if (tint) h.push('    </div>');
+      h.push('');
+    });
+
+    // ---- flash poll
+    var pl = s.poll;
+    if (pl.show) {
+      var hasPoll = (pl.mode === 'link'  && String(pl.url || '').trim()) ||
+                    (pl.mode === 'embed' && String(pl.embed || '').trim()) ||
+                    (pl.mode === 'html'  && String(pl.html || '').trim());
+      if (hasPoll || String(pl.intro || '').trim()) {
+        h.push('    <!-- ===================== FLASH POLL ===================== -->');
+        h.push('    <div style="' + CARD + ' padding: 22px 26px; margin-bottom: 22px;">');
+        // The eyebrow keeps the muted grey every other eyebrow uses. Optima cyan
+        // is a banner colour and does not have the contrast for small text on
+        // white, so the accent stays on the card's top edge instead.
+        h.push('      <div style="' + EYE + '">' + esc(String(pl.eyebrow || 'FLASH POLL').toUpperCase()) + '</div>');
+        if (String(pl.heading || '').trim())
+          h.push('      <div style="font-size: 21px; color: #0e1c42; margin: 3px 0 10px;">' + esc(pl.heading) + '</div>');
+        if (String(pl.intro || '').trim())
+          h.push('      <div style="font-size: 17px; color: #333; line-height: 1.55; margin-bottom: 14px;">' + escML(pl.intro) + '</div>');
+        // The button appears as soon as there is a label, the same as the cards
+        // and the panel below, so a teacher can see the shape of the page before
+        // they have every link to hand.
+        if (pl.mode === 'link' && String(pl.label || '').trim()) {
+          h.push('      <a href="' + href(pl.url) + '" target="_blank" rel="noopener" style="' + BTN + '">' + esc(pl.label || 'Cast your vote') + '</a>');
+        } else if (pl.mode === 'embed' && String(pl.embed || '').trim()) {
+          h.push('      <!-- Embedded from the teacher\'s poll site. Canvas only loads embeds -->');
+          h.push('      <!-- from sites it has been told to trust; check this as a student. -->');
+          h.push('      <div>');
+          h.push('        ' + String(pl.embed).trim());
+          h.push('      </div>');
+        } else if (pl.mode === 'html' && String(pl.html || '').trim()) {
+          h.push('      <!-- Pasted in by the teacher. -->');
+          h.push('      <div>');
+          h.push('        ' + String(pl.html).trim());
+          h.push('      </div>');
+        }
+        h.push('    </div>');
+        h.push('');
+      }
+    }
+
+    // ---- what to do this week. Gold stays gold whatever the accent is: it is
+    // the colour this page uses for "read this one", the same as a pinned
+    // announcement on a course home page.
+    var hl = s.highlight;
+    if (hl.show && (String(hl.heading || '').trim() || String(hl.text || '').trim())) {
+      h.push('    <!-- ===================== WHAT TO DO THIS WEEK ===================== -->');
+      h.push('    <div style="background: #FDF6E7; border: 1px solid #E0A82E; border-left: 5px solid #E0A82E; border-radius: 8px; padding: 20px 24px;">');
+      if (String(hl.heading || '').trim())
+        h.push('      <div style="font-size: 21px; color: #8a6414; margin-bottom: 8px;">' + esc(hl.heading) + '</div>');
+      if (String(hl.text || '').trim())
+        h.push('      <div style="font-size: 17px; color: #333; line-height: 1.6;">' + escML(hl.text) + '</div>');
+      if (String(hl.label || '').trim())
+        h.push('      <div style="margin-top: 15px;"><a href="' + href(hl.url) + '" style="display: inline-block; text-decoration: none; background: #0E1C42; color: #ffffff; border: 2px solid #E0A82E; border-radius: 24px; padding: 11px 22px; font-size: 16px;">' + esc(hl.label) + ' &rarr;</a></div>');
+      h.push('    </div>');
+      h.push('');
+    }
+
+    // ---- meet your principal. Last thing on the page, after the week's work:
+    // the invitation to reach past the homeroom, on whatever channel they keep.
+    var pr = s.principal;
+    if (pr.show && (String(pr.name || '').trim() || String(pr.note || '').trim())) {
+      h.push('    <!-- ===================== MEET YOUR PRINCIPAL ===================== -->');
+      // An explicit height, not a margin: margins on an empty div collapse away.
+      h.push('    <div style="height: 22px;"></div>');
+      person(pr, 'MEET YOUR PRINCIPAL', 120, null,
+        { label: pr.connectLabel || 'Connect', url: pr.connectUrl, style: BTN, blank: true });
+    }
+
+    h.push('  </div>');
+    h.push('');
+
+    // ---- footer
+    h.push('  <!-- ===================== FOOTER ===================== -->');
+    h.push('  <div style="' + FOOT + '">');
+    var foot = '<span style="color: ' + A.color + ';">Optima Academy Online</span> &middot; Optima Commons';
+    if (room) foot += ' &middot; ' + esc(room);
+    if (String(s.hero.term || '').trim()) foot += ' &middot; ' + esc(s.hero.term);
+    h.push('    <div style="font-size: 18px; color: #ffffff; margin-bottom: 7px;">' + foot + '</div>');
+    if (String(s.footerNote || '').trim())
+      h.push('    <div style="font-size: 15px; color: rgba(255,255,255,0.75); margin-bottom: 9px;">' + esc(s.footerNote) + '</div>');
+    h.push('    <div style="font-size: 13px; color: rgba(255,255,255,0.4);">&copy; Optima Academy Online &middot; An Education Experience Company</div>');
+    h.push('  </div>');
+    h.push('');
+    h.push('</div>');
+    h.push('');
+
+    return h.join('\n');
+  }
+
   // ------------------------------------------------------------ form render
   function iconSelect(path, current) {
     var o = ['<select data-path="' + path + '">'];
@@ -891,6 +1621,7 @@
   }
 
   function renderLists() {
+    if (MODE === 'commons') return renderCommonsLists();
     // announcements
     var a = state.announcements.map(function (x, i) {
       return '<div class="item">' +
@@ -928,6 +1659,47 @@
     document.getElementById('list-modules').innerHTML = m;
   }
 
+  // Sections hold cards, so this is the one nested list in either builder. The
+  // list path is dotted ("rows.2.cards") and the add/remove/reorder buttons
+  // resolve it the same way data-path does, which keeps one set of controls
+  // working at both levels.
+  function renderCommonsLists() {
+    var out = state.rows.map(function (row, i) {
+      var cards = (row.cards || []).map(function (c, j) {
+        var lp = 'rows.' + i + '.cards';
+        return '<div class="item" style="border-left-color:#B9C6DC; background:#fff;">' +
+          '<div class="item-head"><span class="item-title">Card ' + (j + 1) + '</span>' + tools(lp, j, row.cards.length) + '</div>' +
+          '<div class="row">' +
+            '<label class="f" style="flex:0 0 190px;"><span>Icon</span>' + iconSelect(lp + '.' + j + '.icon', c.icon) + '</label>' +
+            '<label class="f"><span>Card title</span><input type="text" data-path="' + lp + '.' + j + '.title" value="' + escAttr(c.title) + '" placeholder="Start Here" /></label>' +
+          '</div>' +
+          '<label class="f"><span>What it is</span><textarea data-path="' + lp + '.' + j + '.desc" placeholder="Learn how to find your way around Canvas.">' + escAttr(c.desc) + '</textarea></label>' +
+          '<div class="row">' +
+            '<label class="f"><span>Button text</span><input type="text" data-path="' + lp + '.' + j + '.label" value="' + escAttr(c.label) + '" placeholder="Canvas for Students" /></label>' +
+            '<label class="f"><span>Link</span><input type="text" data-path="' + lp + '.' + j + '.url" value="' + escAttr(c.url) + '" placeholder="https://&hellip;" /></label>' +
+          '</div>' +
+          '<label class="chk"><input type="checkbox" data-path="' + lp + '.' + j + '.blank"' + (c.blank ? ' checked' : '') + ' /><span>Open in a new tab (use for Teams and other outside links)</span></label>' +
+          '</div>';
+      }).join('');
+
+      return '<div class="item">' +
+        '<div class="item-head"><span class="item-title">Section ' + (i + 1) + '</span>' + tools('rows', i, state.rows.length) + '</div>' +
+        '<label class="f"><span>Section heading</span><input type="text" data-path="rows.' + i + '.heading" value="' + escAttr(row.heading) + '" placeholder="Start Here" /></label>' +
+        '<label class="f"><span>A line of explanation under it</span><textarea data-path="rows.' + i + '.intro" placeholder="New to On-Demand learning? Start with the essentials below.">' + escAttr(row.intro) + '</textarea></label>' +
+        '<div class="row">' +
+          '<label class="f"><span>Cards per row</span><select data-path="rows.' + i + '.per">' +
+            '<option value="3"' + (parseInt(row.per, 10) === 4 ? '' : ' selected') + '>3 across</option>' +
+            '<option value="4"' + (parseInt(row.per, 10) === 4 ? ' selected' : '') + '>4 across</option>' +
+          '</select></label>' +
+          '<label class="f"><span>&nbsp;</span><label class="chk" style="margin:0;"><input type="checkbox" data-path="rows.' + i + '.tint"' + (row.tint ? ' checked' : '') + ' /><span>Sit this section on a tinted panel</span></label></label>' +
+        '</div>' +
+        cards +
+        '<button type="button" class="add" data-action="add" data-list="rows.' + i + '.cards" data-kind="card" style="margin-bottom:12px;">+ Add a card to this section</button>' +
+        '</div>';
+    }).join('');
+    document.getElementById('list-rows').innerHTML = out;
+  }
+
   function escAttr(s) {
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
@@ -939,18 +1711,23 @@
   // <img src> shows nothing. Canvas's own editor uses the /preview form.
   // Normalise to that, so a teacher can paste exactly what the address bar gave
   // them and it still works.
-  function photoSrc() {
-    var u = String(state.teacher.photo || '').trim();
+  // Takes a URL rather than reading one field, because the Commons page has two
+  // portraits on it - the principal's and the teacher's - and both need exactly
+  // this treatment.
+  function imgSrc(raw) {
+    var u = String(raw || '').trim();
     if (!u) return '';
     var m = u.match(/^(https?:\/\/[^?#]*?\/files\/\d+)(?:\/(preview|download)[^?#]*)?/i);
     if (!m) return u.split('#')[0];
     return m[1] + '/' + (m[2] ? m[2].toLowerCase() : 'preview');
   }
+  function photoSrc()     { return imgSrc(state.teacher.photo); }
+  function photoWarning() { return imgWarning(state.teacher.photo); }
 
   // Judge what was pasted and name the specific mistake, rather than silently
   // emitting a broken image.
-  function photoWarning() {
-    var u = String(state.teacher.photo || '').trim();
+  function imgWarning(raw) {
+    var u = String(raw || '').trim();
     if (!u) return '';
     if (/^data:/i.test(u))
       return 'Canvas strips photos embedded this way. Upload the file to Canvas Files and paste its link instead.';
@@ -963,39 +1740,73 @@
     return '';
   }
 
+  // Initials for the no-photo frame. Most Optima staff go by honorific plus
+  // surname, which leaves a single letter; pair it with the honorific so the
+  // monogram reads as one ("MR") rather than a lone character.
+  function initialsFor(who) {
+    who = String(who || '').trim();
+    var hon = (who.match(/^(mr|mrs|ms|miss|dr|prof|professor)/i) || [''])[0];
+    var bare = who.replace(/^(mr|mrs|ms|miss|dr|prof|professor)\.?\s+/i, '').split(/\s+/);
+    var out;
+    if (bare.length > 1)   out = bare[0].charAt(0) + bare[1].charAt(0);
+    else if (hon)          out = hon.charAt(0) + bare[0].charAt(0);
+    else                   out = bare[0].slice(0, 2);
+    return (out || 'OA').toUpperCase();
+  }
+
+  // Canvas keeps plain, inline-styled HTML and throws away everything else.
+  // Anything on this list in a teacher's pasted poll will not survive, so they
+  // are told before it reaches a student rather than after.
+  function canvasStrips(html) {
+    var s = String(html || ''), bad = [];
+    if (/<script[\s>]/i.test(s))    bad.push('a <script> block, so nothing can count votes');
+    if (/<style[\s>]/i.test(s))     bad.push('a <style> block - move those rules into style="" on each tag');
+    if (/\son[a-z]+\s*=/i.test(s))  bad.push('an onclick or similar handler');
+    if (/\sclass\s*=/i.test(s))     bad.push('class attributes, which have no styles left to point at');
+    if (/<(input|button|form|select|textarea)[\s>]/i.test(s))
+      bad.push('form controls, which cannot do anything without JavaScript');
+    return bad;
+  }
+
   // -------------------------------------------------- frame & house pickers
   function renderPickers() {
+    if (MODE === 'commons') return renderCommonsPickers();
     var fp = [];
     for (var f in FRAMES) {
       fp.push('<label class="pick"><input type="radio" name="framepick" value="' + f + '"' +
-        (state.teacher.frame === f ? ' checked' : '') + ' data-pickpath="frame" />' +
+        (state.teacher.frame === f ? ' checked' : '') + ' data-pickpath="teacher.frame" />' +
         '<span><b>' + escAttr(FRAMES[f].label) + '</b><em>' + escAttr(FRAMES[f].blurb) + '</em></span></label>');
     }
     document.getElementById('framePicks').innerHTML = fp.join('');
 
     var hp = ['<label class="pick"><input type="radio" name="housepick" value=""' +
-      (state.teacher.house === '' ? ' checked' : '') + ' data-pickpath="house" />' +
+      (state.teacher.house === '' ? ' checked' : '') + ' data-pickpath="teacher.house" />' +
       '<span><b>Leave it off</b><em>No crest shown.</em></span></label>'];
     for (var k in HOUSES) {
       var H = HOUSES[k];
       hp.push('<label class="pick"><input type="radio" name="housepick" value="' + k + '"' +
-        (state.teacher.house === k ? ' checked' : '') + ' data-pickpath="house" />' +
+        (state.teacher.house === k ? ' checked' : '') + ' data-pickpath="teacher.house" />' +
         '<span><b><span style="display:inline-block;width:11px;height:11px;border-radius:50%;background:' +
         H.color + ';margin-right:7px;"></span>' + escAttr(H.label) + '</b><em>' + escAttr(H.virtue) + '</em></span></label>');
     }
     document.getElementById('housePicks').innerHTML = hp.join('');
 
-    // Photo preview. This is the only place a bad link gets caught before it
-    // reaches Canvas, so it reports load failures rather than showing nothing.
-    var prev = document.getElementById('photoPrev');
-    var src = photoSrc(), warn = photoWarning();
+    photoPreview('photoPrev', state.teacher.photo, 'your');
+  }
+
+  // Photo preview. This is the only place a bad link gets caught before it
+  // reaches Canvas, so it reports load failures rather than showing nothing.
+  function photoPreview(elId, raw, whose) {
+    var prev = document.getElementById(elId);
+    if (!prev) return;
+    var src = imgSrc(raw), warn = imgWarning(raw);
     if (warn) {
       prev.innerHTML = '<span class="sizenote" style="color:#8C2C2C;">' + escAttr(warn) + '</span>';
     } else if (src) {
       prev.innerHTML = '<img alt="" /><span class="sizenote">Checking that link\u2026</span>';
       var im = prev.firstChild, msg = prev.lastChild;
       im.onload = function () {
-        msg.textContent = 'That link works. Students who cannot see the file will get your initials instead.';
+        msg.textContent = 'That link works. Students who cannot see the file will get ' + whose + ' initials instead.';
         msg.style.color = '#1E7A46';
       };
       im.onerror = function () {
@@ -1005,12 +1816,82 @@
       };
       im.src = src;
     } else {
-      prev.innerHTML = '<span class="sizenote">No photo yet &mdash; your initials will fill the frame.</span>';
+      prev.innerHTML = '<span class="sizenote">No photo yet &mdash; ' + whose + ' initials will fill the frame.</span>';
     }
   }
 
+  // ------------------------------------------------------- commons form parts
+  function renderCommonsPickers() {
+    var ap = [];
+    for (var a in ACCENTS) {
+      var C = ACCENTS[a];
+      ap.push('<label class="swatch"><input type="radio" name="accentpick" value="' + a + '"' +
+        (state.hero.accent === a ? ' checked' : '') + ' data-pickpath="hero.accent" />' +
+        '<span><i style="background:' + C.color + ';"></i><b style="font-weight:600;">' + escAttr(C.label) +
+        '</b> <em style="font-style:normal;color:var(--muted);">' + escAttr(C.note) + '</em></span></label>');
+    }
+    document.getElementById('accentPicks').innerHTML = ap.join('');
+
+    var fp = [];
+    for (var f in FRAMES) {
+      fp.push('<label class="pick"><input type="radio" name="cframepick" value="' + f + '"' +
+        (state.teacher.frame === f ? ' checked' : '') + ' data-pickpath="teacher.frame" />' +
+        '<span><b>' + escAttr(FRAMES[f].label) + '</b><em>' + escAttr(FRAMES[f].blurb) + '</em></span></label>');
+    }
+    document.getElementById('cFramePicks').innerHTML = fp.join('');
+
+    var hp = ['<label class="pick"><input type="radio" name="chousepick" value=""' +
+      (state.teacher.house === '' ? ' checked' : '') + ' data-pickpath="teacher.house" />' +
+      '<span><b>Leave it off</b><em>No crest shown.</em></span></label>'];
+    for (var k in HOUSES) {
+      var H = HOUSES[k];
+      hp.push('<label class="pick"><input type="radio" name="chousepick" value="' + k + '"' +
+        (state.teacher.house === k ? ' checked' : '') + ' data-pickpath="teacher.house" />' +
+        '<span><b><span style="display:inline-block;width:11px;height:11px;border-radius:50%;background:' +
+        H.color + ';margin-right:7px;"></span>' + escAttr(H.label) + '</b><em>' + escAttr(H.virtue) + '</em></span></label>');
+    }
+    document.getElementById('cHousePicks').innerHTML = hp.join('');
+
+    photoPreview('pPhotoPrev', state.principal.photo, 'their');
+    photoPreview('cPhotoPrev', state.teacher.photo, 'your');
+
+    // Only the fields for the chosen way of getting the poll in are on screen.
+    var mode = state.poll.mode || 'link';
+    document.getElementById('pollLink').hidden  = (mode !== 'link');
+    document.getElementById('pollEmbed').hidden = (mode !== 'embed');
+    document.getElementById('pollHtml').hidden  = (mode !== 'html');
+    lintInto('pollEmbedLint', state.poll.embed, 'embed');
+    lintInto('pollHtmlLint',  state.poll.html,  'html');
+  }
+
+  function lintInto(elId, raw, kind) {
+    var el = document.getElementById(elId);
+    if (!el) return;
+    var s = String(raw || '').trim();
+    if (!s) { el.innerHTML = ''; return; }
+    var bad = canvasStrips(s);
+    if (kind === 'embed') {
+      if (!/<iframe[\s>]/i.test(s)) {
+        el.innerHTML = '<div class="lint bad">There is no &lt;iframe&gt; in there, so this will not embed anything. ' +
+          'Look for an <strong>Embed</strong> option on your poll site and copy the whole snippet it gives you.</div>';
+        return;
+      }
+      el.innerHTML = '<div class="lint ok">That looks like an embed. Canvas will keep it, but it only loads embeds ' +
+        'from sites it has been told to trust &mdash; open the finished page as a student to be sure it appears.</div>';
+      return;
+    }
+    if (!bad.length) {
+      el.innerHTML = '<div class="lint ok">Nothing in there that Canvas throws away. It will look the same once pasted.</div>';
+      return;
+    }
+    el.innerHTML = '<div class="lint bad">Canvas will remove ' + (bad.length === 1 ? 'this' : 'these') + ' when you paste:<ul>' +
+      bad.map(function (b) { return '<li>' + escAttr(b) + '</li>'; }).join('') + '</ul></div>';
+  }
+
   function renderScalars() {
-    var nodes = document.querySelectorAll('#form [data-path]');
+    // Scoped to the mode on screen. The other mode's fields are still in the
+    // document, and their paths mean nothing in this mode's state.
+    var nodes = document.querySelectorAll('#mode-' + MODE + ' [data-path]');
     for (var i = 0; i < nodes.length; i++) {
       var el = nodes[i], p = el.getAttribute('data-path');
       if (/\.\d+\./.test(p)) continue; // list items are rendered wholesale
@@ -1064,12 +1945,22 @@
   window.addEventListener('resize', sizePreviewToContent);
 
   function updateOutput() {
-    var html = build();
+    var html = (MODE === 'commons') ? buildCommons() : build();
     codeEl.value = html;
     frameEl.srcdoc = '<!DOCTYPE html><html><head><meta charset="utf-8" /></head>' +
       '<body style="margin:0; padding:14px; background:#e8ecf5;">' + html + '</body></html>';
     var kb = Math.max(1, Math.round(html.length / 1024));
-    sizeEl.textContent = kb + ' KB · ' + state.modules.filter(function (m) { return m.title; }).length + ' modules';
+    var count;
+    if (MODE === 'commons') {
+      var n = 0;
+      state.rows.forEach(function (r) {
+        n += (r.cards || []).filter(function (c) { return String(c.title || '').trim(); }).length;
+      });
+      count = state.rows.length + ' sections · ' + n + ' cards';
+    } else {
+      count = state.modules.filter(function (m) { return m.title; }).length + ' modules';
+    }
+    sizeEl.textContent = kb + ' KB · ' + count;
     save();
   }
 
@@ -1079,8 +1970,15 @@
     var p = e.target.getAttribute('data-path');
     if (!p) return;
     setPath(p, e.target.type === 'checkbox' ? e.target.checked : e.target.value);
-    if (p === 'teacher.photo') {
-      if (String(e.target.value).trim()) state.teacher.show = true;
+    // A pasted photo or poll changes what the side panels have to say about it,
+    // so those redraw as the teacher types rather than after some other click.
+    if (/photo$/.test(p)) {
+      if (String(e.target.value).trim()) {
+        if (p.indexOf('principal.') === 0) state.principal.show = true;
+        else state.teacher.show = true;
+      }
+      renderPickers();
+    } else if (/^poll\./.test(p)) {
       renderPickers();
     }
     updateOutput();
@@ -1089,22 +1987,27 @@
     var p = e.target.getAttribute('data-path');
     if (!p) return;
     setPath(p, e.target.type === 'checkbox' ? e.target.checked : e.target.value);
+    if (/^poll\./.test(p)) renderPickers();
     updateOutput();
   });
 
-  // frame / house radios sit outside the data-path scheme
+  // accent / frame / house radios sit outside the data-path scheme
   document.getElementById('form').addEventListener('change', function (e) {
     var pp = e.target.getAttribute('data-pickpath');
     if (!pp) return;
-    state.teacher[pp] = e.target.value;
-    if (pp === 'house' && e.target.value) state.teacher.show = true;
+    setPath(pp, e.target.value);
+    if (/\.house$/.test(pp) && e.target.value) state.teacher.show = true;
     renderPickers(); renderScalars(); updateOutput();
   });
 
+  // Keyed by kind, not by list name, because sections and the cards inside them
+  // are added by the same controls.
   var NEW_ITEM = {
     announcements: function () { return { pinned: false, when: '', text: '' }; },
     tiles: function () { return { icon: '✨', label: '', desc: '', url: '', blank: false }; },
-    modules: function () { return { title: '', url: '' }; }
+    modules: function () { return { title: '', url: '' }; },
+    row: newRow,
+    card: newCard
   };
 
   document.addEventListener('click', function (e) {
@@ -1112,15 +2015,29 @@
     if (!btn) return;
     var act = btn.getAttribute('data-action');
     var list = btn.getAttribute('data-list');
+    var kind = btn.getAttribute('data-kind') || list;
     var idx = parseInt(btn.getAttribute('data-idx'), 10);
+    // The list is addressed the same way a field is, so "rows.2.cards" resolves
+    // as readily as "tiles" and one set of controls serves both levels.
+    var arr = list ? getPath(list) : null;
 
-    if (act === 'add')       { state[list].push(NEW_ITEM[list]()); redrawAll(); }
-    else if (act === 'del')  { state[list].splice(idx, 1); if (!state[list].length) state[list].push(NEW_ITEM[list]()); redrawAll(); }
-    else if (act === 'up')   { swap(state[list], idx, idx - 1); redrawAll(); }
-    else if (act === 'down') { swap(state[list], idx, idx + 1); redrawAll(); }
-    else if (act === 'loadExample') { state = exampleState(); redrawAll(); }
+    if (act === 'add')       { arr.push(NEW_ITEM[kind]()); redrawAll(); }
+    else if (act === 'del')  {
+      arr.splice(idx, 1);
+      // A section with no cards is a legitimate thing to want; a builder with no
+      // sections at all just looks broken, so the top-level lists refill.
+      if (!arr.length && kind !== 'card') arr.push(NEW_ITEM[kind]());
+      redrawAll();
+    }
+    else if (act === 'up')   { swap(arr, idx, idx - 1); redrawAll(); }
+    else if (act === 'down') { swap(arr, idx, idx + 1); redrawAll(); }
+    else if (act === 'mode') { setMode(btn.getAttribute('data-mode')); }
+    else if (act === 'loadExample') { state = STATES[MODE] = MODES[MODE].example(); redrawAll(); }
     else if (act === 'reset') {
-      if (confirm('Clear everything and start from a blank form?')) { state = blankState(); redrawAll(); }
+      if (confirm('Clear everything and start from a blank form?')) {
+        state = STATES[MODE] = MODES[MODE].blank();
+        redrawAll();
+      }
     }
     else if (act === 'tab')  { showTab(btn.getAttribute('data-tab')); }
     else if (act === 'pw') {
@@ -1174,7 +2091,9 @@
     var blob = new Blob([codeEl.value], { type: 'text/html;charset=utf-8' });
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'course-home-' + slug(state.course.title) + '.html';
+    a.download = (MODE === 'commons')
+      ? 'optima-commons-' + slug(state.hero.homeroom || state.hero.title) + '.html'
+      : 'course-home-' + slug(state.course.title) + '.html';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -1182,6 +2101,7 @@
     flash('Downloaded');
   }
 
+  applyMode();
   redrawAll();
 })();
 </script>

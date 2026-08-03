@@ -4,10 +4,15 @@ Self-serve builders that turn a short form into a branded Canvas page for Optima
 
 | Builder | Makes | Link |
 |---|---|---|
-| `index.html` | A course **home page** | https://optimaondemand.github.io/teacher-homepages/ |
+| `index.html` | A course **home page** | https://optimaondemand.github.io/teacher-homepages/#course |
+| `index.html` | An **Optima Commons** homeroom page | https://optimaondemand.github.io/teacher-homepages/#commons |
 | `lesson.html` | A **lesson page** in the house lesson format | https://optimaondemand.github.io/teacher-homepages/lesson.html |
 
-They are siblings by design and share their conventions (inline styles only, pure-ASCII output, `localStorage` drafts, live preview beside the form). If they are ever merged into one multi-purpose builder, that shared spine is the seam to merge along.
+They are siblings by design and share their conventions (inline styles only, pure-ASCII output, `localStorage` drafts, live preview beside the form).
+
+**Three builders, two files, no new addresses.** Course home and Commons are two *modes* of `index.html`, switched by a tab strip in the header and remembered in `localStorage`. That was the requirement: teachers already had the two existing links in circulation, so a third builder could not arrive as a third URL. A `#course` / `#commons` fragment lets the lesson page link into a specific mode, and `applyMode()` keeps the address bar matching the visible tab via `history.replaceState` — same page, bookmarkable, no extra history entries.
+
+Adding a fourth builder means another entry in the `MODES` map, another `#mode-<name>` wrapper in the form column, and a `build<Name>()` emitter. Nothing else changes: storage, preview, copy/download and the mode plumbing are already generic.
 
 ---
 
@@ -200,8 +205,56 @@ Teachers reported "the photo option does not work." Four defects. Three were in 
 2. **Adding a photo by link did not switch the section on.** The file-picker path set `show = true`; the link path did not, so the same intent worked or silently did nothing depending on which input a teacher used. Entering a link now switches the section on.
 3. **The link field filled itself with thousands of characters of base64.** While both inputs existed, the field carried `data-path="teacher.photo"` and `renderScalars()` wrote the state straight back into it — so after using the picker, the "paste a link" box filled with the encoded image, and any list edit re-filled it. With embedding gone, the field only ever holds a URL, which is what it should show.
 
+---
+
+# The Optima Commons builder (`index.html`, Commons tab)
+
+A homeroom page, built by the homeroom teacher. The Commons is framed as a gathering place where students connect with each other and with the OAO virtual campus community, tagline *Transforming Wonder into Purpose*.
+
+Its layout, section set and language come from a proof-of-concept page written by a teacher; its look comes from the two builders beside it. The POC's own palette — seven button colours — was dropped for Optima navy/cyan/gold, and the POC's `INSERT_..._LINK` placeholders became form fields.
+
+## Sections
+
+Hero (heading, subtitle, tagline pill, homeroom, term, grade band) → **card sections** → flash poll → what to do this week → **Meet your principal** → footer line. The homeroom teacher's own introduction sits near the top; the principal sits at the very bottom.
+
+**Card sections are one repeatable shape**, not three hard-coded ones. Start Here, House Community and Help & Support in the POC are all *heading + intro + a row of cards*, so the builder ships one section type and loads those three as the example. A teacher renames, reorders, deletes or adds sections without a code change. Cards run 3 or 4 across, optionally on a tinted panel.
+
+## Card rows are tables, not flexbox
+
+A `<td>` stretches to the tallest cell in its row on its own. Flexbox would need `align-items` to equalise card heights, and Canvas keeps the markup but not the stylesheet — so whatever equalises those heights has to be **structural**. This is the one place the Commons output deliberately diverges from the course home page, which uses flex for its tiles.
+
+Known cosmetic consequence: buttons within a row do not bottom-align when descriptions differ in length. The POC behaves the same way. Fixing it means a nested full-height table inside each cell.
+
+## The banner accent
+
+The banner stays navy so the page always reads as Optima. The teacher picks the accent that colours the rule under the banner, the tagline pill, every card's top edge and the section underlines: Optima cyan, Optima gold, or one of the four house colours.
+
+House colours are offered **here but not on a course home page**. A teacher's house travels with the teacher, and their Commons is their own room, so flying it says something true; on a course home page the same crest in the header would read as the *course's* house, which is why it lives in the Meet the Teacher card there instead.
+
+Gold stays gold regardless of the accent in the "what to do this week" panel — it is this page's "read this one" colour, the same role a pinned announcement plays on a course home page. So there are never more than two accents in play.
+
+## Meet your principal, and the Connect link
+
+The circular portrait in the POC was the principal's, not the teacher's. Principals go with a grade band, so students see the same face across every homeroom in the band.
+
+It sits last on the page, after the week's work, as the invitation to reach past the homeroom. One **Connect** button takes whatever channel that principal actually keeps — a Calendly booking page, a Teams meeting, a Canvas page, or an email address. A bare email is turned into a `mailto:` link by `linkOut()`, so a principal who just gives an address still gets a working button.
+
+## The flash poll, and what Canvas allows
+
+A teacher builds the poll elsewhere and brings it in three ways:
+
+| Mode | What actually happens |
+|---|---|
+| Link button | Always works. The default. |
+| Iframe embed | Kept by Canvas, but Canvas only loads embeds from sites it trusts. The builder checks there is an `<iframe>` at all and says to test the page as a student. |
+| Pasted HTML | Linted by `canvasStrips()`. A poll that needs JavaScript to count votes **cannot** work once pasted; what survives is the look of a poll. The teacher is told exactly what will be removed, before it reaches a student. |
+
+`canvasStrips()` here is an independent copy, deliberately not shared with the lesson builder, so neither file's changes can break the other.
+
+---
+
 ## Maintenance
 
 - The Tech Help tile is pre-filled with the tech-support Teams meeting, in `TEAMS_TECH_HELP` near the top of the script block.
-- Work in progress is kept in `localStorage`, under `optima-course-home-builder-v3` for the home page builder and `optima-lesson-page-builder-v1` for the lesson builder. **Bump the key whenever a default changes**, not only when the shape does: the loader merges saved values over defaults, so a stale saved `false` outlives the fix that changed it. That is precisely what would have kept the photo bug alive for anyone who had already used the builder.
+- Work in progress is kept in `localStorage`, under `optima-course-home-builder-v3` for the home page builder, `optima-commons-builder-v1` for the Commons builder, `optima-page-builder-mode` for the tab you were last on, and `optima-lesson-page-builder-v1` for the lesson builder. The course key was deliberately **not** bumped when the Commons tab landed, so every draft already in a teacher's browser still opens. **Bump the key whenever a default changes**, not only when the shape does: the loader merges saved values over defaults, so a stale saved `false` outlives the fix that changed it. That is precisely what would have kept the photo bug alive for anyone who had already used the builder.
 - `course-home-builder.html` in the `optima-widgets` repo is the ancestor of this builder and is now **behind** it (no Meet the Teacher section). Treat this repo as canonical and retire that copy rather than maintaining both.
