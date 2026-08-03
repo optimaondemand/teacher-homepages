@@ -203,7 +203,7 @@
             <option value="11">11th grade</option>
             <option value="12">12th grade</option>
           </select></label>
-        <p class="hint" style="margin:0;">Grade level does not change the layout. It is carried into the request you can send Claude for an interactive activity, so the activity is pitched at the right level.</p>
+        <p class="hint" style="margin:0;">Grade level does not change the layout. It is here so the page records who it was written for.</p>
       </div>
     </section>
 
@@ -259,7 +259,7 @@
       <h2><span><span class="step">5</span>Lesson content</span></h2>
       <div class="body">
         <p class="hint">The lesson is built out of <strong>Parts</strong>. Each Part is one white card with its own gold heading. Inside a Part you add whatever the content needs: your text, a drawn visual, an image, a video, a call-out box, a reveal box, or an interactive activity. Add as many Parts as the lesson takes.</p>
-        <p class="hint">Two of those are built by Claude rather than typed here: a <strong>drawn visual</strong> and an <strong>interactive activity</strong>. You describe what you want, the <strong>Ask Claude</strong> tab writes the request, and you paste the HTML back. Nothing on this page talks to Claude, so that conversation happens wherever you normally use it, and you can keep asking for changes until it is right.</p>
+        <p class="hint">A <strong>drawn visual</strong> is a comparison table, a timeline, numbered steps, or a single idea worth remembering, drawn into the page rather than uploaded as a picture. An <strong>interactive activity</strong> is a set of boxes a student thinks about, then clicks open to check. Both are built from what you type here.</p>
         <div id="list-parts"></div>
         <button type="button" class="add" data-action="add" data-list="parts" data-kind="part">+ Add a Part</button>
       </div>
@@ -392,7 +392,6 @@
       <div class="tabs" role="tablist">
         <button type="button" role="tab" id="tab-preview" aria-selected="true" data-action="tab" data-tab="preview">Preview</button>
         <button type="button" role="tab" id="tab-canvas" aria-selected="false" data-action="tab" data-tab="canvas">HTML to paste</button>
-        <button type="button" role="tab" id="tab-ask" aria-selected="false" data-action="tab" data-tab="ask">Ask Claude</button>
       </div>
 
       <div id="pane-preview">
@@ -403,11 +402,6 @@
       <div id="pane-canvas" hidden>
         <p class="panenote">Paste this into a Canvas page. It is plain HTML with every style written inline, which is all Canvas keeps.</p>
         <textarea class="codebox" id="codeCanvas" readonly spellcheck="false"></textarea>
-      </div>
-
-      <div id="pane-ask" hidden>
-        <p class="panenote">Copy this and paste it to Claude. You get HTML back, which goes in the &ldquo;Paste the HTML&rdquo; box of the matching Part.</p>
-        <textarea class="codebox" id="codeAsk" readonly spellcheck="false"></textarea>
       </div>
 
       <div class="outbar">
@@ -482,11 +476,10 @@
   };
 
   // ---------------------------------------------------------------- presets
-  // Drawn visuals and activities a teacher can build here, with no Claude
-  // account and no HTML. Each one is a small form plus a renderer that emits
-  // the same inline-styled, JavaScript-free HTML Canvas keeps. "Ask Claude"
-  // stays available for anything these do not cover, but it is the escape
-  // hatch, not the way in.
+  // Every drawn visual and interactive activity a teacher can build. Each is a
+  // small form plus a renderer that emits the same inline-styled,
+  // JavaScript-free HTML Canvas keeps. Adding a shape here is how this grows;
+  // no path asks a teacher to supply HTML.
   var DOT = ' &middot; ';
 
   function rowsWith(b, need) {
@@ -732,20 +725,6 @@
     widget: 'Interactive activity'
   };
 
-  // Canvas keeps plain, inline-styled HTML and throws away everything else.
-  // Anything on this list in a pasted-in activity will not survive, so the
-  // teacher is told before it reaches a student rather than after.
-  function canvasStrips(html) {
-    var s = String(html || ''), bad = [];
-    if (/<script[\s>]/i.test(s))                      bad.push('a <script> block');
-    if (/<style[\s>]/i.test(s))                       bad.push('a <style> block');
-    if (/\son[a-z]+\s*=/i.test(s))                    bad.push('an onclick or similar handler');
-    if (/\sclass\s*=/i.test(s))                       bad.push('class attributes, which have no styles to point at');
-    if (/<(input|button|form|select|textarea)[\s>]/i.test(s)) bad.push('form controls, which cannot do anything without JavaScript');
-    return bad;
-  }
-
-  // ------------------------------------------------------------------ state
   function blankState() {
     return {
       meta: { course: '', q: '', moduleNumber: '', moduleTitle: '', lessonNumber: '', lessonTitle: '', grade: '' },
@@ -772,8 +751,8 @@
     if (kind === 'video')   return { kind: 'video', src: '', title: '', notice: '' };
     if (kind === 'callout') return { kind: 'callout', type: 'helpful', label: '', text: '' };
     if (kind === 'reveal')  return { kind: 'reveal', summary: '', hidden: '' };
-    if (kind === 'widget')  return { kind: 'widget', mode: 'selfcheck', h1: '', h2: '', note: '', rows: [ newRow(), newRow() ], want: '', html: '', prevHtml: '', change: '' };
-    if (kind === 'figure')  return { kind: 'figure', mode: 'table', h1: '', h2: '', note: '', rows: [ newRow(), newRow() ], want: '', html: '', prevHtml: '', change: '' };
+    if (kind === 'widget')  return { kind: 'widget', mode: 'selfcheck', h1: '', h2: '', note: '', rows: [ newRow(), newRow() ] };
+    if (kind === 'figure')  return { kind: 'figure', mode: 'table', h1: '', h2: '', note: '', rows: [ newRow(), newRow() ] };
     return { kind: 'text', subhead: '', body: '' };
   }
 
@@ -808,7 +787,7 @@
               { a: 'Surface area', b: '6 units', c: '24 units' },
               { a: 'Volume', b: '1 unit', c: '8 units' },
               { a: 'Surface for each unit of volume', b: '6', c: '3' }
-            ], want: '', html: '', prevHtml: '', change: '' },
+            ] },
           { kind: 'callout', type: 'warning', label: 'COMMON MISTAKE',
             text: 'Cells do not divide because they are old. They divide because of a size and signal problem. Age is not the trigger.' },
           { kind: 'visual', url: '', size: 'medium',
@@ -838,7 +817,7 @@
                 c: 'Doubling is what copying does. It happens before anything is checked or moved.' },
               { a: 'A fault is found, and the cell never divides at all.', b: 'Check',
                 c: 'A cell that fails the check is stopped rather than allowed to pass the fault on.' }
-            ], want: '', html: '', prevHtml: '', change: '' }
+            ] }
         ]
       }
     ];
@@ -865,7 +844,17 @@
         }
       }
       if (!Array.isArray(s.parts) || !s.parts.length) s.parts = [ newPart() ];
-      s.parts.forEach(function (p) { if (!Array.isArray(p.blocks)) p.blocks = [ newBlock('text') ]; });
+      s.parts.forEach(function (p) {
+        if (!Array.isArray(p.blocks)) p.blocks = [ newBlock('text') ];
+        // Drafts saved while "ask Claude" existed carry a mode that no longer
+        // renders. Move those onto a real shape rather than discard the draft.
+        p.blocks.forEach(function (b) {
+          if ((b.kind === 'figure' || b.kind === 'widget') && !(PRESETS[b.kind] || {})[b.mode]) {
+            b.mode = (b.kind === 'figure') ? 'table' : 'selfcheck';
+            if (!Array.isArray(b.rows) || !b.rows.length) b.rows = [ newRow(), newRow() ];
+          }
+        });
+      });
       if (!Array.isArray(s.standards.library)) s.standards.library = [];
       if (!Array.isArray(s.standards.selected)) s.standards.selected = [];
       return s;
@@ -1352,7 +1341,6 @@
     // lesson can be written now and the pictures linked in afterwards.
     if (b.kind === 'visual')  return !!(t(b.alt) || t(b.caption) || (t(b.url) && !imgWarning(b.url)));
     if (b.kind === 'figure' || b.kind === 'widget') {
-      if (b.mode === 'ask' || !b.mode) return !!(t(b.html) || t(b.want));
       var def = presetDef(b);
       if (!def) return false;
       if (def.fields.length) return rowsWith(b, def.need).length > 0;
@@ -1374,20 +1362,7 @@
 
     if (b.kind === 'figure' || b.kind === 'widget') {
       var def = presetDef(b);
-      if (def) { def.render(b, h, p); return; }
-      // "Ask Claude" mode: the pasted HTML, or a placeholder until it arrives
-      if (t(b.html)) {
-        h.push(p + '<!-- ' + (b.kind === 'figure' ? 'Drawn visual' : 'Interactive activity') + ' -->');
-        String(b.html).replace(/\r/g, '').split('\n').forEach(function (l) {
-          if (t(l)) h.push(p + l.replace(/\s+$/, ''));
-        });
-      } else {
-        h.push(p + '<div style="background: #EEF1F8; border: 1px dashed #B9C6DC; border-radius: 8px; padding: 16px 20px; margin: 16px 0;">');
-        h.push(p + '  <div style="font-size: 11px; color: #6b7a99; margin-bottom: 7px;">' +
-          (b.kind === 'figure' ? 'VISUAL, NOT DRAWN YET' : 'INTERACTIVE ACTIVITY, NOT BUILT YET') + '</div>');
-        h.push(p + '  <div style="font-size: 15px; color: #1a2340; line-height: 1.55;">' + esc(b.want) + '</div>');
-        h.push(p + '</div>');
-      }
+      if (def) def.render(b, h, p);
       return;
     }
 
@@ -1485,156 +1460,6 @@
     return h.join('\n');
   }
 
-  // ------------------------------------------------------- the Claude request
-  function widgetRequests(kind) {
-    var out = [];
-    (state.parts || []).forEach(function (part, pi) {
-      (part.blocks || []).forEach(function (b, bi) {
-        if (b.kind === kind && b.mode === 'ask' && t(b.want) && !t(b.html)) {
-          // the teaching text immediately above the widget, so Claude can see
-          // what the widget is meant to check
-          var above = '';
-          for (var i = bi - 1; i >= 0; i--) {
-            if (part.blocks[i].kind === 'text' && t(part.blocks[i].body)) { above = t(part.blocks[i].body); break; }
-          }
-          out.push({ kind: kind, part: pi + 1, label: t(part.label), want: t(b.want), above: above });
-        }
-      });
-    });
-    return out;
-  }
-
-  function buildAsk() {
-    var m = state.meta;
-    var acts = widgetRequests('widget');
-    var figs = widgetRequests('figure');
-    var reqs = acts.concat(figs);
-    var L = [];
-
-    if (!reqs.length) {
-      return [
-        'Nothing to ask for yet.',
-        '',
-        'Add a "Drawn visual" or an "Interactive activity" block to one of your Parts',
-        'and describe what you want. This box then fills with a request you can paste',
-        'to Claude, in whatever way you already use it.',
-        '',
-        'A drawn visual is a diagram, timeline, labelled figure, or comparison table,',
-        'built into the page itself. There is no picture to upload, nothing to host,',
-        'and no link that can break later.',
-        '',
-        'An activity is worth adding when the lesson turns on something a student can',
-        'practise or decide: sorting items into categories, matching a term to its',
-        'meaning, putting steps in order, or working an example before checking it.',
-        '',
-        'Canvas keeps only plain HTML on a page, so both are built from inline styles,',
-        'and an activity clicks open rather than scoring an answer for the student.'
-      ].join('\n');
-    }
-
-    var want = [];
-    if (figs.length) want.push(figs.length > 1 ? figs.length + ' drawn visuals' : 'a drawn visual');
-    if (acts.length) want.push(acts.length > 1 ? acts.length + ' interactive activities' : 'an interactive activity');
-    L.push('I am building a lesson page for Optima Academy Online and I need ' +
-           want.join(' and ') + ' for it.');
-    L.push('');
-    L.push('Please use the optima-lesson-format skill for the look, and match the');
-    L.push('design tokens: navy #0E1C42, cyan #55C8E8, gold #C7922C, card border');
-    L.push('#D0D9E8, lavender #EEF1F8, body text #1a2340 at 17px with line-height 1.6.');
-    L.push('');
-    L.push('THIS IS THE PART THAT MATTERS. The page is pasted straight into a Canvas');
-    L.push('page, and Canvas throws away everything except plain HTML. So:');
-    L.push('  - No JavaScript at all. No <script>, no onclick, no event handlers.');
-    L.push('  - No <style> block and no class attributes. Every style has to be an');
-    L.push('    inline style="..." attribute, because there is no stylesheet to');
-    L.push('    point a class at.');
-    L.push('  - No form controls. Buttons, inputs, and radios cannot do anything');
-    L.push('    without JavaScript, so they would just sit there dead.');
-    L.push('  - No images, and no inline <svg>. Build a visual out of divs, borders,');
-    L.push('    background colours, and text. There is nowhere to host a picture and');
-    L.push('    Canvas may not keep an svg.');
-    L.push('  - Non-ASCII characters as numeric HTML entities, since the page');
-    L.push('    carries no charset declaration.');
-    L.push('  - No em dashes anywhere a student reads.');
-    L.push('');
-    if (figs.length) {
-      L.push('FOR THE DRAWN VISUALS. Make it legible and label it. It has to hold up');
-      L.push('on a phone, so lay it out with flex-wrap and percentage or max-width');
-      L.push('sizing rather than fixed pixel columns. Use at most two accent colours');
-      L.push('on the navy. Do not name the teaching technique anywhere in it.');
-      L.push('');
-    }
-    if (acts.length) {
-      L.push('FOR THE ACTIVITIES. The interactivity has to come from native <details>');
-      L.push('and <summary> click-to-open boxes, which Canvas does keep and does');
-      L.push('render, plus title="..." hover definitions where a word needs glossing.');
-      L.push('Build the attempt into the visible <summary> line, so the student');
-      L.push('commits before the reveal opens, and put anything that gives the answer');
-      L.push('away inside the hidden part. Do not use a reveal box for an open-ended');
-      L.push('freewrite, where there is no answer to check against.');
-      L.push('');
-    }
-    L.push('Give me the HTML blocks only, one clearly labelled block per request, with');
-    L.push('no surrounding page and no <html>, <head>, or <body> tags. I am pasting');
-    L.push('each one into the Lesson Page Builder.');
-    L.push('');
-    L.push('LESSON');
-    L.push('  Course: ' + (t(m.course) || '(not set)'));
-    L.push('  Grade level: ' + (t(m.grade) ? t(m.grade) + 'th grade' : '(not set)'));
-    var qm = [];
-    if (t(m.q)) qm.push('Q' + t(m.q));
-    if (t(m.moduleNumber)) qm.push('Module ' + t(m.moduleNumber));
-    if (t(m.moduleTitle)) qm.push(t(m.moduleTitle));
-    L.push('  Module: ' + (qm.join(' / ') || '(not set)'));
-    L.push('  Lesson: ' + ([t(m.lessonNumber), t(m.lessonTitle)].filter(Boolean).join(' / ') || '(not set)'));
-    if (t(state.focus.hook) || t(state.focus.intro))
-      L.push('  Focus: ' + [t(state.focus.hook), t(state.focus.intro)].filter(Boolean).join(' '));
-    var objs = (state.objectives.items || []).filter(function (x) { return t(x); });
-    if (objs.length) {
-      L.push('  Objectives:');
-      objs.forEach(function (o) { L.push('    - ' + t(o)); });
-    }
-    var stds = pickedStandards();
-    if (stds.length) {
-      L.push('  Standards this lesson covers (for your context only, do not print');
-      L.push('  the codes in what you build):');
-      stds.forEach(function (s) { L.push('    - ' + s.code + (s.text ? ': ' + s.text : '')); });
-    }
-    L.push('');
-
-    reqs.forEach(function (r, i) {
-      L.push('REQUEST ' + (i + 1) + ' of ' + reqs.length +
-             ' (' + (r.kind === 'figure' ? 'a drawn visual' : 'an interactive activity') + ')');
-      L.push('  Goes in: Part ' + r.part + (r.label ? ' (' + r.label + ')' : ''));
-      L.push('  What I want:');
-      wrapInto(L, r.want, '    ');
-      if (r.above) {
-        L.push('  It comes right after this teaching text, so it should test this and');
-        L.push('  nothing the student has not been taught yet:');
-        L.push('  """');
-        wrapInto(L, r.above, '  ');
-        L.push('  """');
-      }
-      L.push('');
-    });
-
-    L.push('If a request cannot be done without JavaScript, say so and tell me what');
-    L.push('would work better in its place.');
-    return L.join('\n');
-  }
-
-  function wrapInto(arr, text, pad) {
-    String(text || '').replace(/\r/g, '').split('\n').forEach(function (para) {
-      if (!t(para)) { arr.push(''); return; }
-      var words = t(para).split(/\s+/), line = '';
-      words.forEach(function (w) {
-        if ((line + ' ' + w).length > 74 - pad.length) { arr.push(pad + line); line = w; }
-        else line = line ? line + ' ' + w : w;
-      });
-      if (line) arr.push(pad + line);
-    });
-  }
-
   // ------------------------------------------------------- pre-publish checks
   function videoDomains() {
     var seen = {}, out = [];
@@ -1669,29 +1494,17 @@
         'Then open the page as a student would and confirm the video actually plays.']);
     }
 
-    var widgetsWanted = countBlocks('widget', function (b) { return b.mode === 'ask' && !t(b.html); });
-    var widgetsStrip  = countBlocks('widget', function (b) { return canvasStrips(b.html).length > 0; });
-    if (widgetsWanted) {
-      out.push(['note', widgetsWanted + (widgetsWanted > 1 ? ' activities are' : ' activity is') + ' still just a description',
-        'Open the <strong>Ask Claude</strong> tab, copy the request, and paste the HTML you get back into the matching Part. ' +
-        'Until then the page shows a dashed placeholder that students should not see.']);
-    }
-    if (widgetsStrip) {
-      out.push(['warn', 'Canvas will break ' + widgetsStrip + (widgetsStrip > 1 ? ' of your activities' : ' of your activities'),
-        'They contain JavaScript, classes, or form controls, none of which survive a paste into Canvas. ' +
-        'Each one is flagged in its own block above. Ask Claude to rebuild it out of click-to-open reveal boxes with inline styles.']);
-    }
-
-    var figsWanted = countBlocks('figure', function (b) { return b.mode === 'ask' && !t(b.html); });
-    var figsStrip  = countBlocks('figure', function (b) { return canvasStrips(b.html).length > 0; });
-    if (figsWanted) {
-      out.push(['note', figsWanted + (figsWanted > 1 ? ' visuals are' : ' visual is') + ' still just a description',
-        'Open the <strong>Ask Claude</strong> tab, copy the request, and paste the HTML you get back into the matching Part. ' +
-        'Until then the page shows a dashed placeholder that students should not see.']);
-    }
-    if (figsStrip) {
-      out.push(['warn', 'Canvas will break ' + figsStrip + (figsStrip > 1 ? ' of your visuals' : ' of your visuals'),
-        'Each one is flagged in its own block above. Ask Claude to rebuild it with inline styles only, no classes and no svg.']);
+    // A preset with nothing filled in renders nothing at all, which is easy to
+    // miss when the Part around it looks finished.
+    var emptyShapes = 0;
+    (state.parts || []).forEach(function (part) {
+      (part.blocks || []).forEach(function (b) {
+        if ((b.kind === 'figure' || b.kind === 'widget') && !blockHasContent(b)) emptyShapes++;
+      });
+    });
+    if (emptyShapes) {
+      out.push(['note', emptyShapes + (emptyShapes > 1 ? ' shapes are' : ' shape is') + ' still empty',
+        'A visual or activity with nothing filled in puts nothing on the page. Fill it in, or remove the block.']);
     }
 
     var gaps = countBlocks('visual', function (b) { return !t(b.url); });
@@ -1915,62 +1728,19 @@
     return '<div class="block">' + head + f.join('') + '</div>';
   }
 
-  // Drawn visuals and interactive activities are either built here from a
-  // preset, which needs nothing but the form, or described and handed to
-  // Claude. The preset is the default, because not every teacher has Claude.
+  // Drawn visuals and interactive activities are built here, from a preset.
+  // Everything a teacher needs is in the form; there is nothing to paste in
+  // from anywhere else.
   function askBlockForm(f, pfx, b) {
-    var isFig = (b.kind === 'figure');
     var fam = PRESETS[b.kind];
     var opts = Object.keys(fam).map(function (k) { return [k, fam[k].label]; });
-    opts.push(['ask', 'Something else, ask Claude for it']);
 
     f.push('<label class="f"><span>What kind</span>' + selectOf(pfx + '.mode', b.mode, opts) + '</label>');
 
     var def = presetDef(b);
     if (def) {
-      f.push('<p class="hint tight">' + def.blurb + ' Fill this in and it is built for you, here, with nothing else needed.</p>');
+      f.push('<p class="hint tight">' + def.blurb + '</p>');
       presetForm(f, pfx, b, def);
-      return;
-    }
-
-    f.push('<p class="hint tight">' + (isFig
-      ? 'Anything the shapes above do not cover: a labelled diagram, a spectrum, a map.'
-      : 'Anything the shapes above do not cover.') +
-      ' This one needs Claude. Describe it, copy the request from the <strong>Ask Claude</strong> tab, and paste the HTML you get back into the second box. If you do not use Claude, pick one of the shapes above instead.</p>');
-
-    f.push('<label class="f"><span>What you want' + (isFig ? '' : ' it to do') + '</span><textarea data-path="' + pfx + '.want" placeholder="' + escAttr(isFig
-      ? 'Two squares side by side, one twice as wide as the other, labelled with their surface area and their volume, showing that the volume grows faster.'
-      : 'Six short descriptions of a cell mid-division. For each one the student decides which of the three jobs is happening, then opens a box to check.') +
-      '">' + escAttr(b.want) + '</textarea></label>');
-
-    f.push('<label class="f"><span>Paste the HTML from Claude here</span><textarea class="code" data-path="' + pfx + '.html" placeholder="' +
-      escAttr(isFig ? '<div style="display: flex; ...">' : '<details style="..."> ...') + '">' + escAttr(b.html) + '</textarea></label>');
-
-    var strips = canvasStrips(b.html);
-    if (strips.length) {
-      f.push('<div style="background:#FDECEC; border-left:4px solid #C0392B; border-radius:6px; padding:11px 14px; font-size:13px; margin:0 0 12px;">' +
-        '<strong>Canvas will remove part of this.</strong> It contains ' + escAttr(strips.join(', ')) + '. ' +
-        'Ask Claude to rebuild it with no JavaScript and no classes, using inline styles only' +
-        (isFig ? '.' : ', and click-to-open <code class="k">&lt;details&gt;</code> boxes for the interaction.') + '</div>');
-    } else if (t(b.html)) {
-      f.push('<div style="background:#F1FAF3; border-left:4px solid #2A9D5C; border-radius:6px; padding:11px 14px; font-size:13px; margin:0 0 12px;">' +
-        'Nothing in here that Canvas strips. Check it in the preview.</div>');
-    }
-
-    // Revising: the description and the current HTML are both already here, so
-    // round two is one button rather than explaining it all again.
-    if (t(b.html)) {
-      f.push('<label class="f"><span>Not right? Say what to change</span><textarea data-path="' + pfx + '.change" placeholder="' + escAttr(isFig
-        ? 'The labels overlap on a narrow screen, and the second square should be gold rather than cyan.'
-        : 'Make it four items instead of six, and pitch the wording younger.') +
-        '">' + escAttr(b.change) + '</textarea></label>');
-      f.push('<div class="stdbar">' +
-        '<button type="button" data-action="copyRevision" data-target="' + pfx + '">Copy a revision request</button>' +
-        (t(b.prevHtml) && b.prevHtml !== b.html
-          ? '<button type="button" data-action="restorePrev" data-target="' + pfx + '">Put the previous version back</button>'
-          : '') +
-        '</div>');
-      f.push('<p class="hint" style="margin:0 0 12px;">Paste that to Claude in the same conversation, then replace the HTML above with what comes back. The version you are replacing is kept, so you can go back to it if the new one is worse.</p>');
     }
   }
 
@@ -2088,7 +1858,6 @@
   function updateOutput() {
     var canvasHtml = buildCanvas();
     document.getElementById('codeCanvas').value = canvasHtml;
-    document.getElementById('codeAsk').value = buildAsk();
     // The preview is the pasted page in a plain white wrapper, so what a
     // teacher checks here is exactly what a student will meet in Canvas.
     frameEl.srcdoc = '<!DOCTYPE html><html><head><meta charset="utf-8" /></head>' +
@@ -2126,7 +1895,6 @@
   function redrawAll() { renderLists(); renderStandards(); renderScalars(); checkImageLinks(); updateOutput(); }
 
   var formEl = document.getElementById('form');
-  var htmlSnapshot = {};
 
   document.getElementById('stdFilter').addEventListener('input', function (e) {
     stdFilter = e.target.value;
@@ -2181,18 +1949,7 @@
     // A link or a pasted block gets checked once the teacher has finished
     // typing, not on every keystroke, so the form does not rebuild underneath
     // them mid-word.
-    if (e.type === 'change' && /^parts\.\d+\.blocks\.\d+\.(src|url|html)$/.test(p)) {
-      if (/\.html$/.test(p)) {
-        // Keep whatever is being replaced, so a revision that turns out worse
-        // is not a dead end. The snapshot has to be consumed here rather than
-        // on blur, because this redraw replaces the field itself.
-        var snap = htmlSnapshot[p];
-        if (t(snap) && snap !== e.target.value) {
-          var blk = getPath(p.replace(/\.html$/, ''));
-          if (blk) blk.prevHtml = snap;
-        }
-        delete htmlSnapshot[p];
-      }
+    if (e.type === 'change' && /^parts\.\d+\.blocks\.\d+\.(src|url)$/.test(p)) {
       redrawAll();
       return;
     }
@@ -2200,13 +1957,6 @@
   }
   formEl.addEventListener('input', onField);
   formEl.addEventListener('change', onField);
-
-  // What each pasted-HTML box held when the teacher started editing it.
-  // Consumed by onField on `change`; see the note there.
-  formEl.addEventListener('focusin', function (e) {
-    var p = e.target.getAttribute && e.target.getAttribute('data-path');
-    if (p && /\.html$/.test(p)) htmlSnapshot[p] = e.target.value;
-  });
 
   var NEW = {
     line: function () { return ''; },
@@ -2244,15 +1994,6 @@
       if (confirm('Clear everything and start from a blank form?')) { state = blankState(); redrawAll(); }
     }
     else if (act === 'tab') { showTab(btn.getAttribute('data-tab')); }
-    else if (act === 'copyRevision') { copyRevision(btn.getAttribute('data-target')); }
-    else if (act === 'restorePrev') {
-      var rp = btn.getAttribute('data-target'), blk = getPath(rp);
-      var swapBack = blk.prevHtml;
-      blk.prevHtml = blk.html;
-      blk.html = swapBack;
-      redrawAll();
-      flash('Previous version restored');
-    }
     else if (act === 'pickStandards') { document.getElementById('standardsFile').click(); }
     else if (act === 'readStandards') {
       var box = document.getElementById('stdPaste');
@@ -2291,7 +2032,7 @@
 
   function showTab(which) {
     activeTab = which;
-    ['preview', 'canvas', 'ask'].forEach(function (k) {
+    ['preview', 'canvas'].forEach(function (k) {
       document.getElementById('tab-' + k).setAttribute('aria-selected', k === which);
       document.getElementById('pane-' + k).hidden = (k !== which);
     });
@@ -2304,10 +2045,7 @@
     setTimeout(function () { f.classList.remove('show'); }, 2400);
   }
 
-  function currentCode() {
-    if (activeTab === 'ask') return document.getElementById('codeAsk');
-    return document.getElementById('codeCanvas');
-  }
+  function currentCode() { return document.getElementById('codeCanvas'); }
 
   function doCopy() {
     if (activeTab === 'preview') showTab('canvas');
@@ -2325,54 +2063,10 @@
     } else { fallback(); }
   }
 
-  // Round two of an ask. Everything Claude needs is already in the block, so
-  // the teacher never has to describe the whole thing again.
-  function copyRevision(path) {
-    var b = getPath(path);
-    if (!b) return;
-    var isFig = (b.kind === 'figure');
-    var L = [];
-    L.push('This is the ' + (isFig ? 'drawn visual' : 'interactive activity') + ' you built me. It is not quite right.');
-    L.push('');
-    if (t(b.change)) {
-      L.push('WHAT TO CHANGE');
-      wrapInto(L, b.change, '  ');
-      L.push('');
-    }
-    L.push('WHAT I ORIGINALLY ASKED FOR');
-    wrapInto(L, b.want, '  ');
-    L.push('');
-    L.push('THE HTML AS IT STANDS');
-    String(b.html).replace(/\r/g, '').split('\n').forEach(function (l) { L.push('  ' + l); });
-    L.push('');
-    L.push('Same rules as before: no JavaScript, no <style> block, no class');
-    L.push('attributes, no form controls, no images or inline svg, inline styles');
-    L.push('only, and no em dashes. Give me the whole block back, not a patch.');
-    var text = L.join('\n');
-
-    function fallback() {
-      var ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      var ok = false;
-      try { ok = document.execCommand('copy'); } catch (err) {}
-      document.body.removeChild(ta);
-      flash(ok ? 'Revision request copied' : 'Could not copy. Use the Ask Claude tab.');
-    }
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function () { flash('Revision request copied'); }, fallback);
-    } else { fallback(); }
-  }
-
   function doDownload() {
     var el = currentCode();
-    var isAsk = (activeTab === 'ask');
-    var base = 'lesson-' + slug(state.meta.lessonNumber || state.meta.lessonTitle || state.meta.course);
-    var name = isAsk ? base + '-activity-request.txt' : base + '.html';
-    var blob = new Blob([el.value], { type: (isAsk ? 'text/plain' : 'text/html') + ';charset=utf-8' });
+    var name = 'lesson-' + slug(state.meta.lessonNumber || state.meta.lessonTitle || state.meta.course) + '.html';
+    var blob = new Blob([el.value], { type: 'text/html;charset=utf-8' });
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = name;

@@ -45,7 +45,7 @@ A Part holds any number of blocks, in any order, added from a row of buttons:
 | **Reveal box** | Native `<details>`. The instruction lives in the visible summary so the student commits before the answer opens. |
 | **Interactive activity** | Self-check questions, match the term, sort into categories, or a worked example. All built from `<details>` reveals. |
 
-Drawn visuals and activities both offer a set of ready-made shapes plus an **Ask Claude** escape hatch. See below.
+Drawn visuals and activities are both chosen from a set of ready-made shapes. See below.
 
 ## Everything it emits has to survive Canvas
 
@@ -69,7 +69,7 @@ A bad or missing link never emits a broken `<img>`; it degrades to the same mark
 
 ## Drawn visuals and activities
 
-**Not every teacher has a Claude account, so nothing here may require one.** Both of these blocks lead with a set of ready-made shapes the builder renders itself, from a small form, with no AI involved at all:
+**No teacher tool here may require a Claude account**, since many teachers do not have one. Both of these blocks are chosen from a set of ready-made shapes that the builder renders itself, from a small form, with no AI involved anywhere:
 
 | Drawn visual | Interactive activity |
 |---|---|
@@ -78,19 +78,11 @@ A bad or missing link never emits a broken `<img>`; it degrades to the same mark
 | Numbered steps | Sort into categories |
 | One idea to remember | Worked example |
 
-Each is a `PRESETS` entry pairing a field definition with a renderer that emits the same inline-styled, JavaScript-free HTML as everything else. The four activities are all `<details>` reveals underneath, differing in framing: the attempt always sits in the visible summary and the answer in the hidden half. The example lesson the builder loads on first run is built entirely from presets, so a teacher without Claude sees a complete, working page immediately.
+Each is a `PRESETS` entry pairing a field definition with a renderer that emits the same inline-styled, JavaScript-free HTML as everything else. The four activities are all `<details>` reveals underneath, differing only in framing: the attempt sits in the visible summary and the answer in the hidden half. **Adding a shape to `PRESETS` is how this grows.** No path asks a teacher to supply HTML from anywhere.
 
-`mode: 'ask'` is the escape hatch for anything the shapes do not cover, and it is the last option in the list rather than the first.
+An earlier version offered a `mode: 'ask'` escape hatch that wrote a prompt for the teacher to paste into Claude, took the HTML back, and linted it. It was **removed on 2026-08-03** at the user's request. Two reasons it was the right call: it was the only feature that split teachers into those who could use the tool fully and those who could not, and it was the only way arbitrary third-party HTML could reach a student-facing page. Recoverable from history if it is ever wanted (`git log -S "canvasStrips"`).
 
-### The Ask Claude loop
-
-**Nothing in this repo talks to Claude.** These are static HTML files with no server and no API key. The builder composes a *request* that the teacher pastes into whatever Claude they already use, so there is no API billing attached to the tool and no key to manage; tokens are spent on the teacher's own seat.
-
-The **Ask Claude** tab assembles one prompt covering every outstanding drawn visual and activity, carrying the course, grade, module, lesson, objectives, ticked standards, and the teaching text immediately above each slot, plus the shared constraints (no JavaScript, no `<style>`, no classes, no form controls, no images or inline `<svg>`, inline styles only, entities for non-ASCII, no em dashes) and a section of guidance specific to each kind. The teacher pastes the HTML back into the block.
-
-Because the conversation is the teacher's own, **revising is just carrying on talking**. The builder makes round two one click: each block keeps the original description alongside the current HTML, takes a note of what to change, and copies a revision request bundling all three. The version being replaced is retained, so a revision that comes back worse can be put back with one button.
-
-Pasted HTML is linted by `canvasStrips()` for `<script>`, `<style>`, `on*` handlers, `class` attributes, and form controls, and the block names whichever Canvas will remove. This matters because the failure is silent otherwise: the page pastes fine and the activity is simply dead when a student opens it.
+Drafts saved while that mode existed are migrated on load rather than discarded: a block whose `mode` is no longer a known preset is moved onto a real shape and given empty rows, and the checklist then reports it as an empty shape. Everything else the teacher typed survives.
 
 ## Standards
 
@@ -105,7 +97,7 @@ The skill deliberately keeps standard codes off student-facing pages, on the gro
 
 ## Before you publish
 
-A live checklist under the form flags what would otherwise be found by a student: an unapproved video domain, a visual or activity still sitting as a description, one Canvas will break, an image still showing as a gap, an unusable image link, a missing image description, Parts with no minute pill, a missing Today's Focus, and pages large enough to be worth splitting.
+A live checklist under the form flags what would otherwise be found by a student: an unapproved video domain, a visual or activity left empty, an image still showing as a gap, an unusable image link, a missing image description, Parts with no minute pill, a missing Today's Focus, and pages large enough to be worth splitting.
 
 ---
 
