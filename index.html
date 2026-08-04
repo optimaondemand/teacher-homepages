@@ -122,6 +122,17 @@
   code.k { background: #EDF1F9; border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; font-family: Consolas, monospace; font-size: 12.5px; }
   .toolbar { display: flex; gap: 9px; flex-wrap: wrap; margin-bottom: 18px; }
 
+  /* ---------- reopen an existing page ---------- */
+  /* Sits above both builders rather than inside either one, because a pasted
+     page names which builder made it and switches to that tab itself. */
+  .reopen { background: #fff; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 18px; overflow: hidden; }
+  .reopen > button { width: 100%; text-align: left; border: none; border-radius: 0; padding: 12px 16px; font-size: 13.5px; font-weight: 600; }
+  .reopen > button::before { content: '\25B8'; color: var(--muted); margin-right: 9px; }
+  .reopen > button[aria-expanded=true]::before { content: '\25BE'; }
+  .reopen .body { padding: 2px 16px 16px; border-top: 1px solid var(--line); }
+  .reopen textarea { min-height: 96px; font-family: Consolas, 'Courier New', monospace; font-size: 12px; white-space: pre; }
+  .reopen .toolbar { margin: 10px 0 0; }
+
   /* ---------- house / frame pickers ---------- */
   .picks { display: grid; gap: 9px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
   .pick { position: relative; }
@@ -197,6 +208,26 @@
 
   <!-- ============================ FORM ============================ -->
   <div class="col-form" id="form">
+
+    <!-- ============ REOPEN A PAGE BUILT EARLIER ============ -->
+    <div class="reopen">
+      <button type="button" data-action="reopenToggle" aria-expanded="false">Already built this page? Reopen it here</button>
+      <div class="body" id="reopenBody" hidden>
+        <p class="hint" style="margin-top:14px;">Every page this builder makes carries its own settings inside it. Paste the whole thing back
+          &mdash; or open the <code class="k">.html</code> file you downloaded &mdash; and the form below fills in exactly as you left it. Change
+          the one line you came to change, then copy the new HTML.</p>
+        <label class="f"><span>Paste the HTML of a page you built</span>
+          <textarea id="reopenPaste" placeholder="&lt;!--&#10;  ====================================================&#10;  ALGEBRA 1 - COURSE HOME PAGE  (Optima Academy Online)&#10;  ..."></textarea></label>
+        <div class="toolbar">
+          <button type="button" class="primary" data-action="reopenLoad">Load these settings</button>
+          <button type="button" data-action="reopenFile">Open a downloaded .html file&hellip;</button>
+        </div>
+        <div id="reopenMsg" style="margin-top:12px;"></div>
+        <p class="hint" style="margin:12px 0 0;">Pages built before August 2026 do not carry their settings, and neither does one whose opening
+          comment was deleted. Those cannot be reopened &mdash; build them here once more and every version after that will.</p>
+      </div>
+    </div>
+    <input type="file" id="reopenFileInput" accept=".html,.htm,text/html" style="display:none;" />
 
     <!-- ==================== COURSE HOME MODE ==================== -->
     <div id="mode-course">
@@ -648,6 +679,11 @@
         <span class="flash" id="flash">Copied</span>
         <span class="grow"></span>
         <span class="hint" style="margin:0;" id="sizeNote"></span>
+        <!-- Downloading is what makes reopening possible later, so the reason to
+             do it is said here rather than left for a teacher to work out. -->
+        <span class="hint" style="margin:0; flex-basis:100%;">Keep the downloaded file. Drop it back into
+          <strong>Reopen it here</strong> at the top of the form any time you need to change something,
+          and every field comes back filled in.</span>
       </div>
     </div>
   </div>
@@ -922,26 +958,87 @@
   };
   var state = STATES[MODE];
 
-  function load(mode) {
-    var M = MODES[mode];
-    try {
-      var raw = localStorage.getItem(M.key);
-      if (!raw) return null;
-      var s = JSON.parse(raw), b = M.blank();
-      // merge two levels deep so a saved file from an older version still opens
-      for (var k in b) {
-        if (!(k in s) || s[k] == null) { s[k] = b[k]; continue; }
-        if (!Array.isArray(b[k]) && typeof b[k] === 'object') {
-          for (var k2 in b[k]) if (!(k2 in s[k])) s[k][k2] = b[k][k2];
-        }
+  // Bring a state object from outside - the browser's saved draft, or a page a
+  // teacher pasted back in - up to the shape this build expects.
+  function hydrate(s, mode) {
+    var b = MODES[mode].blank();
+    // merge two levels deep so a saved file from an older version still opens
+    for (var k in b) {
+      if (!(k in s) || s[k] == null) { s[k] = b[k]; continue; }
+      if (!Array.isArray(b[k]) && typeof b[k] === 'object') {
+        for (var k2 in b[k]) if (!(k2 in s[k])) s[k][k2] = b[k][k2];
       }
-      // A build in between shipped embedded photos, which Canvas strips. Drop any
-      // that survived in saved work so nobody keeps pasting a photo that cannot
-      // render, and so the field is free for a real link.
-      if (s.teacher && /^data:/i.test(String(s.teacher.photo || ''))) s.teacher.photo = '';
-      if (s.principal && /^data:/i.test(String(s.principal.photo || ''))) s.principal.photo = '';
-      return s;
+    }
+    // A build in between shipped embedded photos, which Canvas strips. Drop any
+    // that survived in saved work so nobody keeps pasting a photo that cannot
+    // render, and so the field is free for a real link.
+    if (s.teacher && /^data:/i.test(String(s.teacher.photo || ''))) s.teacher.photo = '';
+    if (s.principal && /^data:/i.test(String(s.principal.photo || ''))) s.principal.photo = '';
+    return s;
+  }
+
+  function load(mode) {
+    try {
+      var raw = localStorage.getItem(MODES[mode].key);
+      if (!raw) return null;
+      return hydrate(JSON.parse(raw), mode);
     } catch (e) { return null; }
+  }
+
+  // ------------------------------------------------------ round-trip payload
+  // A built page carries its own settings. The whole state goes out as base64
+  // JSON inside the instruction comment at the top of the output, so pasting
+  // that page back restores every field exactly - including the ones no amount
+  // of reading the markup could recover, like which icon was picked from a list
+  // or whether a section was switched off rather than left empty.
+  //
+  // base64's alphabet has no hyphen in it, so the payload can never close the
+  // comment it lives in, whatever a teacher typed upstream of it.
+  var TAG = 'OAO-BUILDER';
+  var PAYLOAD_V = 1;
+
+  function b64enc(str) {
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-Fa-f]{2})/g, function (m, hex) {
+      return String.fromCharCode(parseInt(hex, 16));
+    }));
+  }
+  function b64dec(b64) {
+    var bytes = atob(String(b64).replace(/\s+/g, '')), pct = '';
+    for (var i = 0; i < bytes.length; i++) {
+      pct += '%' + ('0' + bytes.charCodeAt(i).toString(16)).slice(-2);
+    }
+    return decodeURIComponent(pct);
+  }
+
+  // The last lines inside the comment block each emitter writes. Last on
+  // purpose: the parser can then read to the comment's end, which is what makes
+  // it survive an editor that re-wraps a 4 KB line.
+  function payloadLines(mode) {
+    return [
+      '  ----------------------------------------------------------------------------',
+      '  REOPENING THIS PAGE: paste this whole file back into the builder and every',
+      '  field comes back filled in, ready to change. The line below is how - it is',
+      '  this page\'s settings. Students never see it. Leave it alone and it keeps',
+      '  working; delete it and the page still renders, it just cannot be reopened.',
+      '',
+      '  ' + TAG + ':' + PAYLOAD_V + ':' + mode + ':' + b64enc(JSON.stringify(state))
+    ];
+  }
+
+  // Accepts a whole page, a downloaded file, or just the comment off the top.
+  function readPayload(text) {
+    var s = String(text || '');
+    // Read to the end of the comment first, so a payload the editor has wrapped
+    // across lines still comes back whole. Falling back to a single unbroken run
+    // covers someone who pasted the line by itself, with no comment around it.
+    var m = s.match(new RegExp(TAG + ':(\\d+):([a-z]+):([A-Za-z0-9+/=\\s]*?)\\s*-->'))
+         || s.match(new RegExp(TAG + ':(\\d+):([a-z]+):([A-Za-z0-9+/=]+)'));
+    if (!m) return null;
+    try {
+      return { v: parseInt(m[1], 10), mode: m[2], state: JSON.parse(b64dec(m[3])) };
+    } catch (e) {
+      return { error: true, mode: m[2] };
+    }
   }
   function save() {
     try { localStorage.setItem(MODES[MODE].key, JSON.stringify(state)); } catch (e) {}
@@ -1071,6 +1168,7 @@
     h.push('  Editing this page in Canvas\'s rich-text view can scramble the layout.');
     h.push('  Rebuild it any time with the Course Home Page Builder.');
     h.push('  ============================================================================');
+    payloadLines('course').forEach(function (line) { h.push(line); });
     h.push('-->');
     h.push('');
     h.push('<div style="' + S.wrap + '">');
@@ -1358,6 +1456,7 @@
     h.push('  Editing this page in Canvas\'s rich-text view can scramble the layout.');
     h.push('  Rebuild it any time with the Optima Commons Builder.');
     h.push('  ============================================================================');
+    payloadLines('commons').forEach(function (line) { h.push(line); });
     h.push('-->');
     h.push('');
     h.push('<div style="' + S.wrap + '">');
@@ -2059,6 +2158,13 @@
       }
       sizePreviewToContent();
     }
+    else if (act === 'reopenToggle') {
+      var rb = document.getElementById('reopenBody');
+      rb.hidden = !rb.hidden;
+      btn.setAttribute('aria-expanded', rb.hidden ? 'false' : 'true');
+    }
+    else if (act === 'reopenFile') { document.getElementById('reopenFileInput').click(); }
+    else if (act === 'reopenLoad') { doReopen(document.getElementById('reopenPaste').value); }
     else if (act === 'copy') { doCopy(); }
     else if (act === 'download') { doDownload(); }
   });
@@ -2067,6 +2173,66 @@
     if (j < 0 || j >= arr.length) return;
     var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
   }
+
+  // ---------------------------------------------------------------- reopening
+  function reopenMsg(kind, html) {
+    document.getElementById('reopenMsg').innerHTML =
+      html ? '<div class="lint ' + kind + '">' + html + '</div>' : '';
+  }
+
+  function doReopen(text) {
+    if (!String(text || '').trim()) {
+      reopenMsg('bad', 'Paste the page in first, or open a file you downloaded.');
+      return;
+    }
+    var p = readPayload(text);
+    if (!p) {
+      reopenMsg('bad', 'No settings in that. Either it was built before the builder started ' +
+        'saving them, or the comment at the top has been removed. The fields cannot be worked out ' +
+        'from the rest of the markup, so this one has to be built here once more &mdash; after that ' +
+        'it will reopen every time.');
+      return;
+    }
+    if (p.error) {
+      reopenMsg('bad', 'The settings line is there but will not decode, so something has edited it. ' +
+        'If you still have the file you downloaded, that copy is the one to use.');
+      return;
+    }
+    if (p.mode === 'lesson') {
+      reopenMsg('bad', 'That is a lesson page. Open the <a href="lesson.html">lesson builder</a> and reopen it there.');
+      return;
+    }
+    if (!MODES[p.mode] || p.v > PAYLOAD_V) {
+      reopenMsg('bad', 'That page was built by a newer version of this builder than the one you have ' +
+        'open. Reload this page and try again.');
+      return;
+    }
+    var what = (p.mode === 'commons') ? 'Commons' : 'course home';
+    if (!confirm('This replaces everything in the ' + what + ' form with the settings from that page.\n\nGo ahead?')) return;
+
+    if (p.mode !== MODE) { save(); MODE = p.mode; }   // keep the draft being left
+    STATES[p.mode] = hydrate(p.state, p.mode);
+    state = STATES[MODE];
+    applyMode();
+    redrawAll();                                      // also saves the reopened state
+    reopenMsg('ok', 'Loaded. Every field is filled in from that page &mdash; scroll down, make your ' +
+      'change, then copy the new HTML and paste it over the old page in Canvas.');
+    flash('Settings loaded');
+  }
+
+  document.getElementById('reopenFileInput').addEventListener('change', function (e) {
+    var f = e.target.files && e.target.files[0];
+    e.target.value = '';                              // so the same file can be picked twice
+    if (!f) return;
+    var r = new FileReader();
+    r.onload = function () {
+      var txt = String(r.result || '');
+      document.getElementById('reopenPaste').value = txt;
+      doReopen(txt);
+    };
+    r.onerror = function () { reopenMsg('bad', 'That file could not be read.'); };
+    r.readAsText(f);
+  });
 
   function showTab(which) {
     document.getElementById('tab-preview').setAttribute('aria-selected', which === 'preview');

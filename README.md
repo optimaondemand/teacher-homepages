@@ -14,6 +14,27 @@ They are siblings by design and share their conventions (inline styles only, pur
 
 Adding a fourth builder means another entry in the `MODES` map, another `#mode-<name>` wrapper in the form column, and a `build<Name>()` emitter. Nothing else changes: storage, preview, copy/download and the mode plumbing are already generic.
 
+## Every built page can be reopened in the builder
+
+Added 2026-08-04. A teacher who wants to change one announcement had to fill the whole form in again, because the builder could produce a page but not read one. Now every page carries its own settings, so pasting it back restores the form exactly.
+
+**The state travels in the page.** The last line inside the instruction comment at the top of every output is `OAO-BUILDER:<version>:<mode>:<base64 JSON of state>`. `payloadLines()` writes it, `readPayload()` reads it, and the *Already built this page? Reopen it here* panel above the form takes either a pasted page or a downloaded `.html` file.
+
+Why the state and not the markup: a rendered page does not say which emoji was picked from a list, whether a section was switched off or merely left empty, which preset drew a table, or which standards were ticked to produce that card. Reading it back out would be guesswork with silent gaps. Round-tripping the state is exact — verified byte-for-byte, output-in equals output-out.
+
+Four details that are load-bearing:
+
+- **base64 has no hyphen in its alphabet**, so the payload can never close the HTML comment it lives in, whatever a teacher typed upstream of it.
+- **It is the last line before `-->`**, and the parser reads to the comment's end. That is what lets it survive an editor that re-wraps a 4 KB line. Anything appended after it inside the comment (a rule of `=` characters, say) would be swallowed into the base64 and break decoding — so keep it last.
+- **A pasted page names its own builder.** A Commons page dropped on the course tab switches tabs; a lesson page pasted into `index.html` sends the teacher to `lesson.html`, and the reverse.
+- **Imported state goes through `hydrate()`**, the same defaults merge `load()` uses, so a page built by an older version of the builder still opens complete.
+
+Reopening replaces the whole form, so it is behind a `confirm()`, and the draft it displaces is saved first. Three things are refused with an explanation rather than a silent no-op: a page with no payload (built before this shipped, or its comment deleted), a payload that will not decode, and an empty box.
+
+**What it cannot recover:** edits made directly in Canvas's rich-text editor. The payload reflects the last build, not the page as it now stands. Teachers should make changes here and re-paste, which is what the builders have always asked for.
+
+**One open question:** whether the comment survives a Canvas save-and-copy-back. The downloaded `.html` file is never touched by Canvas, so that route works regardless, and the standards-in-a-comment feature already assumes comments survive — but that has not been confirmed on a real page. Worth testing before telling teachers to copy out of Canvas rather than keep the file.
+
 ---
 
 # The lesson page builder (`lesson.html`)
