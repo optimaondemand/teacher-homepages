@@ -1,0 +1,1461 @@
+[
+ {
+  "code": "5001010",
+  "title": "Art Grade K",
+  "grade": "K",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "In this immersive Art Kindergarten course, young learners explore foundational art concepts, media, and creative processes through hands-on experiences that encourage imagination, expression, and safe use of tools and materials. Students will experiment with art forms, describe their artistic choices, and connect personal artwork to community, culture, and the world around them."
+ },
+ {
+  "code": "5010041",
+  "title": "Language Arts Grade K",
+  "grade": "K",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "In this immersive Kindergarten Language Arts course, young learners explore foundational reading, speaking, and writing skills—including print awareness, phonological and phonics skills, and comprehension of stories and informational texts—through engaging, developmentally appropriate activities that blend classical literacy with sound pedagogy. Students will build confidence in listening, speaking, reading emergent texts, and expressing ideas creatively as they discover the joy of language and communication."
+ },
+ {
+  "code": "5012020",
+  "title": "Math Grade K",
+  "grade": "K",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "This course introduces Kindergarten students to essential mathematical concepts including counting and cardinality, the relationship between operations and numbers, comparison and classification of attributes, and recognition of two- and three-dimensional shapes, enriched with classical pedagogy and critical thinking. Through engaging, inquiry-based experiences, students develop early numeracy and problem-solving skills that lay the foundation for future math success."
+ },
+ {
+  "code": "5013060",
+  "title": "Music Grade K",
+  "grade": "K",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "In this immersive kindergarten music course, young learners explore foundational musical concepts through singing, movement, creative play, and listening activities to deepen self-expression, critical thinking, and communication while building a lifelong appreciation for music across cultures and traditions."
+ },
+ {
+  "code": "5015020",
+  "title": "Physical Education Grade K",
+  "grade": "K",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Kindergarten Physical Education introduces young learners to fundamental motor skills, safe movement concepts, and enjoyment of physical activity, encouraging fitness, teamwork, and responsible behaviors. Through classically aligned activities, students deepen body awareness and healthy habits in dynamic, spatially rich learning environments."
+ },
+ {
+  "code": "5020010",
+  "title": "Science Grade K",
+  "grade": "K",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "In Kindergarten Science, students explore the natural world through observation, investigation, and inquiry, discovering patterns in Earth, life, and physical science—such as day/night cycles, the five senses, motion, and the characteristics of living things—while using immersive techniques and classical pedagogy to see, sort, and interact with objects and environments in ways that spark curiosity and foundational scientific thinking. This course cultivates wonder, collaboration, and sensory-based exploration as learners pose questions, make observations with their senses, and record what they learn through creative, collaborative activities."
+ },
+ {
+  "code": "5021020",
+  "title": "Social Studies Grade K",
+  "grade": "K",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Kindergarten Social Studies invites young learners to explore meaningful questions about themselves, their families, and their communities through foundational concepts in history, geography, civics, and economics, building “big picture” understanding of people and places over time. Using collaborative experiences and classic inquiry, students will develop early skills in sequencing events, identifying roles and responsibilities of community members, recognizing cultural symbols and traditions, and understanding rules and maps within their world."
+ },
+ {
+  "code": "5001020",
+  "title": "Art Grade 1",
+  "grade": "1",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Art Grade 1 invites students to experiment with foundational art concepts using traditional materials and digital/spatial media, practicing safe and careful craftsmanship while creating artwork that expresses personal interests. Grounded in a classical emphasis on observation and beauty, students also use digital gallery experiences to build accurate art vocabulary and thoughtfully describe their creative process and choices."
+ },
+ {
+  "code": "5010042",
+  "title": "Language Arts Grade 1",
+  "grade": "1",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "In Grade 1 Language Arts students embark on immersive reading and writing adventures where they build foundational phonics and comprehension skills, explore rich stories and informational texts, and express ideas through speaking and writing with clarity and creativity — all supported by classically sound pedagogical experiences that deepen understanding and engagement."
+ },
+ {
+  "code": "5012030",
+  "title": "Math Grade 1",
+  "grade": "1",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Math Grade 1 builds strong number sense through a Singapore-style concrete–pictorial–abstract progression, emphasizing place value within two-digit numbers, addition and subtraction relationships, measurement (length, money, and time), and composing/decomposing geometric figures. Students practice these foundations through hands-on manipulatives and instructor feedback that makes mathematical thinking visible, precise, and confidence-building."
+ },
+ {
+  "code": "5013070",
+  "title": "Music Grade 1",
+  "grade": "1",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Music Grade 1 invites students to explore their world through listening, singing, moving, playing instruments, and creating, building imagination and encouraging creative risk-taking as they grow foundational music skills and vocabulary. Aligned with our classical approach and emerging-tech focus, students engage with beautiful, age-appropriate repertoire to strengthen steady beat, pitch accuracy, and expressive performance."
+ },
+ {
+  "code": "5015030",
+  "title": "Physical Education Grade 1",
+  "grade": "1",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Physical Education Grade 1 builds the knowledge and skills students need to develop a physically active lifestyle through a variety of movement experiences, emphasizing competence in foundational movement forms while also strengthening resiliency through character, civic, and life-skills development. Students practice safe, skillful locomotor and object-control movements with age-appropriate warm-ups/cool-downs and goal-setting, leveraging technology to enhance physical activity and reflection."
+ },
+ {
+  "code": "5020020",
+  "title": "Science Grade 1",
+  "grade": "1",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Science Grade 1 builds a foundational understanding of life, physical, and Earth/space science through hands-on investigation—students make careful observations, model and describe patterns, and explain how they know what they know. In our classically aligned learning environment, students will explore science concepts through immersive “wonder-and-discover” experiences while strengthening precise language and narration as they record findings and communicate conclusions."
+ },
+ {
+  "code": "5021030",
+  "title": "Social Studies Grade 1",
+  "grade": "1",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "In Grade 1 Social Studies, students explore what it means to be a thoughtful citizen in their home, school, and community by studying history, geography, civics, and economics through immersive activities that build foundational understanding of rules, roles, maps, and community helpers. This course uses engaging, classically aligned lessons and activities to help young learners connect past and present, understand community structures and responsibilities, and recognize the roles of people and places in their world."
+ },
+ {
+  "code": "5001030",
+  "title": "Art Grade 2",
+  "grade": "2",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Art Grade 2 invites students to experiment with a variety of two- and three-dimensional art concepts—using both traditional materials and digital media/processes—so they can safely apply techniques to communicate personal interests and self-expression. In our classically aligned lessons and activities, students also practice precise art vocabulary and thoughtful craftsmanship as they create and reflect on artworks inspired by enduring forms and masterworks."
+ },
+ {
+  "code": "5010043",
+  "title": "Language Arts Grade 2",
+  "grade": "2",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "In Grade 2 Language Arts, students build strong foundational skills in phonics, fluent reading, comprehension of literature and informational texts, and clear writing through narrative, informative, and opinion pieces, integrating classical grammar and phonics mastery. Through time-tested practices, learners engage with stories and ideas, ask and answer key questions about texts, and communicate their understanding with clarity and confidence."
+ },
+ {
+  "code": "5012040",
+  "title": "Math Grade 2",
+  "grade": "2",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "In Grade 2 Mathematics, students deepen their understanding of place value, addition and subtraction, measurement, time, money, and basic geometry through Singapore-aligned strategies and spatial reasoning experiences; they apply classical problem-solving habits to explain mathematical ideas, model solutions, and build fluency with number sense and reasoning in immersive, hands-on contexts."
+ },
+ {
+  "code": "5013080",
+  "title": "Music Grade 2",
+  "grade": "2",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Music Grade 2 builds students’ musicianship through active, joyful exploration as they strengthen foundational skills, techniques, and processes while deepening musical vocabulary and literacy so they can use the language of music to communicate their own ideas. In our classically aligned lessons and activities, students bring those skills to life by singing, moving, and performing in immersive soundscapes—practicing careful listening, expressive artistry, and thoughtful reflection through great music and musical storytelling."
+ },
+ {
+  "code": "5015040",
+  "title": "Physical Education Grade 2",
+  "grade": "2",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Physical Education Grade 2 helps students develop the knowledge and skills for a physically active lifestyle through a variety of movement opportunities, strategies, and experiences, building competency across many movement forms and proficiency in a few. In our classically aligned educational model, students also practice virtues like perseverance, courage, and teamwork as they apply fitness habits and life skills in lessons and activities."
+ },
+ {
+  "code": "5020030",
+  "title": "Science Grade 2",
+  "grade": "2",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Science Grade 2 invites students to practice the habits of young scientists—observing carefully, asking good questions, and using simple investigations to explore Earth and space (weather, rocks/soil, the Sun), life science (plants, animals, the human body, life cycles), and physical science (properties of matter, motion, and energy). In our classically aligned environment, students build scientific vocabulary and communicate their discoveries through discussion, drawing, and short written explanations, supported by interactive visuals."
+ },
+ {
+  "code": "5021040",
+  "title": "Social Studies Grade 2",
+  "grade": "2",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "In Grade 2 Social Studies, students embark on an inquiry-based exploration of the people, places, and ideas that shape communities past and present, using historical and geographic perspectives to understand how individuals and groups interact, contribute, and govern. Through classically aligned educational experiences, students investigate American history and citizenship, map their world, and consider cultural influences and economic choices that connect them to their local community and the wider world."
+ },
+ {
+  "code": "5001040",
+  "title": "Art - Interim 1",
+  "grade": "3",
+  "band": "k5",
+  "modes": [
+   "Live"
+  ],
+  "prereq": "",
+  "desc": "In Art – Interim 1, students explore two- and three-dimensional visual art through observation, creative problem-solving, and personal expression, integrating art vocabulary, cultural awareness, and critical reflection; immersive tools like VR and spatial computing may be used to deepen understanding of form, technique, and artistic intent."
+ },
+ {
+  "code": "5007090",
+  "title": "Elementary Latin",
+  "grade": "3",
+  "band": "k5",
+  "modes": [
+   "Live"
+  ],
+  "prereq": "",
+  "desc": "Elementary Latin introduces students in grades K–5 to the foundations of the Latin language and Roman culture through novice-level listening, speaking, reading, and writing tasks aligned to age-appropriate standards. In our classically aligned, VR/AI/spatial-computing environment, students build core vocabulary and basic grammar patterns while using immersive “Ancient Rome” scenes and guided practice to strengthen English language awareness (roots, prefixes, and grammar) and cultural literacy."
+ },
+ {
+  "code": "5010044",
+  "title": "Language Arts Grade 3",
+  "grade": "3",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Language Arts Grade 3 develops confident readers, writers, and speakers through grade-level skills—building fluency and comprehension across rich texts while strengthening vocabulary, spelling, and classical grammar for clear, well-structured writing and discussion. In our classically aligned, VR/AI-powered program, students also practice cursive and apply language arts to immersive storytelling, inquiry, and presentations in spatial-computing experiences that deepen understanding and expression."
+ },
+ {
+  "code": "5012050",
+  "title": "Math Grade 3",
+  "grade": "3",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "In Grade 3 Mathematics, students deepen number sense and fluency with multi-digit addition and subtraction, explore multiplication and division and their connection to area, build foundational understanding of fractions, and extend geometric reasoning through shape attributes and real-world problem solving, all enriched through critical thinking and immersive VR experiences."
+ },
+ {
+  "code": "5013090",
+  "title": "Music Intermediate 1",
+  "grade": "3",
+  "band": "k5",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "In Music Intermediate 1, students build musicianship through active music-making—singing, moving, playing, and listening—while refining skills and techniques through experiences like improvisation and simple arranging, growing their music vocabulary, and recognizing foundational musical structures. In our classically aligned, VR/AI/spatial-computing environment, students also use immersive soundscapes and guided composition tools to reflect, create, and communicate with their own artistic voice."
+ },
+ {
+  "code": "5015050",
+  "title": "Physical Education 3",
+  "grade": "3",
+  "band": "k5",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Physical Education builds Grade 3 students’ competency in a wide range of movement skills (e.g., throwing, catching, kicking, striking, dance/gymnastics) while strengthening fitness, safety habits, teamwork, and goal-setting for lifelong health. In our classically aligned, VR/spatial-computing environment, students also practice these skills through immersive movement challenges that reinforce healthy choices and active participation."
+ },
+ {
+  "code": "5020040",
+  "title": "Science Grade 3",
+  "grade": "3",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Science Grade 3 is an integrated, inquiry-driven course that builds foundational understanding across Earth, life, and physical science as students ask questions, make predictions, collect and compare observations, and explain results through hands-on investigations and models. In our classically aligned, VR/AI-enabled environment, students explore phenomena like gravity, energy, motion, matter, stars, and living things through immersive virtual investigations and clear, evidence-based scientific communication supported by age-appropriate data practices."
+ },
+ {
+  "code": "5021050",
+  "title": "Social Studies Grade 3",
+  "grade": "3",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "This course engages third graders in discovering the physical and cultural characteristics of the United States, Canada, Mexico, and the Caribbean, and in examining basic economic ideas and the roles of government, using critical thinking and interactive tools to build knowledge of people, regions, and civic responsibilities."
+ },
+ {
+  "code": "5001050",
+  "title": "Art - Interim 2",
+  "grade": "4",
+  "band": "k5",
+  "modes": [
+   "Live"
+  ],
+  "prereq": "",
+  "desc": "Art – Interim 2 is a studio-based visual arts course that deepens students’ skills in creative expression, craftsmanship, and visual analysis through classically inspired themes and techniques. Students explore art history, design principles, and hands-on creation—enhanced by VR and spatial tools—while developing disciplined observation, aesthetic judgment, and the ability to reflect thoughtfully on their own and others’ work."
+ },
+ {
+  "code": "5007090",
+  "title": "Elementary Latin 4/5",
+  "grade": "4",
+  "band": "k5",
+  "modes": [
+   "Live"
+  ],
+  "prereq": "",
+  "desc": "Elementary Latin 4/5 builds foundational proficiency in Latin through age-appropriate vocabulary, phrases, and core grammar—strengthening reading comprehension and etymology connections to English while introducing students to classical culture. Aligned to Florida’s CPALMS Elementary Latin course expectations, learners practice listening, speaking, reading, and writing through immersive VR/spatial experiences and AI-supported feedback that make the ancient world tangible and memorable."
+ },
+ {
+  "code": "5010045",
+  "title": "Language Arts Grade 4",
+  "grade": "4",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Fourth Grade Language Arts cultivates confident readers and writers through rigorous exploration of literature and informational texts, mastery of grade-level phonics and vocabulary, and practice in narrative, expository, and argumentative writing, while integrating grammar, research, and communication skills in both traditional and immersive VR/AI environments."
+ },
+ {
+  "code": "5012060",
+  "title": "Math Grade 4",
+  "grade": "4",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "In this classically grounded and spatially enriched mathematics experience, students deepen number sense through multi-digit multiplication and division, explore the relationships between fractions and decimals, classify and measure angles, and interpret data using mode, median, and range while developing problem-solving fluency, reasoning, and real-world application skills. This course weaves rigorous Singapore-inspired strategies with hands-on and VR/AI-supported exploration to build conceptual understanding, procedural skill, and mathematical thinking in every learner."
+ },
+ {
+  "code": "5013100",
+  "title": "Music Intermediate 2",
+  "grade": "4",
+  "band": "k5",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Music Intermediate 2 deepens students’ musicianship as they explore artistic intent—developing and performing musical ideas, analyzing musical structures from simple to complex, and using correct music vocabulary to describe what they hear. Drawing on the great musical traditions of history (including Florida’s cultural contributions), students make connections across subjects and explore music’s role in modern life through immersive VR/AI experiences in listening, creating, and interpreting music."
+ },
+ {
+  "code": "5015060",
+  "title": "Physical Education 4",
+  "grade": "4",
+  "band": "k5",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Physical Education 4 develops students’ competency across many movement forms—and growing proficiency in a few—through skill-building activities that strengthen the components of physical fitness while emphasizing teamwork, sportsmanship, and healthy habits. In our classically-aligned, VR/AI-supported program, students also practice resiliency and character through guided goal-setting, reflection, and life-skills routines that connect physical training to civic virtue and self-mastery."
+ },
+ {
+  "code": "5020050",
+  "title": "Science Grade 4",
+  "grade": "4",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Science Grade 4 invites students into the classical habit of wonder → observation → evidence-based explanation as they investigate core Earth, Life, and Physical Science topics (e.g., properties of matter, energy and motion, rocks/minerals and weathering/erosion, heredity, and Earth’s movements) through hands-on and collaborative inquiry. Learners use immersive VR/spatial simulations and age-appropriate AI supports to model phenomena, run investigations, and communicate claims with clear evidence—reinforcing the close reading and text-based reasoning emphasized in classically aligned education."
+ },
+ {
+  "code": "5021060",
+  "title": "Social Studies 4",
+  "grade": "4",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "In fourth-grade Social Studies, students embark on an immersive exploration of Florida’s history, geography, government, and economy—from early Native peoples and European exploration to modern civic life—using critical thinking, primary sources, and spatial-computing experiences to deepen understanding of how people and places shape our world. This course blends classical inquiry with VR/AI-enhanced investigations into citizenship, economics, and cultural contributions, preparing learners to read, discuss, and apply social-studies knowledge thoughtfully and creatively."
+ },
+ {
+  "code": "5001060",
+  "title": "Art-Interim 3",
+  "grade": "5",
+  "band": "k5",
+  "modes": [
+   "Live"
+  ],
+  "prereq": "",
+  "desc": "Art – Interim 3 introduces students to the foundations of visual art through hands-on creation and guided exploration of line, shape, color, and form, drawing inspiration from classical works and enduring artistic traditions. Using a blend of traditional materials and immersive VR/spatial experiences, students develop artistic skill, aesthetic judgment, and creative expression while learning to observe, reflect, and create with intention."
+ },
+ {
+  "code": "5010046",
+  "title": "Language Arts Grade 5",
+  "grade": "5",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Language Arts Grade 5 develops confident, knowledgeable readers and writers through explicit, systematic phonics and word study, strengthening decoding and fluency while building broad knowledge through rich literary and informational texts. In our classically aligned, VR/AI/spatial-computing environment, students practice classical grammar, craft evidence-based writing and discussion, and continue cursive as a tool for clear, thoughtful composition."
+ },
+ {
+  "code": "5012070",
+  "title": "Math Grade 5",
+  "grade": "5",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Grade 5 Mathematics develops procedural fluency and mathematical reasoning as students multiply and divide multi-digit whole numbers, add/subtract and deepen understanding of fraction/decimal operations, graph points in the first quadrant, extend geometry to volume, and interpret data including the mean. In our classically-aligned, Singapore-inspired approach, students use visual models and clear mathematical discourse while applying these skills in immersive VR/spatial-computing investigations and AI-supported practice to strengthen problem-solving and precision."
+ },
+ {
+  "code": "5013110",
+  "title": "Music Intermediate 3",
+  "grade": "5",
+  "band": "k5",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Music Intermediate 3 builds comprehensive musicianship by developing students’ ability to critically assess and interpret musical works, using music vocabulary and structure to understand composer intent and artistic choices. Through immersive VR soundscapes and age-appropriate AI-assisted composition/arranging tools, students manipulate musical elements to create and communicate original artistic ideas while making connections between music, other disciplines, and the wider world."
+ },
+ {
+  "code": "5015070",
+  "title": "Physical Education 5",
+  "grade": "5",
+  "band": "k5",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Physical Education 5 develops students’ knowledge and skills for a physically active lifestyle through a wide variety of movement opportunities and fitness experiences, building competency across many movement forms and proficiency in select skills. In our classically aligned, VR/AI-supported program, students also strengthen resiliency and virtue—practicing teamwork, self-discipline, and safe decision-making while using age-appropriate technology to reflect on and track personal fitness goals."
+ },
+ {
+  "code": "5020060",
+  "title": "Science Grade 5",
+  "grade": "5",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Science Grade 5 is an inquiry-driven survey of Earth, Life, and Physical Science in which students ask questions, investigate, and use evidence to build models and explanations about topics like matter and energy, force and motion, the solar system and water cycle, weather and climate, and living systems and ecosystems. Through our classically-aligned, VR/AI/spatial-computing approach, students strengthen scientific reasoning and communication while also intentionally embedding state and national standards within authentic labs, simulations, and scientific writing."
+ },
+ {
+  "code": "5021070",
+  "title": "Social Studies 5",
+  "grade": "5",
+  "band": "k5",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Social Studies Grade 5 is a classically aligned survey of American History, Geography, Economics, and Civics, focusing on the people, places, and events that shaped the development of the United States through approximately 1850. Students investigate primary sources and build lasting civic and historical understanding through immersive VR/spatial-computing experiences and AI-supported inquiry (timelines, maps, discussions, and writing) that strengthen attention, virtue, and clear expression."
+ },
+ {
+  "code": "2002040",
+  "title": "M/J Comprehensive Science 1",
+  "grade": "6",
+  "band": "68",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "M/J Comprehensive Science 1 is a yearlong, classically aligned survey of 6th-grade life, Earth/space, and physical science that trains students to observe nature with wonder and precision, then reason carefully from evidence. In immersive VR/spatial-computing labs supported by age-appropriate AI tools, students routinely plan and carry out investigations, measure and analyze data, build and use models, and communicate defensible conclusions through scientific reading, writing, and argumentation."
+ },
+ {
+  "code": "1508000",
+  "title": "M/J Fitness Grade 6",
+  "grade": "6",
+  "band": "68",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "In this immersive Grade 6 Fitness course, students explore the foundational health and skill-related components of physical fitness through active, reflective challenges that build lifelong habits of strength, endurance, and wellness, enriched with VR/AI simulations and spatial-computing experiences that deepen understanding of movement, anatomy, and personal goal setting. By integrating classical principles of disciplined practice with real-world movement science and technology-enhanced fitness planning, learners develop the knowledge, skills, and values to lead healthy, active lives."
+ },
+ {
+  "code": "0200021",
+  "title": "M/J Grade 6 Digital Discoveries",
+  "grade": "6",
+  "band": "68",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "M/J Grade 6 Digital Discoveries introduces students to computer science as a modern tool for logical problem-solving, clear communication, and thoughtful personal expression, helping them recognize the “visible” ways computing shapes everyday life. Students apply these foundations through hands-on creation—including VR/spatial-computing and AI-informed projects—while practicing responsible, virtuous technology use aligned with a classical approach to learning."
+ },
+ {
+  "code": "1001010",
+  "title": "M/J Language Arts 1",
+  "grade": "6",
+  "band": "68",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "M/J Language Arts 1 guides students to read, analyze, and discuss complex literary and informational texts and to write coherent narrative, informational, and argumentative pieces, integrating classical grammar, phonics, and expressive skills — supported by VR/AI experiences that deepen understanding and communication mastery."
+ },
+ {
+  "code": "2109010",
+  "title": "M/J World History",
+  "grade": "6",
+  "band": "68",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "In M/J World History, students explore the world’s earliest civilizations through the ancient and classical civilizations of Africa, Asia, and Europe, examining how economics, geography, politics, and religion/philosophy shaped human societies while practicing historical inquiry with primary and secondary sources. In our classically aligned, VR/AI-powered model, students deepen this study through immersive “virtual fieldwork” (sites, artifacts, and simulations) and Socratic discussion, building clear reasoning and evidence-based writing about the ancient world."
+ },
+ {
+  "code": "1205010",
+  "title": "Math Grade 6",
+  "grade": "6",
+  "band": "68",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Math Grade 6 builds strong computational fluency with integers, decimals, and fractions while developing proportional reasoning (ratios, rates, percent), algebraic thinking (expressions and equations), coordinate-plane and measurement-based geometry, and statistical reasoning. In our classically aligned, Singapore-inspired program, students use bar models and the concrete–pictorial–abstract progression, then apply concepts through VR/spatial simulations and AI-supported practice to explain their reasoning with clarity and precision."
+ },
+ {
+  "code": "0101100",
+  "title": "Visual Art 1",
+  "grade": "6",
+  "band": "68",
+  "modes": [
+   "Live"
+  ],
+  "prereq": "",
+  "desc": "Visual Art 1 introduces students to the rigor and routine of the art-making process—planning, producing, and reflecting—as they build foundational studio skills across a wide range of 2D and 3D media connected to both contemporary and historical art perspectives. In our classically aligned, spatial-computing environment, students also practice careful observation and craftsmanship through immersive VR galleries and AI-supported critique to strengthen technique, vocabulary, and artistic judgment."
+ },
+ {
+  "code": "1508060",
+  "title": "M/J Comprehensive PE 6/7",
+  "grade": "7",
+  "band": "68",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "This comprehensive middle school Physical Education course develops physical fitness, movement skills, and personal wellness through classically grounded instruction that emphasizes discipline, habit formation, and sound judgment in physical activity. Students engage in age-appropriate team, individual, and fitness-based activities—enhanced by reflective use of technology where appropriate—to build lifelong skills in health, cooperation, and responsible decision-making."
+ },
+ {
+  "code": "2002070",
+  "title": "M/J Comprehensive Science 2",
+  "grade": "7",
+  "band": "68",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "M/J Comprehensive Science 2 invites students to deepen scientific literacy by exploring life, earth/space, and physical science through inquiry-driven investigations, real-world problem solving, and pattern recognition in natural systems. Using immersive VR/AI experiences alongside hands-on experimentation, students will apply classical reasoning and spatial thinking to understand ecosystems, energy transfer, earth processes, and the nature of scientific inquiry."
+ },
+ {
+  "code": "0200022",
+  "title": "M/J Grade 7 Digital Discoveries",
+  "grade": "7",
+  "band": "68",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "In Grade 7 Digital Discoveries, students engage with the visible world of computing by using programming, digital creation tools, and introductory AI and immersive VR experiences to explore how hardware, software, and emerging technologies shape communication, problem-solving, and ethical technology use in the modern world."
+ },
+ {
+  "code": "1001040",
+  "title": "M/J Language Arts 2",
+  "grade": "7",
+  "band": "68",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "M/J Language Arts 2 is an integrated Grade 7 language arts course that uses high-complexity texts to build strong reading, writing, speaking/listening, and language skills for college and career readiness. Grounded in classical grammar and rhetoric, students sharpen vocabulary and sentence craft, practice Socratic-style discussion and evidence-based writing, and use VR/AI-supported experiences to strengthen comprehension, voice, and clarity."
+ },
+ {
+  "code": "0708000A",
+  "title": "M/J Spanish Beginning",
+  "grade": "7",
+  "band": "68",
+  "modes": [
+   "Live"
+  ],
+  "prereq": "",
+  "desc": "M/J Spanish Beginning introduces students to the Spanish language and the diverse cultures of the Spanish-speaking world, building foundational proficiency in listening and speaking with an introduction to reading and writing. Through classically aligned study and immersive VR/AI-supported practice, students strengthen applied grammar and vocabulary while making cultural connections, comparisons, and real-world communication."
+ },
+ {
+  "code": "0101110",
+  "title": "M/J Visual Art 2",
+  "grade": "7",
+  "band": "68",
+  "modes": [
+   "Live"
+  ],
+  "prereq": "",
+  "desc": "This course builds on foundational visual art skills as students deepen their understanding of classical principles such as proportion, composition, and symbolism while experimenting with a wider range of media and techniques. Through hands-on studio practice and reflective critique—enhanced by immersive VR and spatial tools—students develop artistic craftsmanship, visual literacy, and an appreciation for art as a disciplined and expressive pursuit rooted in the classical tradition."
+ },
+ {
+  "code": "1205040",
+  "title": "Math Grade 7",
+  "grade": "7",
+  "band": "68",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Math Grade 7 builds fluent, accurate computation with rational numbers while strengthening algebraic thinking through equivalent expressions, equations/inequalities, proportional relationships, geometry with circles/cylinders and other 2D/3D figures, and data/probability reasoning. In our classically aligned program, students learn these skills through Singapore-style problem solving and verbal reasoning, enriched with VR/spatial-computing investigations and AI-supported practice that emphasizes clear models, precision, and mathematical habits of mind."
+ },
+ {
+  "code": "2100015",
+  "title": "US History and Career Planning",
+  "grade": "7",
+  "band": "68",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "This course explores United States history through a classically grounded lens, guiding students to examine foundational ideas, pivotal events, and civic principles while developing historical thinking and narrative understanding. Integrated career planning helps students connect historical study to vocation, character, and long-term academic and professional pathways, supported by immersive VR and AI-enhanced learning experiences."
+ },
+ {
+  "code": "1200320",
+  "title": "Algebra 1 Honors",
+  "grade": "8",
+  "band": "68",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "A classically-aligned honors algebra course that deepens and extends understanding of algebraic structures and functions by engaging students in rigorous problem-solving with polynomials, radicals, linear, quadratic and exponential relationships, systems of equations, and data analysis through VR/AI/spatial computing experiences that build logical reasoning, conceptual fluency, and real-world mathematical application."
+ },
+ {
+  "code": "30260108",
+  "title": "HOPE Grade 8",
+  "grade": "8",
+  "band": "68",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "HOPE is a year-long course that integrates physical education, health literacy, and personal wellness through classically grounded instruction, emphasizing discipline, virtue, and lifelong stewardship of the body. Students build physical fitness, understand health concepts, and apply responsible decision-making using reflective practices and immersive VR/AI-supported experiences that connect physical, mental, and moral well-being."
+ },
+ {
+  "code": "2106010",
+  "title": "M/J Civics",
+  "grade": "8",
+  "band": "68",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "This course invites students to explore the principles, structure, and functions of government and the origins of the American political system while examining the roles, rights, and responsibilities of citizens and how individuals actively participate in democratic life. Through inquiry-rich experiences grounded in geography and economics, students build critical thinking skills and apply civic understanding to real-world issues and community engagement."
+ },
+ {
+  "code": "1508070",
+  "title": "M/J Comprehensive PE 7/8",
+  "grade": "8",
+  "band": "68",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "This comprehensive physical education course develops strength, coordination, endurance, and sportsmanship through age-appropriate individual and team activities, emphasizing lifelong fitness and personal responsibility. Instruction integrates classical virtues such as discipline, perseverance, and fair play, with reflective use of technology to support goal-setting, movement analysis, and healthy habits."
+ },
+ {
+  "code": "2002100",
+  "title": "M/J Comprehensive Science 3",
+  "grade": "8",
+  "band": "68",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "In Comprehensive Science 3, students deepen their scientific literacy by exploring life, physical, and Earth/space science through inquiry-based investigations that connect core concepts to real-world phenomena and prepare them for high school science. This course blends classical reasoning with hands-on and immersive VR/AI spatial experiences that emphasize evidence-based thinking, mathematical analysis, and the nature of science to cultivate disciplined scientific understanding."
+ },
+ {
+  "code": "0200023",
+  "title": "M/J Grade 8 Digital Discoveries",
+  "grade": "8",
+  "band": "68",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "In Grade 8 Digital Discoveries, students deepen their study of computer science through disciplined problem-solving and project-based creation, strengthening programming fundamentals, digital communication, and an understanding of how computing systems function in the real world. Students apply these skills in ethical, technology-driven solutions—leveraging AI and immersive spatial/VR experiences to express ideas clearly and responsibly while analyzing technology’s impact on society."
+ },
+ {
+  "code": "1001070",
+  "title": "M/J Language Arts 3",
+  "grade": "8",
+  "band": "68",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "This course develops students' mastery of classical language arts through close reading of rich texts, explicit grammar and composition instruction, and structured discussion, integrating rhetorical skills and oral fluency as appropriate. Using immersive VR and AI-supported experiences, students strengthen analytical reading, clear writing, and effective communication in alignment with state and national standards while cultivating logic, rhetoric, and a love of language."
+ },
+ {
+  "code": "1205070",
+  "title": "M/J Pre-Algebra Grade 8",
+  "grade": "8",
+  "band": "68",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "In this immersive 8th-grade Pre-Algebra course, students deepen their mastery of real numbers, expressions, functions, and linear relationships while applying critical reasoning and spatial problem-solving to explore patterns, equations, and geometric relationships that build a strong foundation for Algebra I. Drawing on classical mathematics principles and interactive VR/AI experiences, learners connect abstract concepts like scientific notation, systems of equations, and the Pythagorean Theorem to real-world contexts and mathematical thinking."
+ },
+ {
+  "code": "0708010",
+  "title": "M/J Spanish Intermediate",
+  "grade": "8",
+  "band": "68",
+  "modes": [
+   "Live"
+  ],
+  "prereq": "",
+  "desc": "M/J Spanish Intermediate deepens students’ proficiency in Spanish by expanding listening, speaking, reading, and writing skills through increasingly complex vocabulary, grammar, and sentence structures. Building on classical language study and immersive VR/AI-supported experiences, students engage in meaningful communication while exploring the cultures, perspectives, and practices of the Spanish-speaking world."
+ },
+ {
+  "code": "0101120",
+  "title": "M/J Visual Art 3",
+  "grade": "8",
+  "band": "68",
+  "modes": [
+   "Live"
+  ],
+  "prereq": "",
+  "desc": "M/J Visual Art 3 builds on foundational skills as students study classical and contemporary works to strengthen observation, design, and craftsmanship while applying the elements and principles of art with increasing intention. Through hands-on studio practice and immersive VR-enhanced experiences, students create original artworks, reflect critically on artistic choices, and connect visual art to history, culture, and emerging creative technologies."
+ },
+ {
+  "code": "0706020",
+  "title": "Latin Advanced",
+  "grade": "MS",
+  "band": "68",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "Latin Intermediate Pre-req",
+  "desc": "M/J Latin Advanced extends students’ mastery of Latin through close reading of authentic classical texts, advanced grammar and syntax, and deeper exploration of Roman history, philosophy, and culture. In our classically aligned, VR/AI-powered environment, students use immersive and spatial learning experiences to analyze language with precision, draw connections across disciplines, and engage the classical world as a living intellectual tradition."
+ },
+ {
+  "code": "0706010",
+  "title": "Latin Intermediate",
+  "grade": "MS",
+  "band": "68",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "Latin Beginning Pre-req",
+  "desc": "M/J Latin Intermediate builds on Beginning Latin by strengthening students’ listening, speaking, reading, and writing skills while expanding vocabulary, grammar, and cultural understanding of the classical world. In our classically aligned, VR/AI-powered environment, students deepen language proficiency through immersive experiences that emphasize culture and the “connections, comparisons, and communities” that make Latin meaningful beyond the textbook."
+ },
+ {
+  "code": "1700100",
+  "title": "M/J Critical Thinking, Problem Solving, and Learning",
+  "grade": "MS",
+  "band": "68",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "This course develops students’ ability to think clearly, reason logically, and learn effectively through classical methods, both deductive and probabilistic thinking, creative problem solving, and immersive VR- and AI-enhanced experiences. Students practice analysis, reflection, and metacognitive strategies to approach academic challenges with intellectual virtue, adaptability, and confidence across disciplines."
+ },
+ {
+  "code": "0706000",
+  "title": "M/J Latin Beginning",
+  "grade": "MS",
+  "band": "68",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "M/J Latin Beginning introduces students to Latin and the classical world through foundational listening and speaking practice alongside an introduction to reading and writing. In our classically aligned, VR/AI-powered environment, students build core vocabulary and grammar while exploring Roman culture and making connections, comparisons, and real-world applications through immersive, interactive experiences."
+ },
+ {
+  "code": "1300000",
+  "title": "Music Theory 1",
+  "grade": "MS",
+  "band": "68",
+  "modes": [
+   "Live"
+  ],
+  "prereq": "",
+  "desc": "Music Theory 1 introduces students to the foundational language of music through a classical lens, including notation, rhythm, scales, intervals, and basic harmony, while developing disciplined listening and analytical skills. Students engage with these concepts through interactive and immersive tools that support spatial and auditory understanding, preparing them for thoughtful music performance, composition, and appreciation."
+ },
+ {
+  "code": "1300010",
+  "title": "Music Theory 2",
+  "grade": "MS",
+  "band": "68",
+  "modes": [
+   "Live"
+  ],
+  "prereq": "Music Theory 1 Pre-req",
+  "desc": "Music Theory 2 deepens students’ understanding of the structure and logic of Western music through advanced study of harmony, chord function, voice leading, form, and analysis within the classical tradition. Building on foundational skills, students apply disciplined reasoning and attentive listening through composition, analysis, and immersive auditory experiences that support increasingly sophisticated musical thought and expression."
+ },
+ {
+  "code": "1001310",
+  "title": "English 1",
+  "grade": "9",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "9th Grade ELA covers a wide variety of genres and periods spanning ancient Greek tragedy, Middle English epic poetry, short stories, and the American novel and drama. Throughout this course, students will learn to read carefully and recognize the beauty and significance of diverse literary techniques, all while honing their own creative and academic writing abilities. Uniting this wide and exciting array of texts is the theme of justice and duty. By close reading the assigned texts, students will be prompted to examine the intersection of faith, family, the state, and personal experience in the context of the classical approach to justice: what is owed to others and to ourselves? In addition to rigorous and engaging writing assignments, students will have ample opportunity to expand their skills and knowledge with interactive VR experiences based on the literature and composition objectives of each module."
+ },
+ {
+  "code": "1206320",
+  "title": "Geometry Honors",
+  "grade": "9",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "Algebra 1 pre-req",
+  "desc": "Geometry invites students to study the order and beauty inherent in space itself. Through the study of shapes, proofs, and theorems, scholars develop the habits of precise reasoning and argumentation. In our immersive VR- and AI-enhanced lessons, scholars will engage five areas: (1) proving and applying relationships and theorems involving two-dimensional figures using Euclidean geometry and coordinate geometry; (2) establishing congruence and similarity using criteria from Euclidean geometry and using rigid transformations; (3) extending knowledge of geometric measurement to two-dimensional figures and three-dimensional figures; (4) creating and applying equations of circles in the coordinate plane and (5) developing an understanding of right triangle trigonometry."
+ },
+ {
+  "code": "2109310",
+  "title": "World History",
+  "grade": "9",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "World History situates the scholar within the great conversation of human civilization. Students encounter the ideas, conflicts, and achievements that have shaped the world they inherit, learning to see history not as a collection of facts but as a dialogue across centuries. The course demands honesty in understanding others' perspectives and perseverance in grappling with complex moral questions."
+ },
+ {
+  "code": "1001340",
+  "title": "English 2",
+  "grade": "10",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "English 1 pre-req",
+  "desc": "English 10: Kings and Community introduces students to fundamental questions about power, order, and belonging through engagement with great literature. The course explores how individuals govern themselves and live within communities through texts such as the Odyssey, A Midsummer Night's Dream, Of Mice and Men, The Great Gatsby, and Animal Farm. Students read carefully, analyze how these works explore themes of home, solitude, power, and virtue, and develop understanding of what it means to live well individually and communally. Through writing and speaking practice, students develop skill in constructing arguments from textual evidence and expressing their ideas clearly. Students explore rhetoric—how writers and speakers use language to persuade, move, and express meaning. Using VR and AI resources, students encounter texts and analyze how literature illuminates timeless human questions. By year's end, students demonstrate understanding of literature, stronger writing and speaking skill, and insight into how personal virtue relates to community flourishing communities."
+ },
+ {
+  "code": "1001350",
+  "title": "English Honors 2",
+  "grade": "10",
+  "band": "912",
+  "modes": [
+   "Live"
+  ],
+  "prereq": "",
+  "desc": "English 10 Honors: Kings and Community challenges scholars to grapple deeply with timeless questions about power, order, and belonging through rigorous engagement with great literature. The course explores how individuals govern themselves and order their communities through texts including the Odyssey, A Midsummer Night's Dream, Of Mice and Men, The Great Gatsby, and Animal Farm. Students engage in close textual analysis, examining how these works explore the costs of solitude, the yearning for home, the corruptions of power, and the link between individual self-government and the health of communities. Through intensive writing and speaking practice, students develop sophistication in constructing complex arguments grounded in textual evidence. The course emphasizes rhetoric at an advanced level: mastering how language works to persuade, move audiences, and express subtle ideas with precision and power. Using VR and AI resources, students analyze texts in depth and explore varied rhetorical approaches to understanding literature. By year's end, students demonstrate advanced literary understanding, sophisticated writing and speaking skill, and the ability to grapple with ambiguity and complexity in both texts and ideas."
+ },
+ {
+  "code": "2100310",
+  "title": "U.S. History",
+  "grade": "10",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "U.S. History traces the formation and unfolding of the American experiment. Students engage with the cause and effect relationship between historical events, competing perspectives, and challenging moral questions embedded in the nation's story. In our immersive VR- and AI-enhanced platforms, students will study the history, geography,primary source texts, and cross-disciplinary media from Reconstruction to present day."
+ },
+ {
+  "code": "1700380",
+  "title": "Career Research and Decision-Making (Career Counseling 101)",
+  "grade": "11",
+  "band": "912",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Career Research and Decision-Making invites scholars to think seriously about their vocations. Students examine their own strengths and interests in dialogue with real possibilities. In our immersive VR- and AI-enhanced will course, they will learn current best practices for finding and applying to jobs, and they will come away with a portfolio with professional drafts of their resume, cover letter, and a practice interview. The course assumes that meaningful work is part of a meaningful life."
+ },
+ {
+  "code": "1700370",
+  "title": "Critical Thinking and Study Skills (College Counseling 101)",
+  "grade": "11",
+  "band": "912",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "In this VR- and AI-enhanced course, students study tools and principles to navigate a rapidly changing and technologically complex world with wisdom and effectiveness. They will develop skills related to critical thinking, learning and problem solving, enabling students to enhance their performance both academically and personally. Modern strategies for acquiring, storing and retrieving information, time management and organizational skills, critical thinking operations and processes, strategies for oral and written communication, and problem solving skills including test taking skills are are grounded in a classically-aligned framework."
+ },
+ {
+  "code": "2102320",
+  "title": "Economics Honors",
+  "grade": "11",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Economics - The grade 9-12 Economics course consists of the following content area strands: Economics and Geography. The primary content emphasis for this course pertains to the study of the concepts and processes of the national and international economic systems. Content should include, but is not limited to, currency, banking, and monetary policy, the fundamental concepts relevant to the major economic systems, the global market and economy, major economic theories and economists, the role and influence of the government and fiscal policies, economic measurements, tools, and methodology, financial and investment markets, and the business cycle"
+ },
+ {
+  "code": "1001370",
+  "title": "English 3",
+  "grade": "11",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "English 2 pre-req",
+  "desc": "11th Grade ELA: The Unjust Polis grapples with fundamental human questions: What does a person owe to truth? How do we maintain integrity when institutions demand conformity? Can we imagine freedom? Building on 10th grade, this course examines how different writers across traditions have confronted these timeless questions. Students read texts such as Frederick Douglass and Jane Eyre, Emerson's \"Self-Reliance\" and Romantic poets, and works like Brave New World, Fahrenheit 451, and Hamlet. Through close textual analysis, students examine how these writers construct meaning, assert integrity, and imagine alternatives to the systems that constrain them. Through rigorous writing and speaking practice, students develop sophistication in constructing arguments about what these texts explore and what they reveal about human freedom and agency. The course emphasizes advanced rhetoric: understanding how language becomes an instrument of both control and liberation. Using VR and AI resources, students analyze texts in depth and explore the philosophical questions they raise. By year's end, students demonstrate advanced literary understanding and the ability to think rigorously about these enduring questions."
+ },
+ {
+  "code": "1001380",
+  "title": "English 3 Honors",
+  "grade": "11",
+  "band": "912",
+  "modes": [
+   "Live"
+  ],
+  "prereq": "",
+  "desc": "This course defines what students should understand and be able to do by the end of the grade level. Knowledge acquisition should be the primary purpose of any reading approach. The systematic building of a wide range of knowledge across domains is a prerequisite to higher literacy. At this grade level, students are building their facility with rhetoric, the craft of using language in writing and speaking, using classic literature, essays, and speeches as mentor texts."
+ },
+ {
+  "code": "2106320",
+  "title": "United States Government Honors",
+  "grade": "11",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Civic education is essential in the development of informed citizenry who are equipped to participate in civic life and preserve a government of the people, by the people, and for the people. Students study primary source documents to understand the philosophical underpinnings of the American Republic and the root causes of American exceptionalism. Students compare the success of the United States and the success or failure of other nations’ governing philosophies to evaluate their past, present and likely future effects. Students become aware of their civic freedom and responsibility and participate regularly in all levels of government. Students reflect upon United States civic history, so they understand their rights and responsibilities as citizens, including the process of advocating properly with government officials. This course must include a comparative discussion of political ideologies, such as communism and totalitarianism, that conflict with the principles of freedom and democracy essential to the founding principles of the United States."
+ },
+ {
+  "code": "1001420",
+  "title": "AP English Language and Composition",
+  "grade": "12",
+  "band": "912",
+  "modes": [
+   "Live"
+  ],
+  "prereq": "A grade and teacher recommendation from English 3",
+  "desc": ""
+ },
+ {
+  "code": "1001430",
+  "title": "AP English Literature and Composition",
+  "grade": "12",
+  "band": "912",
+  "modes": [
+   "Live"
+  ],
+  "prereq": "A grade and teacher recommendation from English 3 (NOT UNTIL NEXT YEAR - 27-28)",
+  "desc": ""
+ },
+ {
+  "code": "2100330",
+  "title": "AP United States History",
+  "grade": "12",
+  "band": "912",
+  "modes": [
+   "Live"
+  ],
+  "prereq": "A grade and teacher recommendation from History teacher",
+  "desc": ""
+ },
+ {
+  "code": "1001400",
+  "title": "English 4",
+  "grade": "12",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "English 12: The Enduring Quest returns scholars to the quest motif and asks the ultimate questions: What endures when the world ends? What does it mean to be human? How do we flourish? Students read questing narratives spanning ancient and modern literature—texts such as the Aeneid, The Road, The Fellowship of the Ring, Slaughterhouse-Five, and 1984—exploring what survives catastrophe and what humans will endure for survival. They study texts such as Frankenstein, Invisible Man, and The Metamorphosis, investigating who gets to be human and the power of societies and individuals to erase or rewrite identity. Grounding these existential questions in the ancient conversation, students read works such as the Bhagavad Gita, Plato, Aristotle, Confucius, and Christian Scriptures—discovering that modern writers grapple with questions that have occupied human thought across centuries and cultures. Through reading and analysis, students examine what these texts explore about meaning, identity, endurance, and flourishing. Through writing and speaking practice, students develop sophistication in constructing arguments about existential questions and what different traditions reveal. Students master advanced rhetoric: understanding how language addresses the deepest human concerns. Using VR and AI resources, students engage with texts and explore the questions they raise. By year's end, students demonstrate advanced literary and philosophical understanding, grounded in how humans across time have asked what it means to live well."
+ },
+ {
+  "code": "0101300",
+  "title": "2-D Studio Art 1",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "2D Studio Art develops students' ability to express ideas and observations through drawing and painting. Students work with various media and techniques, studying how color, line, composition, and form communicate meaning. By examining how established artists use these visual elements, students learn to make intentional choices in their own work. Through creating a body of work in drawing and painting, students develop precision in technique and care in how they express their ideas. VR environments and AI tools enable students to study artworks and explore different creative approaches. The course builds both technical skill and visual thinking—learning to see clearly and express what they observe."
+ },
+ {
+  "code": "0101310",
+  "title": "2-D Studio Art 2",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "2-D Studio Art 1 Pre-req",
+  "desc": "2D Studio Art II deepens students' ability to create meaningful visual work across multiple media. Students work in drawing, painting, printmaking, collage, and design, developing greater skill in composition, color, line, and visual organization. By studying how established artists approach these media, students refine their technical ability and learn to make more intentional compositional choices. Students create work from observation, research, and imagination, learning to communicate ideas visually with increasing clarity and sophistication. Using VR and AI-assisted tools, students analyze artworks and develop their artistic voice. The course builds both technical mastery and visual thinking—learning to see what works in art and why."
+ },
+ {
+  "code": "1200310",
+  "title": "Algebra 1",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Algebra 1 introduces scholars to abstract mathematical thinking. They will develop a capacity to see patterns, represent them symbolically, and reason about what must be mathematically true. Our VR- and AI-enhanced course emphasizes five areas: (1) performing operations with polynomials and radicals, and extending the Laws of Exponents to include rational exponents; (2) extending understanding of functions to linear, quadratic and exponential functions and using them to model and analyze real-world relationships; (3) solving quadratic equations in one variable and systems of linear equations and inequalities in two variables; (4) building functions, identifying their key features and representing them in various ways and (5) representing and interpreting categorical and numerical data with one and two variables."
+ },
+ {
+  "code": "1200330",
+  "title": "Algebra 2",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Algebra 2 introduces scholars to the deep structures of mathematical reasoning. Through the study of polynomial, rational, radical, exponential, and logarithmic functions, students discover patterns of elegant coherence: how diverse expressions relate through composition, transformation, and inversion. The course extends algebraic reasoning to non-linear systems and introduces the complex number system, including imaginary numbers. Students engage in honest mathematical argument, persevering through problems that demand sustained thought and careful reasoning. They develop accuracy in calculation, precision in communication, and the intellectual virtue of attending carefully to what the mathematics reveals."
+ },
+ {
+  "code": "1200340",
+  "title": "Algebra 2 Honors",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "Geometry Pre-req",
+  "desc": "In Algebra 2 Honors, instructional time will emphasize six Algebra 2 Honors advances scholars' mastery of mathematical structures and reasoning. Through rigorous study, students work with polynomial, rational, radical, exponential, and logarithmic functions (including absolute value), examining their transformations, compositions, and inverses. The course extends operations to include polynomial division with algebraic expressions and systems of non-linear equations and inequalities. Students also study the complex number system—including imaginary numbers as roots of polynomial equations—and develop understanding of probability. VR environments and AI-assisted tools help students explore function behavior and test mathematical conjectures. Students persevere through demanding problems, developing rigorous mathematical reasoning and careful argument. They develop accuracy in calculation, precision in communication, and the intellectual virtue of attending carefully to what the mathematics revealsareas: (1) developing understanding of the complex number system, including complex numbers as roots of polynomial equations; (2) extending arithmetic operations with algebraic expressions to include polynomial division, radical and rational expressions; (3) graphing and analyzing functions including polynomials, absolute value, radical, rational, exponential and logarithmic; (4) extending systems of equations and inequalities to include non-linear expressions; (5) building functions using compositions, inverses and transformations and (6) developing understanding of probability concepts."
+ },
+ {
+  "code": "0100330",
+  "title": "Art History and Criticism 1 Honors",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Art History (Prehistory - 16th Century) introduces students to significant works of art and architecture from Prehistory through the Renaissance. Through careful observation and analysis of paintings, sculpture, and buildings, students encounter how artists across cultures and centuries have expressed truth and beauty. Students study the media and techniques artists employed and develop vocabulary for discussing art. Using VR environments, students examine artworks in detail and understand how artistic traditions developed. The course builds appreciation for human creativity and craftsmanship across time."
+ },
+ {
+  "code": "2000310",
+  "title": "Biology 1",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Biology 1 introduces scholars to the study of living systems: their structure, function, and interconnection. As a foundational course, students develop the practices of scientific investigation through careful observation, measurement, and experimentation. In a VR- and AI-enhanced learning environment, students explore cellular structures, organisms, and ecosystems with the depth and flexibility that virtual environments enable. Throughout the course, students develop precision in observation and measurement, accuracy in interpreting and reporting what they discover, responsibility in following scientific standards and evidence practices, and wonder at the complexity and beauty of the living world."
+ },
+ {
+  "code": "1202300",
+  "title": "Calculus Honors",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "Pre-Calc OR Prob&Stats Pre-req",
+  "desc": "Calculus Honors develops scholars' understanding of change, rate, and accumulation—the fundamental tools for studying motion and transformation. Students develop rigorous understanding of limits and continuity, finding and applying derivatives to analyze slopes, motion, related rates, and optimization. Through careful study of how limits and derivatives reveal function behavior, they graph and analyze functions with depth. They evaluate integrals and apply them to find areas, volumes, average values, and solve differential equations. VR and AI enhancements support visualization of rates of change and accumulation. Throughout, students develop precision in symbolic reasoning, rigor in handling infinite processes, and care in connecting abstract mathematical objects to the phenomena they model."
+ },
+ {
+  "code": "2003350",
+  "title": "Chemistry 1 Honors",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "Biology Pre-req",
+  "desc": "Chemistry 1 Honors deepens scholars' understanding of matter, its properties, and transformations through chemical reactions. Students engage with chemistry concepts with greater rigor and depth than the standard course, developing the practices of scientific investigation through careful observation, measurement, and experimentation. In a VR- and AI-enhanced learning environment, students conduct virtual investigations, manipulating variables and observing chemical outcomes with precision and control. They design experiments, follow rigorous procedures, interpret data with care, and report findings with accuracy. Students explore atomic structure, bonding, reactions, and the properties that emerge from chemical principles. Throughout the course, they develop precision in observation and measurement, accuracy in interpreting experimental results, responsibility in following scientific standards, and wonder at the elegance and power of chemical principles."
+ },
+ {
+  "code": "0108310",
+  "title": "Creative Photography 1 (sem)",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Photography introduces students to photography as an art form and a way of seeing. Building on centuries of visual tradition, students learn how cameras and photographic techniques extend the human ability to observe, compose, and express. Students master the fundamental mechanics of cameras—lens and shutter operation—and develop understanding of composition, light, and color as tools for clear visual communication. Through both digital and traditional processes, students create images that reflect careful observation and intentional choices. With VR and AI tools, students explore, refine, and present their work. Students develop both technical skill and the ability to recognize what is worth seeing and photographing."
+ },
+ {
+  "code": "0108370",
+  "title": "Digital Art Imaging 1 (sem)",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Digital Imaging teaches students to think visually and express ideas clearly through digital creation. Building on centuries of visual art practice, students learn how cameras, software, and digital tools extend the artist's ability to capture, compose, and communicate. Through photography, digital painting, and graphic design, students develop precision in their work and care in how they present ideas visually. With VR and AI tools, students engage with contemporary technologies while mastering the timeless principles of composition and visual thinking. Students develop both technical skill and visual literacy."
+ },
+ {
+  "code": "0200384",
+  "title": "Discovering Computer Science",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Discovering Computer Science introduces students to computer science through hands-on projects and real-world problems. Students learn fundamental concepts of programming and computational thinking—how to break complex problems into manageable pieces, think logically about solutions, and create programs that work. Through project-based learning, students engage in coding and debugging, developing the logical reasoning that underlies all computing. Using VR environments and AI tools, students explore computational solutions and test their work. The course develops both technical skill and the ability to think computationally about problems: to see how systems work, what can be automated, and how technology serves human purposes."
+ },
+ {
+  "code": "1900300",
+  "title": "Driver's Ed (semester)",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "The Driver Education/Traffic Safety-Classroom course is a half-credit elective course aimed at introducing students to Florida's driving laws and rules of the road and safe driving behavior."
+ },
+ {
+  "code": "0701320",
+  "title": "French 1",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "French 1 introduces students to the French language and the cultures of French-speaking communities around the world. Students develop listening, speaking, reading, and writing skills through engagement with French materials. Using VR and AI resources, students encounter French perspectives and build cross-cultural understanding. By the end of the course, students communicate with growing confidence in French."
+ },
+ {
+  "code": "1206310",
+  "title": "Geometry",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "Algebra 1 Pre-req",
+  "desc": "Geometry introduces scholars to the study of space, shape, and spatial relationships. Students use rectangular coordinate systems to verify geometric properties—investigating special triangles and quadrilaterals, understanding slopes of parallel and perpendicular lines, and exploring how two-dimensional shapes form cross-sections and transform through rotation. VR and AI enhancements support visualization of spatial relationships and three-dimensional transformations. Students develop precision in measurement, rigor in geometric reasoning, and care in understanding what spatial relationships reveal."
+ },
+ {
+  "code": "3026010",
+  "title": "HOPE",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "HOPE is a year-long course integrating physical education, health literacy, and personal wellness through classically grounded instruction. The course emphasizes discipline, virtue, and lifelong stewardship of the body—understanding that physical health is inseparable from mental and moral well-being. Students build physical fitness, develop understanding of health concepts, and practice responsible decision-making through reflective activities and VR and AI-enhanced experiences. The course treats the body as something worthy of care and develops habits that serve lifelong flourishing."
+ },
+ {
+  "code": "0900300",
+  "title": "Humanities Survey",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Humanities Survey introduces students to the major creative expressions across civilizations—art, literature, architecture, music, philosophy, and religion—that reveal how humans understand themselves and their world. Through studying these interconnected forms of expression, students encounter the ideas, beliefs, and questions that have shaped civilizations and continue to shape our own. Students examine how artists, writers, philosophers, and religious thinkers from different cultures address enduring human concerns: meaning, justice, beauty, mortality, community. In a VR- and AI-enhanced learning environment, students encounter artworks, texts, and cultural artifacts from across time and cultures. The course develops both knowledge of human cultural achievement and the ability to see how different forms of human expression illuminate each other and deepen understanding of what it means to be human."
+ },
+ {
+  "code": "2002400",
+  "title": "Integrated Science",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Integrated Science develops scholars' understanding of natural phenomena through multiple scientific perspectives. Rather than studying disciplines in isolation, students integrate concepts from physics, chemistry, biology, and earth science to understand how natural systems work. Students engage in scientific investigation through careful observation, measurement, and data collection. In a VR- and AI-enhanced learning environment, students conduct virtual investigations, manipulate variables, and collect evidence. Throughout the course, they develop precision in measurement and interpretation of data, understanding that measurement always involves uncertainty; care in calibrating instruments and recognizing sources of error; and the ability to present findings clearly. Students learn that scientific understanding emerges from rigorous attention to empirical evidence and willingness to revise conclusions in light of new data."
+ },
+ {
+  "code": "",
+  "title": "Journalism",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Journalism invites scholars to learn how news is gathered, verified, and communicated with clarity. Students practice the virtues of journalism—accuracy, fairness, the pursuit of truth, responsibility to readers. Students engage with current news sources and real journalistic work through digital platforms and AI-assisted research tools, learning how contemporary journalism operates. The course assumes that journalism is a serious craft serving a serious purpose: helping citizens understand their world and each other."
+ },
+ {
+  "code": "0706300",
+  "title": "Latin 1",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Latin 1 introduces students to the language of the Western intellectual tradition. Students develop grammar and vocabulary skills through reading classical texts in their original language—from simple sentences to passages from Roman authors. In a VR- and AI-enhanced learning environment, multi-media presentations and a living history approach bring Roman culture and daily life to light, making language study meaningful. Through careful, faithful translation work, students begin to understand the voices and ideas of ancient writers."
+ },
+ {
+  "code": "0706310",
+  "title": "Latin 2",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "Latin 1 Pre-req",
+  "desc": "Latin 2 expands students' command of Latin grammar and vocabulary through reading authentic classical texts. Students develop more sophisticated translation skills, moving from simple passages to longer, more complex works. In a VR- and AI-enhanced learning environment, students research and present projects exploring Roman culture, history, politics, literature, and mythology—connecting their grammatical study to the broader world these texts reflect. Through translation and analysis, students develop genuine facility with texts that have been studied for centuries."
+ },
+ {
+  "code": "0706320",
+  "title": "Latin 3 Honors",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "Latin 2 Pre-req",
+  "desc": "Latin 3 deepens students' skills in Latin grammar, vocabulary, and translation through reading works by major classical authors including Caesar, Cicero, Plautus, Ovid, Catullus, Horace, Pliny, Sallust, Juvenal, and Vergil. In a VR- and AI-enhanced learning environment, students research and present projects exploring Roman culture, arts, history, and politics that contextualize these texts. Students also develop literary analysis and essay writing skills through close reading of selected passages, preparing for more demanding textual work in advanced courses. Through careful translation and interpretation, students engage with the voices and ideas of Rome's greatest writers."
+ },
+ {
+  "code": "1300340",
+  "title": "Music of the World",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Contemporary Music introduces students to musical traditions of the 20th and 21st centuries across American and global cultures. Students listen to and analyze jazz, world music traditions, mariachi, soul, gamelan, Bollywood, and digital music—understanding how music functions within different cultures to express identity, tell stories, celebrate, mourn, and create community. Through careful listening and study of these diverse traditions, students develop appreciation for how cultures express themselves through music and recognize shared human experiences across different musical forms. Using VR and AI resources, students explore musical traditions in cultural context and deepen their understanding of these genres. The course builds both musical knowledge and the ability to listen deeply—to hear what music expresses and why it matters to the communities that create it."
+ },
+ {
+  "code": "2102371",
+  "title": "Personal Finance and Money Management (semester)",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Personal Finance examines how values, habits, and thinking patterns shape financial decisions. Students explore cognitive biases, social pressure, and personal values to understand why they make the choices they do with money. Through case studies and financial scenarios, students learn to recognize how their own thinking influences spending and saving decisions. Using simulations and AI-assisted analysis, students test different financial approaches and develop awareness of their own decision-making patterns. The course builds practical wisdom about money—learning to spend intentionally, save responsibly, and align financial choices with values."
+ },
+ {
+  "code": "2120910",
+  "title": "Philosophy Honors",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Philosophy Honors introduces students to philosophy as the pursuit of wisdom and understanding about fundamental questions. Students encounter major philosophical traditions and thinkers from across history and cultures, exploring questions about knowledge, ethics, politics, human nature, and how we should live. Through engagement with philosophical texts and ideas, students develop rigorous thinking, learn to construct and evaluate arguments, and practice honesty in following ideas wherever they lead. The course draws on history, literature, civics, and science to show how philosophical thinking illuminates human experience and shapes societies. Using VR and AI resources, students engage with philosophical ideas and explore how different thinkers address enduring questions. Students develop the ability to think carefully about what matters and why."
+ },
+ {
+  "code": "2105355",
+  "title": "Philosophy Honors ETHICS",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Ethics builds on philosophical thinking to examine how we should live and what we owe each other. Students engage with major ethical theories and frameworks—virtue ethics, consequentialism, deontology—and apply them to real moral dilemmas and contemporary issues. Through careful analysis of ethical questions about justice, responsibility, rights, and the good life, students develop the ability to think rigorously about moral problems without easy answers. Students examine how ethical thinking shapes decisions in medicine, technology, business, law, and community life. Using VR scenarios and AI-assisted case analysis, students explore ethical dilemmas and test different frameworks. The course develops moral reasoning and the capacity to act thoughtfully in the face of genuine ethical complexity."
+ },
+ {
+  "code": "2003380",
+  "title": "Physics 1",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "Chemistry and Algebra 1 Pre-req",
+  "desc": "Physics 1 introduces scholars to the fundamental principles that govern motion, forces, and energy. Beginning with how matter moves, students discover that motion can be described, analyzed, and predicted through mathematical principles. These principles, developed through centuries of careful observation and reasoning, have transformed human understanding of the natural world. In a VR- and AI-enhanced learning environment, students visualize motion, forces, and energy transformations. Students develop precision in measurement and calculation, rigorous reasoning about physical systems, and gain insight into the mathematical order that structures the material universe."
+ },
+ {
+  "code": "1202340",
+  "title": "Pre-Calculus Honors",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "Algebra 2 Pre-req",
+  "desc": "Precalculus Honors extends scholars' understanding of functions and their applications to model periodic phenomena and geometric relationships. Students extend right triangle trigonometry to unit circle trigonometry and trigonometric functions, investigate conic sections as fundamental geometric forms, represent and perform operations with complex numbers and vectors in the coordinate plane, and extend their understanding of relations in the plane using parametric and polar representations. They analyze arithmetic and geometric sequences and series. In a VR- and AI-enhanced learning experience, students visualize periodic functions, transformations, and complex relationships. Throughout, they develop precision in symbolic and graphical reasoning, rigor in analyzing function behavior and geometric properties, and care in understanding what these mathematical structures reveal about patterns in the world."
+ },
+ {
+  "code": "1210300",
+  "title": "Probability and Statistics Honors",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "Algebra 2 Pre-req",
+  "desc": "Probability and Statistics Honors develops scholars' ability to reason rigorously about data and evidence. Students create and interpret data displays for univariate and bivariate categorical and numerical data, compare populations using statistical methods including confidence intervals and hypothesis testing, extend their understanding of probability and probability distributions, and study methods for collecting statistical data including randomized trials. VR and AI enhancements support deeper exploration of datasets and probability concepts. Throughout, students develop precision in calculation, rigor in reasoning, and care in drawing conclusions from evidence, learning to recognize where data can illuminate and where it can mislead."
+ },
+ {
+  "code": "1004300",
+  "title": "Semantics and Logic Honors (semester)",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Logic develops students' ability to think clearly and argue rigorously. Students study the principles of logic and semantics, learning how language works, what makes an argument valid, and where reasoning goes wrong through careful analysis of complex texts and arguments. By learning to recognize logical fallacies, evaluate evidence, and construct sound arguments, students develop precision in thinking and the ability to understand what others are saying. Using VR and AI-assisted tools, students analyze arguments and practice applying logical principles to contemporary debates. The course builds intellectual virtue: learning to think carefully, argue fairly, and distinguish truth from sophistry."
+ },
+ {
+  "code": "2108300",
+  "title": "Sociology",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Sociology introduces students to how people create meaning, organize communities, and influence one another within social systems. Students examine social structures, cultural patterns, and how individuals both shape and are shaped by the groups they belong to. Through studying diverse societies and communities—past and present—students develop understanding of how beliefs, values, and behaviors emerge from social context. Students learn to recognize their own assumptions and see perspectives different from their own. Using VR and AI-enhanced learning, students explore different communities and social dynamics."
+ },
+ {
+  "code": "0708340",
+  "title": "Spanish 1",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "",
+  "desc": "Spanish 1 introduces students to Spanish as a living language spoken by hundreds of millions of people across the world. Students develop foundational skills in listening, speaking, reading, and writing through engagement with authentic materials and everyday situations. In a VR- and AI-enhanced learning environment, students explore Hispanic cultures and communities, and begin to understand the diversity of the Spanish-speaking world. Through guided conversation, reading, and writing, students develop the ability to communicate about themselves, their daily life, and familiar topics, preparing them for continued study of the language."
+ },
+ {
+  "code": "0708350",
+  "title": "Spanish 2",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "Live",
+   "OnDemand"
+  ],
+  "prereq": "Spanish 1 Pre-req",
+  "desc": "Spanish 2 expands students' ability to communicate in Spanish through more complex grammar and expanded vocabulary. Students move beyond basic introductions to discuss daily routines, family life, healthy living, and give directions or commands. In a VR- and AI-enhanced learning environment, students engage in conversations with Spanish speakers, explore how daily life varies across Hispanic cultures, and continue to build understanding of Spanish-speaking communities. Through reading, writing, listening, and speaking practice grounded in authentic situations, students develop greater confidence and fluency, preparing them for Spanish 3."
+ },
+ {
+  "code": "0708360",
+  "title": "Spanish 3 Honors",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "Live"
+  ],
+  "prereq": "Spanish 2 Pre-req",
+  "desc": "Spanish 3 expands vocabulary and conversational skills through reading and discussion of selected Spanish-language texts. Students engage with contemporary materials and readings that reflect the lives and perspectives of Spanish speakers. Using VR environments and AI-assisted practice, students develop greater ability to discuss topics in Spanish with increased confidence and accuracy. Students continue building toward more advanced Spanish study."
+ },
+ {
+  "code": "0708370",
+  "title": "Spanish 4 Honors",
+  "grade": "HS",
+  "band": "912",
+  "modes": [
+   "Live"
+  ],
+  "prereq": "Spanish 3 Pre-req",
+  "desc": "Spanish 4 Honors builds on skills from Spanish 3 through study of Spanish-language literature, essays, and media. Students work with idiomatic expressions and more advanced grammar structures, developing conversational ability and writing skill. Using VR environments and AI tools, students read and discuss texts that reflect Spanish-speaking cultures and perspectives. Students continue preparation for college-level Spanish."
+ }
+]

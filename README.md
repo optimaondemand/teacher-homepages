@@ -7,12 +7,15 @@ Self-serve builders that turn a short form into a branded Canvas page for Optima
 | `index.html` | A course **home page** | https://optimaondemand.github.io/teacher-homepages/#course |
 | `index.html` | An **Optima Commons** homeroom page | https://optimaondemand.github.io/teacher-homepages/#commons |
 | `lesson.html` | A **lesson page** in the house lesson format | https://optimaondemand.github.io/teacher-homepages/lesson.html |
+| `syllabus.html` | A **course syllabus**, as Word or as Canvas HTML | https://optimaondemand.github.io/teacher-homepages/syllabus.html |
 
 They are siblings by design and share their conventions (inline styles only, pure-ASCII output, `localStorage` drafts, live preview beside the form).
 
-**Three builders, two files, no new addresses.** Course home and Commons are two *modes* of `index.html`, switched by a tab strip in the header and remembered in `localStorage`. That was the requirement: teachers already had the two existing links in circulation, so a third builder could not arrive as a third URL. A `#course` / `#commons` fragment lets the lesson page link into a specific mode, and `applyMode()` keeps the address bar matching the visible tab via `history.replaceState` — same page, bookmarkable, no extra history entries.
+**Four builders, three files, no new addresses for the ones already in circulation.** Course home and Commons are two *modes* of `index.html`, switched by a tab strip in the header and remembered in `localStorage`. That was the original requirement: teachers already had the two existing links in circulation, so a third builder could not arrive as a third URL. A `#course` / `#commons` fragment lets the other pages link into a specific mode, and `applyMode()` keeps the address bar matching the visible tab via `history.replaceState` — same page, bookmarkable, no extra history entries.
 
-Adding a fourth builder means another entry in the `MODES` map, another `#mode-<name>` wrapper in the form column, and a `build<Name>()` emitter. Nothing else changes: storage, preview, copy/download and the mode plumbing are already generic.
+`lesson.html` and `syllabus.html` are their own files, each carrying the identical tab strip. That satisfies the same requirement by a different route: every circulated bookmark still lands somewhere real, and a teacher clicks across. Folding them into `index.html` would have taken it past 300 KB for no gain, since they share no state with the page builders.
+
+Adding another *mode* to `index.html` means another entry in the `MODES` map, another `#mode-<name>` wrapper in the form column, and a `build<Name>()` emitter. Nothing else changes: storage, preview, copy/download and the mode plumbing are already generic. Adding another *file* means copying the chrome and the tab strip, and adding one link to the strip in all the others.
 
 ## Every built page can be reopened in the builder
 
@@ -305,3 +308,95 @@ A teacher builds the poll elsewhere and brings it in three ways:
 - The Tech Help tile is pre-filled with the tech-support Teams meeting, in `TEAMS_TECH_HELP` near the top of the script block.
 - Work in progress is kept in `localStorage`, under `optima-course-home-builder-v3` for the home page builder, `optima-commons-builder-v1` for the Commons builder, `optima-page-builder-mode` for the tab you were last on, and `optima-lesson-page-builder-v1` for the lesson builder. The course key was deliberately **not** bumped when the Commons tab landed, so every draft already in a teacher's browser still opens. **Bump the key whenever a default changes**, not only when the shape does: the loader merges saved values over defaults, so a stale saved `false` outlives the fix that changed it. That is precisely what would have kept the photo bug alive for anyone who had already used the builder.
 - `course-home-builder.html` in the `optima-widgets` repo is the ancestor of this builder and is now **behind** it (no Meet the Teacher section). Treat this repo as canonical and retire that copy rather than maintaining both.
+
+---
+
+# The syllabus builder (`syllabus.html`)
+
+Added 2026-08-05. Makes a course syllabus in the same chrome as the `-EDITABLE.docx` syllabi already in circulation, with two outputs: a **Word file** the teacher can keep editing, and **HTML for the Canvas Syllabus page**. Modelled on the two reference PDFs in `Claude's Workshop\Syllabi` (MS Critical Thinking, Live and On-Demand).
+
+## Everything is a field
+
+The point of it is that a teacher can build a syllabus for a course nobody here has heard of. Nothing is looked up and nothing is locked: all fourteen stock sections arrive prefilled with the standard wording, each can be switched off, and every word of them can be edited. The only thing the catalogue does is save typing.
+
+## The Live / On-Demand switch
+
+One radio button, and it is the reason two syllabi exist per course. It swaps six field pairs and one whole block:
+
+| | Live | On-Demand |
+|---|---|---|
+| Mode label | Live (Synchronous) | On-Demand (Asynchronous) |
+| Identity row | TEACHER | FACILITATOR |
+| Format line | scheduled classes on the VR campus | self-paced within each quarter |
+| `{pacing}` | your section works to the class schedule your teacher sets | you pace to your own enrolled term |
+| Virtue clause | your own **work** and progress | your own **pacing** and progress |
+| Delivery band | attendance by presence and participation | attendance by completion, ten-day rule |
+
+Everything else is identical except `{role}`, which `fill()` replaces throughout. Build one, flip the switch, build the other.
+
+## The course catalogue
+
+`syllabus-courses.json` — 126 courses, generated from `Claude's Playground\Course Descriptions 2026-2027.xlsx` and committed. Picking one fills the description, title, code and grade band; **Write my own** is the first option and the description box is always editable.
+
+Regenerate it by re-running `mkcourses.py` (kept with the session scratchpad; copy it beside the workbook if it is wanted permanently). What that script fixes, and why the raw sheet cannot be read directly:
+
+- **Trailing whitespace on nearly every cell**, including headers.
+- **Six-digit codes** — `200021` is `0200021`. Without zero-padding, three courses fail to match the Python syllabus kit.
+- **Operational notes inside titles and mode cells** — `(NOT UNTIL NEXT YEAR - 27-28)`, `(semester w/ US Govt H)`. These must not reach a student-facing document, and one On-Demand cell contains *only* such a note, which would otherwise read as a course being offered.
+- **Blank grade cells mean "same as the row above"**, which is how the sheet is grouped. Two rows depend on this.
+- Two codes are not seven digits and are passed through as-is for a human to judge: `0708000A` (M/J Spanish Beginning) and `30260108` (HOPE Grade 8, which does not look like a Florida course code).
+- Three courses have no description yet (the AP courses) and are kept in the list anyway, so their teachers can find them and write their own.
+
+Grade bands map straight off the Grade column with no extra data: `K`-`5` to `k5`, `6`-`8` and `MS` to `68`, `9`-`12` and `HS` to `912`. Those are the only three the wording has versions of.
+
+## The AI section has three versions, not four
+
+The band picks the wording. The `912` version deliberately covers both halves of high school in separate points — *Grades 9-10 — school-controlled tools* and *Grades 11-12 — the school-managed account* — because the policy says different things to each and one section has to serve a course that enrolls both. Text is keyed to `OAO_AI_Policy_Teacher_Edition_v1.0.pdf`.
+
+**Changing the band replaces the points**, including any edits. The form says so. It is the predictable behaviour; merging edits across bands silently would not be.
+
+## A teacher's own sections
+
+Heading plus reorderable blocks — paragraphs, bulleted list, small table, highlighted note — with the same markdown-lite as the lesson builder, so nobody writes HTML. Five presets (meeting schedule, how to reach me, revision practice, discussion and VR norms, a letter to families) exist for the same reason the lesson builder's do: **no teacher tool here may require a Claude account**, so the useful cases ship as things the builder draws itself.
+
+Placement is a dropdown per section — *after the course overview*, *after assessment and grading*, and so on — not drag-and-drop across the document. `documentBlocks()` keys them by slot and splices them in as it walks the stock order.
+
+## One document model, two emitters
+
+`documentBlocks()` returns a flat list of typed blocks (`bar`, `body`, `twocol`, `table`, `dates`, `grading`, `note`, `panel`, `lead`, `footer`, `header`, `identity`). `docxBlock()` renders each to WordprocessingML and `htmlBlock()` to inline-styled HTML. Neither output can drift from the other, because both walk the same list — and a teacher's own section is the same block types as a stock one, so it renders correctly in both without special cases.
+
+## Writing a .docx in the browser, with no library
+
+`syllabus-shell.docx` (25 KB, committed) is the reference build's `styles.xml` / `settings.xml` / `numbering.xml` / `theme1.xml` with an **empty body**. Building a syllabus means swapping one entry in that zip.
+
+The trick that makes it dependency-free: **nothing is ever decompressed or compressed.** Every shell entry's already-deflated bytes are copied across verbatim — same CRC, same sizes, same method — and the new `word/document.xml` is added with method 0, *stored*. A zip of stored and deflated entries is perfectly valid and Word opens it. So there is no inflate, no deflate, no `CompressionStream`, no CDN — about 120 lines of `DataView` writes and a CRC32 table.
+
+For that to work the shell's own `word/document.xml` is **also stored**, so the prefix and `<w:sectPr>` can be read as text without an inflate implementation. If the shell is ever rebuilt, keep that: `loadShell()` fails loudly if that part arrives compressed.
+
+Proven byte-for-byte against a Python reference implementation of the same algorithm, whose output opens in `python-docx` — same 24,982 bytes, same SHA-256, on the same input.
+
+**Blank fields become highlighted placeholders**, not empty space: leave your office hours out and the Word file carries `[Office hours - days and times, posted in Canvas]` in yellow, which is the convention the `-EDITABLE.docx` syllabi already use.
+
+## What Canvas does to the HTML
+
+It goes in the **Syllabus** page's description field, which is the same rich-text editor as a normal page — so every constraint from the other builders applies, plus two that bite here specifically:
+
+- **The rich-text editor drops `text-transform`, `letter-spacing` and `font-weight`.** Section bars are therefore uppercased *when written*, and every bold is a real `<strong>`, never a style. The probe asserts neither property appears in the output at all.
+- **The percentage tiles, the two-column lists and the date grid are `<table role="presentation">`**, because a `<td>` equalises heights structurally and Canvas keeps markup but not stylesheets.
+
+The opening HTML comment is **not** run through `esc()`, because entities are not decoded inside a comment — so it is forced to literal ASCII by its own `ascii()` helper. A middle dot and an en dash in that comment were the one real bug the probe caught.
+
+Canvas appends its own Course Summary table of assignments and dates below whatever is pasted. That is normal; the *How to use it* tab says so.
+
+## Verification
+
+`_probe_syllabus.html` plus `drive.py` (both in the session scratchpad, not committed) drive the real UI in headless Chrome: 62 checks on the form and HTML, then the Word file is captured on its way to the download by hooking `URL.createObjectURL`, handed back as base64, and validated in Python — zip integrity, `python-docx` opens it, expected text present, no `{role}` leakage, no literal `**`, highlighted placeholders present.
+
+Two probe lessons, both consistent with earlier builds here: **the download anchor navigated the iframe and fired `onload` a second time**, so the probe reported an empty page as a builder failure — guard against a second run and stub `HTMLAnchorElement.prototype.click`. And the example state already carries one custom section, so the section added by a test lands at index 1, not 0. Three of the first four failures were the harness, not the builder.
+
+## Maintenance
+
+- `localStorage` key is `optima-syllabus-builder-v1`. Bump it whenever a **default** changes, not only when the shape does — the loader merges saved values over defaults, so a stale saved value outlives the fix.
+- Round-trip payload mode string is `syllabus`. A lesson or Commons page pasted into the reopen box is refused with a link to the right builder.
+- A **Word file cannot be reopened** — it carries no payload. The `.html` download is the one to keep for later edits, and the reopen panel says so.
+- `YEAR` and `YEAR_ASCII` both exist on purpose. The ASCII one is for the comment header and filenames; everything else goes through `esc()`.

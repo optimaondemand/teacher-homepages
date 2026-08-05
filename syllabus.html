@@ -1,0 +1,1918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Syllabus Builder &middot; Optima Academy Online</title>
+<meta name="description" content="Build an Optima-branded course syllabus as a Word document or as HTML for the Canvas Syllabus page." />
+<style>
+  :root {
+    --navy: #0E1C42;
+    --cyan: #55C8E8;
+    --gold: #E0A82E;
+    --page: #F4F6FB;
+    --line: #D0D9E8;
+    --muted: #6b7a99;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+    background: var(--page);
+    color: var(--navy);
+    font-size: 16px;
+    line-height: 1.45;
+  }
+
+  /* ---------- page chrome ---------- */
+  header.app {
+    background: var(--navy);
+    border-bottom: 5px solid var(--cyan);
+    padding: 18px 26px;
+  }
+  header.app .brand { font-size: 13px; color: var(--cyan); letter-spacing: 1px; text-transform: uppercase; }
+  header.app h1 { margin: 4px 0 2px; font-size: 26px; color: #fff; font-weight: 600; }
+  header.app p { margin: 0; font-size: 13px; color: rgba(255,255,255,.75); max-width: 900px; }
+  /* Same strip, same look, as the one on index.html and lesson.html. */
+  .modetabs { display: flex; gap: 6px; margin-top: 14px; flex-wrap: wrap; }
+  .modetabs a, .modetabs button {
+    font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer;
+    text-decoration: none; border-radius: 7px 7px 0 0; padding: 9px 17px;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.16);
+    border-bottom: 3px solid transparent; color: rgba(255,255,255,.72); display: block;
+  }
+  .modetabs a:hover, .modetabs button:hover { background: rgba(255,255,255,0.16); color: #fff; }
+  .modetabs [aria-current=page] {
+    background: var(--page); border-color: var(--page);
+    border-bottom-color: var(--cyan); color: var(--navy);
+  }
+  .modetabs [aria-current=page]:hover { background: var(--page); color: var(--navy); }
+
+  .layout { display: flex; align-items: flex-start; gap: 22px; padding: 22px; max-width: 1720px; margin: 0 auto; }
+  .col-form { flex: 1 1 560px; min-width: 420px; }
+  .col-out  { flex: 1 1 640px; min-width: 420px; position: sticky; top: 22px; }
+  @media (max-width: 1100px) {
+    .layout { flex-direction: column; }
+    .col-form, .col-out { min-width: 0; width: 100%; position: static; }
+  }
+
+  /* ---------- cards ---------- */
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 18px; overflow: hidden; }
+  .card > h2 {
+    margin: 0; padding: 13px 18px; font-size: 15px; font-weight: 600;
+    background: #EDF1F9; border-bottom: 1px solid var(--line); color: var(--navy);
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  }
+  .card > h2 .step {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 50%; background: var(--navy);
+    color: #fff; font-size: 12px; margin-right: 9px; flex-shrink: 0;
+  }
+  .card > h2 .onoff { font-size: 12.5px; font-weight: 600; color: var(--muted); display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .card .body { padding: 16px 18px 18px; }
+  .card.off .body { display: none; }
+  .hint { font-size: 12.5px; color: var(--muted); margin: 0 0 14px; }
+  .hint.tight { margin-bottom: 8px; }
+
+  /* ---------- fields ---------- */
+  label.f { display: block; margin-bottom: 12px; }
+  label.f > span { display: block; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+  input[type=text], input[type=url], input[type=number], textarea, select {
+    width: 100%; padding: 8px 10px; font: inherit; font-size: 14px;
+    border: 1px solid var(--line); border-radius: 6px; background: #fff; color: var(--navy);
+  }
+  input:focus, textarea:focus, select:focus { outline: 2px solid var(--cyan); outline-offset: -1px; border-color: var(--cyan); }
+  textarea { min-height: 62px; resize: vertical; line-height: 1.45; }
+  textarea.tall { min-height: 140px; }
+  .row { display: flex; gap: 12px; }
+  .row > * { flex: 1; min-width: 0; }
+  .row.narrow > .fixed { flex: 0 0 130px; }
+  .chk { display: flex; align-items: flex-start; gap: 8px; font-size: 13.5px; margin-bottom: 10px; }
+  .chk input { margin-top: 3px; flex-shrink: 0; }
+
+  /* ---------- mode switch ---------- */
+  .seg { display: flex; gap: 0; margin-bottom: 14px; }
+  .seg label {
+    flex: 1; text-align: center; font-size: 13.5px; font-weight: 600; padding: 10px 8px;
+    border: 1px solid var(--line); background: #fff; color: var(--muted); cursor: pointer;
+  }
+  .seg label:first-child { border-radius: 7px 0 0 7px; }
+  .seg label:last-child { border-radius: 0 7px 7px 0; border-left: none; }
+  .seg label.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .seg input { position: absolute; opacity: 0; pointer-events: none; }
+
+  /* ---------- repeatable items ---------- */
+  .item { border: 1px solid var(--line); border-left: 4px solid var(--cyan); border-radius: 7px; padding: 13px 14px 4px; margin-bottom: 12px; background: #FBFCFE; }
+  .item .item-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; gap: 10px; }
+  .item .item-title { font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--muted); text-transform: uppercase; }
+  .item .tools { display: flex; gap: 5px; flex-shrink: 0; }
+
+  /* a teacher's own section holds blocks, so it gets a heavier frame */
+  .sect { border: 1px solid #B9C6DC; border-left: 5px solid var(--navy); border-radius: 8px; padding: 14px 15px 6px; margin-bottom: 16px; background: #F7F9FD; }
+  .sect > .item-head .item-title { color: var(--navy); font-size: 12.5px; }
+  .block { border: 1px solid var(--line); border-left: 4px solid var(--gold); border-radius: 7px; padding: 12px 13px 2px; margin-bottom: 10px; background: #fff; }
+  .block .item-title { color: #8a6417; }
+  .blockbar { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 12px; }
+  .blockbar button { border-style: dashed; border-color: #B9C6DC; color: var(--muted); font-size: 12.5px; padding: 6px 10px; }
+  .blockbar button:hover { color: var(--navy); border-color: var(--cyan); }
+  .empty { font-size: 12.5px; color: var(--muted); font-style: italic; margin: 2px 0 10px; }
+
+  button {
+    font: inherit; cursor: pointer; border-radius: 6px; border: 1px solid var(--line);
+    background: #fff; color: var(--navy); padding: 6px 11px; font-size: 13px;
+  }
+  button:hover { background: #EDF1F9; }
+  button.mini { padding: 2px 8px; font-size: 13px; line-height: 1.5; }
+  button.danger:hover { background: #FBE9E9; border-color: #E3A3A3; color: #8C2C2C; }
+  button.primary { background: var(--navy); border-color: var(--navy); color: #fff; font-weight: 600; padding: 9px 16px; }
+  button.primary:hover { background: #16295c; }
+  button.gold { background: var(--gold); border-color: #c8901f; color: #2b2000; font-weight: 600; padding: 9px 16px; }
+  button.gold:hover { background: #eab53f; }
+  button.add { border-style: dashed; border-color: #B9C6DC; color: var(--muted); width: 100%; padding: 9px; }
+  button.add:hover { color: var(--navy); border-color: var(--cyan); }
+  button[disabled] { opacity: .4; cursor: default; }
+
+  /* ---------- output ---------- */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--line); background: #EDF1F9; flex-wrap: wrap; }
+  .tabs button {
+    border: none; border-radius: 0; background: transparent; padding: 12px 15px;
+    font-size: 13.5px; font-weight: 600; color: var(--muted); border-bottom: 3px solid transparent;
+  }
+  .tabs button[aria-selected=true] { color: var(--navy); border-bottom-color: var(--cyan); background: #fff; }
+  #previewFrame { width: 100%; height: 800px; border: none; display: block; background: #fff; }
+  .codebox { width: 100%; height: 720px; font-family: Consolas, 'Courier New', monospace; font-size: 12px; line-height: 1.45; white-space: pre; border: none; border-radius: 0; padding: 14px; }
+  .codebox:focus { outline: none; }
+  .outbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 13px 16px; border-top: 1px solid var(--line); background: #FBFCFE; }
+  .outbar .grow { flex: 1; }
+  .flash { font-size: 13px; color: #1E7A46; font-weight: 600; opacity: 0; transition: opacity .2s; }
+  .flash.show { opacity: 1; }
+  .panenote { font-size: 12.5px; color: var(--muted); padding: 11px 16px; border-bottom: 1px solid var(--line); background: #FBFCFE; margin: 0; }
+
+  ol.steps { margin: 0; padding-left: 20px; font-size: 13.5px; }
+  ol.steps li { margin-bottom: 7px; }
+  code.k { background: #EDF1F9; border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; font-family: Consolas, monospace; font-size: 12.5px; }
+  .toolbar { display: flex; gap: 9px; flex-wrap: wrap; margin-bottom: 18px; }
+
+  /* ---------- reopen ---------- */
+  .reopen { background: #fff; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 18px; overflow: hidden; }
+  .reopen > button { width: 100%; text-align: left; border: none; border-radius: 0; padding: 12px 16px; font-size: 13.5px; font-weight: 600; }
+  .reopen > button::before { content: '\25B8'; color: var(--muted); margin-right: 9px; }
+  .reopen > button[aria-expanded=true]::before { content: '\25BE'; }
+  .reopen .body { padding: 2px 16px 16px; border-top: 1px solid var(--line); }
+  .reopen textarea { min-height: 96px; font-family: Consolas, 'Courier New', monospace; font-size: 12px; white-space: pre; }
+  .reopen .toolbar { margin: 10px 0 0; }
+  .lint { font-size: 12.5px; border-radius: 7px; padding: 10px 12px; margin: 0 0 12px; }
+  .lint.bad { background: #FBE9E9; border: 1px solid #E3A3A3; color: #7A2626; }
+  .lint.ok  { background: #E9F6EE; border: 1px solid #A6D9BC; color: #1E7A46; }
+
+  /* ---------- catalogue picker ---------- */
+  .catbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 0 0 10px; }
+  .catbar .grow { flex: 1; min-width: 180px; }
+  .catnote { font-size: 12.5px; color: var(--muted); margin: 0 0 10px; }
+</style>
+</head>
+<body>
+
+<header class="app">
+  <div class="brand">Optima Academy Online</div>
+  <h1>Syllabus Builder</h1>
+  <p>Build your course syllabus. Pick your course to fill in the description, add your own name and hours, switch on the sections you want, and add sections of your own. Download it as a Word document you can keep editing, or copy the HTML into your Canvas Syllabus page.</p>
+  <nav class="modetabs" aria-label="Which page are you building">
+    <a href="index.html#course">Course home</a>
+    <a href="index.html#commons">Commons</a>
+    <a href="lesson.html">Lesson</a>
+    <a href="syllabus.html" aria-current="page">Syllabus</a>
+  </nav>
+</header>
+
+<div class="layout">
+
+  <!-- ============================ FORM ============================ -->
+  <div class="col-form" id="form">
+
+    <div class="reopen">
+      <button type="button" data-action="reopenToggle" aria-expanded="false">Already built this syllabus? Reopen it here</button>
+      <div class="body" id="reopenBody" hidden>
+        <p class="hint" style="margin-top:14px;">Every syllabus this builder makes carries its own settings inside the HTML. Paste the HTML back
+          &mdash; or open the <code class="k">.html</code> file you downloaded &mdash; and the form fills in exactly as you left it. Change the one
+          thing you came to change, then copy the new HTML or download a fresh Word file.</p>
+        <label class="f"><span>Paste the HTML of a syllabus you built</span>
+          <textarea id="reopenPaste" placeholder="&lt;!--&#10;  ====================================================&#10;  M/J CRITICAL THINKING SKILLS - COURSE SYLLABUS&#10;  ..."></textarea></label>
+        <div class="toolbar">
+          <button type="button" class="primary" data-action="reopenLoad">Load these settings</button>
+          <button type="button" data-action="reopenFile">Open a downloaded .html file&hellip;</button>
+        </div>
+        <div id="reopenMsg" style="margin-top:12px;"></div>
+        <p class="hint" style="margin:12px 0 0;">A Word file cannot be reopened here &mdash; keep the <code class="k">.html</code> download if you
+          want to come back and change things later.</p>
+      </div>
+    </div>
+    <input type="file" id="reopenFileInput" accept=".html,.htm,text/html" style="display:none;" />
+
+    <div class="toolbar">
+      <button type="button" data-action="loadExample">Load example syllabus</button>
+      <button type="button" data-action="reset">Start blank</button>
+    </div>
+
+    <!-- 1. Course and section -->
+    <section class="card">
+      <h2><span><span class="step">1</span>Your course and section</span></h2>
+      <div class="body">
+        <p class="hint">The course title and the two gold badges fill the navy banner at the top of the syllabus.</p>
+        <label class="f"><span>Course title</span>
+          <input type="text" data-path="meta.title" placeholder="M/J Critical Thinking Skills" /></label>
+
+        <p class="hint tight" style="font-weight:600; color:var(--navy);">Which section is this syllabus for?</p>
+        <div class="seg" id="segMode">
+          <label id="segLive"><input type="radio" name="mode" value="Live" data-path="meta.mode" />Live (synchronous)</label>
+          <label id="segOD"><input type="radio" name="mode" value="OnDemand" data-path="meta.mode" />On-Demand (asynchronous)</label>
+        </div>
+        <p class="hint">This is the one switch that changes wording all through the document: a Live syllabus says <em>teacher</em> and
+          measures attendance by presence, an On-Demand one says <em>facilitator</em> and measures it by completion. Build one, switch, and
+          build the other.</p>
+
+        <div class="row">
+          <label class="f"><span>Grade band (sets the AI section)</span>
+            <select data-path="meta.band">
+              <option value="k5">Elementary (K&ndash;5)</option>
+              <option value="68">Middle school (6&ndash;8)</option>
+              <option value="912">High school (9&ndash;12)</option>
+            </select></label>
+          <label class="f"><span>Grade level, as printed</span>
+            <input type="text" data-path="meta.grade" placeholder="Grades 6-8 (Middle School)" /></label>
+        </div>
+
+        <div class="row">
+          <label class="f"><span>Badge line 1</span>
+            <input type="text" data-path="meta.badge1" placeholder="Full Year" /></label>
+          <label class="f"><span>Badge line 2</span>
+            <input type="text" data-path="meta.badge2" placeholder="Grades 6-8" /></label>
+        </div>
+
+        <div class="row">
+          <label class="f fixed"><span>Course code label</span>
+            <input type="text" data-path="meta.codeLabel" placeholder="Florida Course" /></label>
+          <label class="f"><span>Course code and what follows it</span>
+            <input type="text" data-path="meta.code" placeholder="Florida 1700100 &middot; Full-year course" /></label>
+        </div>
+        <label class="f"><span>Format line (leave blank for the standard wording)</span>
+          <input type="text" data-path="meta.fmt" placeholder="Live (synchronous) - scheduled classes on Optima's VR campus" /></label>
+      </div>
+    </section>
+
+    <!-- 2. Course description -->
+    <section class="card">
+      <h2><span><span class="step">2</span>Course description</span></h2>
+      <div class="body">
+        <p class="hint">Pick your course to fill the description in from the school catalogue, then edit it however you like. If your course is
+          not on the list, choose <em>Write my own</em> and type it.</p>
+        <div class="catbar">
+          <select class="grow" id="catPick" data-path="desc.pick"><option value="">Loading the catalogue&hellip;</option></select>
+        </div>
+        <p class="catnote" id="catNote"></p>
+        <label class="f"><span>Course overview, as it will print</span>
+          <textarea class="tall" data-path="desc.text" placeholder="What this course is, what scholars do in it, and what it builds toward."></textarea></label>
+        <p class="hint" style="margin-bottom:0;">A blank line starts a new paragraph. <code class="k">**bold**</code> makes bold text.</p>
+      </div>
+    </section>
+
+    <!-- 3. You -->
+    <section class="card">
+      <h2><span><span class="step">3</span>You and your hours</span></h2>
+      <div class="body">
+        <p class="hint">Anything you leave blank prints as a highlighted placeholder in the Word file, so you can fill it in there instead.</p>
+        <label class="f"><span>Your name</span>
+          <input type="text" data-path="meta.teacher" placeholder="Ms. Alvarez" /></label>
+        <label class="f"><span>Your email</span>
+          <input type="text" data-path="meta.email" placeholder="jalvarez@optimaed.com" /></label>
+        <label class="f"><span>Office hours</span>
+          <input type="text" data-path="meta.office" placeholder="Tuesdays and Thursdays, 2:00-3:00 PM, posted in Canvas" /></label>
+      </div>
+    </section>
+
+    <!-- 4. About this syllabus -->
+    <section class="card" id="card-about">
+      <h2><span><span class="step">4</span>About this syllabus</span>
+        <span class="onoff"><input type="checkbox" data-path="about.on" /> include</span></h2>
+      <div class="body">
+        <p class="hint">The gold note under the banner. Say how long the course runs and how a scholar moves through it; the opening sentence
+          and the pointer to the other section's syllabus are added for you.</p>
+        <label class="f"><span>Your sentence about pacing</span>
+          <textarea data-path="about.text" placeholder="It is a full-year middle-school course; your class moves through the five modules together across the four quarters of the year."></textarea></label>
+      </div>
+    </section>
+
+    <!-- 5. Objectives -->
+    <section class="card" id="card-objectives">
+      <h2><span><span class="step">5</span>What scholars will learn to do</span>
+        <span class="onoff"><input type="checkbox" data-path="objectives.on" /> include</span></h2>
+      <div class="body">
+        <p class="hint">One line each. They print as a two-column bulleted list.</p>
+        <div id="list-objectives"></div>
+        <button type="button" class="add" data-action="add" data-list="objectives.items" data-kind="line">+ Add an objective</button>
+      </div>
+    </section>
+
+    <!-- 6. Milestones -->
+    <section class="card" id="card-miles">
+      <h2><span><span class="step">6</span>Big projects &amp; milestones</span>
+        <span class="onoff"><input type="checkbox" data-path="miles.on" /> include</span></h2>
+      <div class="body">
+        <label class="f"><span>Introduction above the table</span>
+          <textarea data-path="miles.intro" placeholder="The course builds toward a set of finished, real-world artifacts."></textarea></label>
+        <p class="hint tight">Each row is one project. Leave a cell blank and it prints empty.</p>
+        <div id="list-miles"></div>
+        <button type="button" class="add" data-action="add" data-list="miles.rows" data-kind="mrow">+ Add a project</button>
+      </div>
+    </section>
+
+    <!-- 7. Dates -->
+    <section class="card" id="card-dates">
+      <h2><span><span class="step">7</span>Important dates</span>
+        <span class="onoff"><input type="checkbox" data-path="dates.on" /> include</span></h2>
+      <div class="body">
+        <p class="hint">Prefilled with the board-approved 2026&ndash;2027 school calendar. Change or remove any line, or add your own.</p>
+        <div id="list-dates"></div>
+        <button type="button" class="add" data-action="add" data-list="dates.pairs" data-kind="dpair">+ Add a date</button>
+      </div>
+    </section>
+
+    <!-- 8. Assessment -->
+    <section class="card" id="card-grading">
+      <h2><span><span class="step">8</span>Assessment &amp; grading</span>
+        <span class="onoff"><input type="checkbox" data-path="grading.on" /> include</span></h2>
+      <div class="body">
+        <p class="hint">Each row is one card in the row of weights. Two to five works best.</p>
+        <div id="list-grading"></div>
+        <button type="button" class="add" data-action="add" data-list="grading.items" data-kind="gitem">+ Add a category</button>
+        <label class="f" style="margin-top:12px;"><span>Note under the weights (optional)</span>
+          <textarea data-path="grading.note" placeholder="How grades are reported, what a late or missing assignment does, and anything else a family should know."></textarea></label>
+      </div>
+    </section>
+
+    <!-- 9. Delivery -->
+    <section class="card" id="card-delivery">
+      <h2><span><span class="step">9</span>How this section runs</span>
+        <span class="onoff"><input type="checkbox" data-path="delivery.on" /> include</span></h2>
+      <div class="body">
+        <p class="hint" id="deliveryHint"></p>
+        <label class="f"><span>Sentence added to the end of the first paragraph (optional)</span>
+          <textarea data-path="delivery.cumulative" placeholder="Anything else about how the pacing works in your section."></textarea></label>
+        <label class="f"><span>The cyan panel's sentence (optional)</span>
+          <textarea data-path="delivery.tagline" placeholder="A live facilitator grades your work, gives feedback, and hosts a weekly study hall and VR workshops."></textarea></label>
+      </div>
+    </section>
+
+    <!-- 10. AI -->
+    <section class="card" id="card-ai">
+      <h2><span><span class="step">10</span>Using AI in this course</span>
+        <span class="onoff"><input type="checkbox" data-path="ai.on" /> include</span></h2>
+      <div class="body">
+        <p class="hint">This is Optima's AI policy written for your grade band. Changing the band in step 1 replaces the wording below with that
+          band's version, so set the band first. Add a sentence of your own about how AI works in <em>your</em> course.</p>
+        <label class="f"><span>Your sentence, added to the opening paragraph</span>
+          <textarea data-path="ai.framing" placeholder="This is a course about reasoning, so AI may support your work but it may not do the reasoning an assignment asks of you."></textarea></label>
+        <p class="hint tight">The policy points, as they will print:</p>
+        <div id="list-ai"></div>
+        <button type="button" class="add" data-action="add" data-list="ai.bullets" data-kind="line">+ Add a point</button>
+        <label class="f" style="margin-top:12px;"><span>Closing line</span>
+          <textarea data-path="ai.close"></textarea></label>
+      </div>
+    </section>
+
+    <!-- 11. Standard closing sections -->
+    <section class="card" id="card-vr">
+      <h2><span><span class="step">11</span>Learning in virtual reality</span>
+        <span class="onoff"><input type="checkbox" data-path="vr.on" /> include</span></h2>
+      <div class="body">
+        <label class="f"><span>What scholars do in VR in this course</span>
+          <textarea data-path="vr.what" placeholder="take part in live activities and explore places and ideas you could not visit in an ordinary classroom" /></textarea></label>
+        <p class="hint" style="margin-bottom:0;">The rest of the paragraph &mdash; headsets charged, courtesy on campus, a non-VR alternate so
+          nobody falls behind &mdash; is standard and added for you.</p>
+      </div>
+    </section>
+
+    <section class="card" id="card-scholar">
+      <h2><span><span class="step">12</span>Being an Optima scholar</span>
+        <span class="onoff"><input type="checkbox" data-path="scholar.on" /> include</span></h2>
+      <div class="body">
+        <p class="hint">The seven virtues and what they look like in practice. Standard text, with one clause you can make your own.</p>
+        <label class="f"><span>A practice specific to your course (optional)</span>
+          <input type="text" data-path="scholar.clause" placeholder="report your results truthfully, even when the number is not what you hoped" /></label>
+      </div>
+    </section>
+
+    <section class="card" id="card-needs">
+      <h2><span><span class="step">13</span>What you need &amp; staying connected</span>
+        <span class="onoff"><input type="checkbox" data-path="needs.on" /> include</span></h2>
+      <div class="body">
+        <p class="hint">One line per item. They print as a two-column ticked list.</p>
+        <div id="list-needs"></div>
+        <button type="button" class="add" data-action="add" data-list="needs.items" data-kind="line">+ Add an item</button>
+        <label class="f" style="margin-top:12px;"><span>Anything else before the closing paragraph (optional)</span>
+          <textarea data-path="needs.extra"></textarea></label>
+      </div>
+    </section>
+
+    <section class="card" id="card-footer">
+      <h2><span><span class="step">14</span>Footer line</span>
+        <span class="onoff"><input type="checkbox" data-path="footer.on" /> include</span></h2>
+      <div class="body">
+        <p class="hint">The small grey line at the very end that says where the syllabus came from.</p>
+        <label class="f"><span>Footer</span>
+          <textarea data-path="footer.text"></textarea></label>
+      </div>
+    </section>
+
+    <!-- 15. Your own sections -->
+    <section class="card">
+      <h2><span><span class="step">15</span>Your own sections</span></h2>
+      <div class="body">
+        <p class="hint">Anything the standard sections do not cover: your meeting schedule, how you handle revision, your VR norms, a letter to
+          families. Each one can go wherever you want it in the document.</p>
+        <div id="list-custom"></div>
+        <div class="blockbar" style="margin-bottom:0;">
+          <button type="button" data-action="addSection" data-preset="blank">+ Blank section</button>
+          <button type="button" data-action="addSection" data-preset="schedule">+ My meeting schedule</button>
+          <button type="button" data-action="addSection" data-preset="reach">+ How to reach me</button>
+          <button type="button" data-action="addSection" data-preset="revision">+ My revision practice</button>
+          <button type="button" data-action="addSection" data-preset="norms">+ Our discussion &amp; VR norms</button>
+          <button type="button" data-action="addSection" data-preset="welcome">+ A letter to families</button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ============================ OUTPUT ============================ -->
+  <div class="col-out">
+    <div class="card" style="margin-bottom:0;">
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" id="tab-preview" data-action="tab" data-tab="preview" aria-selected="true">Preview</button>
+        <button type="button" role="tab" id="tab-canvas" data-action="tab" data-tab="canvas" aria-selected="false">HTML for Canvas</button>
+        <button type="button" role="tab" id="tab-how" data-action="tab" data-tab="how" aria-selected="false">How to use it</button>
+      </div>
+
+      <div id="pane-preview">
+        <p class="panenote">This is what the syllabus looks like. The Word download and the Canvas HTML both come from what you see here.</p>
+        <iframe id="previewFrame" title="Syllabus preview"></iframe>
+      </div>
+
+      <div id="pane-canvas" hidden>
+        <p class="panenote">Paste this into your course's <strong>Syllabus</strong> page in Canvas, using the HTML editor.</p>
+        <textarea class="codebox" id="codeCanvas" readonly spellcheck="false"></textarea>
+      </div>
+
+      <div id="pane-how" hidden>
+        <div class="body">
+          <p class="hint" style="font-weight:600; color:var(--navy); margin-bottom:6px;">To put it on your Canvas Syllabus page</p>
+          <ol class="steps">
+            <li>Click <strong>Copy HTML</strong> below.</li>
+            <li>In Canvas, open your course and click <strong>Syllabus</strong>, then <strong>Edit</strong>.</li>
+            <li>Click the <code class="k">&lt;/&gt;</code> button at the bottom right of the editor to switch to the HTML editor.</li>
+            <li>Select everything that is there and paste over it.</li>
+            <li><strong>Update Syllabus</strong>.</li>
+          </ol>
+          <p class="hint" style="margin-top:14px;">Canvas adds its own list of assignments and dates below whatever you paste. That is normal
+            and nothing to fix.</p>
+          <p class="hint" style="font-weight:600; color:var(--navy); margin:18px 0 6px;">One thing to know about editing it afterwards</p>
+          <p class="hint">If you go back into the Syllabus page and edit it in the normal <em>rich text</em> view rather than the HTML view,
+            Canvas quietly rewrites some of the styling and the page can lose its look. If you need to change something, change it here and
+            paste the whole thing again.</p>
+          <p class="hint" style="font-weight:600; color:var(--navy); margin:18px 0 6px;">To hand out a Word copy</p>
+          <p class="hint" style="margin-bottom:0;">Click <strong>Download Word</strong>. It opens in Word and every part of it can be edited
+            there, so if you would rather finish it by hand, that is the file to use. Anything you left blank in the form arrives as a
+            highlighted placeholder.</p>
+        </div>
+      </div>
+
+      <div class="outbar">
+        <button type="button" class="primary" data-action="copy">Copy HTML</button>
+        <button type="button" class="gold" data-action="docx">Download Word</button>
+        <button type="button" data-action="download">Download .html</button>
+        <span class="grow"></span>
+        <span class="flash" id="flash"></span>
+        <span class="hint" style="margin:0;" id="sizeNote"></span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var STORE_KEY = 'optima-syllabus-builder-v1';
+  var YEAR = '2026–2027';
+  // The opening comment is not run through esc(), because entities are not
+  // decoded inside an HTML comment. It therefore has to be literal ASCII.
+  var YEAR_ASCII = '2026-2027';
+
+  // ---------------------------------------------------------------- palette
+  // Same values as the .docx chrome in the syllabus generator.
+  var NAVY = '0E1C42', CYAN = '55C8E8', GOLD = 'C7922C';
+  var INK = '1A2340', MUTED = '44507A', LABEL = '6B7494';
+  var PANEL = 'EEF1F8', GOLDBG = 'FDF3E3', CYANBG = 'EAF6FB', RULE = 'D0D9E8';
+  var H = { navy: '#0E1C42', cyan: '#55C8E8', gold: '#C7922C', ink: '#1A2340',
+            muted: '#44507A', label: '#6B7494', panel: '#EEF1F8', goldbg: '#FDF3E3',
+            cyanbg: '#EAF6FB', rule: '#D0D9E8' };
+
+  // ---------------------------------------------------------------- defaults
+  var DATES = [
+    ['Aug 12, 2026', 'First day of school'], ['Sep 7', 'Holiday (Labor Day)'],
+    ['Oct 9', 'Quarter 1 ends'], ['Oct 12', 'Holiday (Columbus Day)'],
+    ['Nov 11', 'Holiday (Veterans’ Day)'], ['Nov 23–27', 'Thanksgiving break'],
+    ['Dec 18', 'Quarter 2 ends · fall semester ends'], ['Dec 21–Jan 1', 'Winter break'],
+    ['Jan 5, 2027', 'Classes resume'], ['Jan 18', 'Holiday (MLK Day)'],
+    ['Feb 15', 'Holiday (Presidents’ Day)'], ['Mar 5', 'Quarter 3 ends'],
+    ['Mar 26–Apr 5', 'Spring break'], ['Apr 6', 'Classes resume'],
+    ['May 28, 2027', 'Quarter 4 ends · last day of school'],
+    ['May 31', 'Holiday (Memorial Day)']
+  ];
+
+  var AI_INTRO = {
+    k5: 'Optima’s AI policy does not ask whether a scholar used AI. It asks whether AI was used **honestly, and in a way that helped you learn something yourself**. ',
+    '68': 'Optima’s AI policy does not ask whether a scholar used AI. It asks whether AI was used **honestly, skillfully, and in a way that genuinely built your own thinking**. ',
+    '912': 'Optima’s AI policy does not ask whether a scholar used AI. It asks whether AI was used **honestly, skillfully, and in a way that genuinely built your own thinking**. '
+  };
+
+  var AI_CLOSE = {
+    k5: 'Some assignments do not allow AI at all, so that you build the skill yourself. The assignment page will say so.',
+    '68': 'Some assignments limit or exclude AI so that you build the underlying skill yourself, and the assignment page will say so: you cannot judge whether an AI’s answer is any good unless you can do the work without it.',
+    '912': 'Some assignments limit or exclude AI so that you build the underlying skill yourself, and the assignment page will say so: you cannot judge whether an AI’s answer is any good unless you can do the work without it.'
+  };
+
+  var AI_BULLETS = {
+    k5: [
+      '**School tools only.** Any AI this course uses lives inside **Canvas** or Optima’s VR platform, set up and supervised by the school. No assignment asks you to create or use a personal AI account, and your {role} may not ask, suggest, or require one. Optima does not provide, endorse, or manage personal AI accounts for elementary scholars.',
+      '**Grown-ups decide, and grown-ups stay responsible.** Whether an AI tool is used at home is your family’s decision, not the school’s. A parent or guardian chooses it, sets it up, watches how it is used, and stays responsible for the account.',
+      '**The work has to be yours.** A computer cannot notice what you noticed or feel what you felt, and it should not write your reflection either. If an adult or a tool helped you with something you turned in, say so — saying so is honest, and hiding it is not.',
+      '**Check what a computer tells you.** AI sounds certain even when it is wrong, and it sometimes makes things up. If something you read does not match what you found, what your lesson said, or what your {role} told you, ask before you use it.'
+    ],
+    '68': [
+      '**Grades 6–8 — school-controlled tools.** Any AI this course provides is built into **Canvas** and into Optima’s VR platform, and no assignment requires a personal account. An outside tool is your family’s decision, not the school’s: it needs written parent or guardian permission on file with your {role}, and your family selects, sets up, monitors, and stays responsible for the account. Optima does not provide, endorse, or manage personal AI accounts. Under 14, your {role} may not ask, suggest, or require one at all.',
+      '**Document it, then verify it.** Record the **tool**, the **prompt** you gave it, and the **date**. Using AI is not plagiarism; turning in AI-generated work as entirely your own thought, undocumented, is. AI states wrong things confidently and invents data, sources, and citations that look real, so check every claim and number against your own work or a credible source before it goes into your work.',
+      '**Own it.** Your work should read the way you write and speak in the rest of the course, take a real position rather than hedging, and be something you can explain on the spot when your {role} asks a follow-up you did not expect. Keep the process too — prompt logs, drafts, and notes are gradeable evidence.',
+      '**Never put a person into a tool.** Do not feed another person’s likeness, voice, or personal information into an AI tool, and do not paste anything confidential into one. Where an assignment has you build or configure an AI tool, turn in your design, your prompting strategy, your tests, and your conclusions.'
+    ],
+    '912': [
+      '**Grades 9–10 — school-controlled tools.** Any AI this course provides is built into **Canvas** and into Optima’s VR platform, and no assignment requires a personal account. An outside tool is your family’s decision, not the school’s: it needs written parent or guardian permission on file with your {role}, and your family selects, sets up, monitors, and stays responsible for the account. Optima does not provide, endorse, or manage personal AI accounts. Under 14, your {role} may not ask, suggest, or require one at all.',
+      '**Grades 11–12 — the school-managed account.** Optima issues each scholar a school-managed AI license on the platform the administration selects and maintains, and that account is the tool of record for any graded AI-integrated work, so privacy, data handling, and oversight stay under the school’s control. A personal account is not a substitute for it on graded work.',
+      '**Document it, then verify it.** Record the **tool**, the **prompt** you gave it, and the **date**. Using AI is not plagiarism; turning in AI-generated work as entirely your own thought, undocumented, is. AI states wrong things confidently and invents data, sources, and citations that look real, so check every claim and number against your own data, the work done by hand, or a credible source before it goes into your work.',
+      '**Own it.** Your work should read the way you write and speak in the rest of the course, take a real position rather than hedging, and be something you can explain on the spot when your {role} asks a follow-up you did not expect. Keep the process too — prompt logs, drafts, and data tables are gradeable evidence. Where an assignment has you build or configure an AI tool, turn in your design, prompting strategy, tests, and conclusions, and never feed another person’s likeness or personal information into a tool.'
+    ]
+  };
+
+  var NEEDS_DEFAULT = [
+    'A computer with reliable internet and access to Canvas.',
+    'A VR headset, charged and ready for the immersive activities on Optima’s VR campus.',
+    'Microsoft 365 (Word, Excel) with OneDrive, for the documents you create and submit.',
+    'A notebook or binder, and pens or pencils.'
+  ];
+
+  var MILE_HEAD = ['Project / Milestone', 'Course place', 'Sample timing', 'What you turn in'];
+
+  // ---------------------------------------------------------------- presets
+  var SECTION_PRESETS = {
+    blank: function () { return { title: '', at: 'grading', blocks: [{ kind: 'text', text: '' }] }; },
+    schedule: function () {
+      return { title: 'My Class Meeting Schedule', at: 'delivery', blocks: [
+        { kind: 'text', text: 'Here is when we meet and what each meeting is for. Times are Eastern.' },
+        { kind: 'table', head: 'Day|Time|What we do', rows: [
+          { a: 'Monday', b: '9:00 - 9:50 AM', c: 'New material and guided practice' },
+          { a: 'Wednesday', b: '9:00 - 9:50 AM', c: 'Discussion and questions' },
+          { a: 'Friday', b: '9:00 - 9:50 AM', c: 'Work time, with me available' }
+        ] }
+      ] };
+    },
+    reach: function () {
+      return { title: 'How to Reach Me', at: 'needs', blocks: [
+        { kind: 'text', text: 'Email is the fastest way to reach me, and I answer within one school day.' },
+        { kind: 'bullets', text: 'Email for anything about an assignment or a grade\nOffice hours for anything that takes more than a paragraph to explain\nA message in Canvas if it is about a specific submission' }
+      ] };
+    },
+    revision: function () {
+      return { title: 'Revision and Late Work in My Section', at: 'grading', blocks: [
+        { kind: 'text', text: 'What I expect, and what to do when something goes wrong.' },
+        { kind: 'callout', tone: 'gold', lead: 'Revision is expected, not a favour.', text: 'Any written assignment can be revised once after feedback, within one week of getting it back.' }
+      ] };
+    },
+    norms: function () {
+      return { title: 'Our Discussion and VR Norms', at: 'vr', blocks: [
+        { kind: 'text', text: 'A few things we agree to, so this is a place where thinking out loud is safe.' },
+        { kind: 'bullets', text: 'Disagree with the idea, never the person\nQuote what you are responding to, so we know what you mean\nCameras and microphones on in VR unless you have told me otherwise\nWhat someone says while working something out is not held against them' }
+      ] };
+    },
+    welcome: function () {
+      return { title: 'A Note to Families', at: 'about', blocks: [
+        { kind: 'text', text: 'Welcome. I am glad your scholar is in this course.\n\nYou do not need to know the material to help. Ask what they are working on, ask them to explain one idea back to you, and tell me when something is not working.' }
+      ] };
+    }
+  };
+
+  var BLOCK_LABEL = { text: 'Paragraphs', bullets: 'Bulleted list', table: 'Small table', callout: 'Highlighted note' };
+
+  // The stock sections a teacher's own section can be placed after.
+  var SLOTS = [
+    ['about', 'the gold note at the top'],
+    ['overview', 'the course overview'],
+    ['objectives', 'what scholars will learn'],
+    ['miles', 'big projects & milestones'],
+    ['dates', 'important dates'],
+    ['grading', 'assessment & grading'],
+    ['delivery', 'how this section runs'],
+    ['ai', 'using AI'],
+    ['vr', 'learning in virtual reality'],
+    ['scholar', 'being an Optima scholar'],
+    ['needs', 'what you need'],
+    ['end', 'the very end, before the footer']
+  ];
+
+  // ---------------------------------------------------------------- state
+  function newBlock(kind) {
+    if (kind === 'table') return { kind: 'table', head: 'Column|Column|Column', rows: [{ a: '', b: '', c: '' }] };
+    if (kind === 'callout') return { kind: 'callout', tone: 'gold', lead: '', text: '' };
+    return { kind: kind || 'text', text: '' };
+  }
+
+  function blankState() {
+    return {
+      meta: { title: '', mode: 'Live', band: '912', codeLabel: 'Florida Course', code: '',
+              badge1: '', badge2: '', grade: '', fmt: '',
+              teacher: '', email: '', office: '' },
+      desc: { pick: '', text: '' },
+      about: { on: true, text: '' },
+      objectives: { on: true, items: [''] },
+      miles: { on: true, intro: 'The course builds toward a set of finished, real-world artifacts.', rows: [{ a: '', b: '', c: '', d: '' }] },
+      dates: { on: true, pairs: DATES.map(function (d) { return { d: d[0], e: d[1] }; }) },
+      grading: { on: true, items: [{ pct: '', label: '' }], note: '' },
+      delivery: { on: true, cumulative: '', tagline: '' },
+      ai: { on: true, framing: '', bullets: AI_BULLETS['912'].slice(), close: AI_CLOSE['912'] },
+      vr: { on: true, what: 'take part in live activities and explore places and ideas you could not visit in an ordinary classroom' },
+      scholar: { on: true, clause: '' },
+      needs: { on: true, items: NEEDS_DEFAULT.slice(), extra: '' },
+      footer: { on: true, text: '' },
+      custom: []
+    };
+  }
+
+  function exampleState() {
+    var s = blankState();
+    s.meta = {
+      title: 'M/J Critical Thinking Skills', mode: 'Live', band: '68',
+      codeLabel: 'Florida Course', code: 'Florida 1700100 · Full-year course',
+      badge1: 'Full Year', badge2: 'Grades 6–8',
+      grade: 'Grades 6–8 (Middle School)', fmt: '',
+      teacher: '', email: '', office: ''
+    };
+    s.desc.text = 'M/J Critical Thinking Skills teaches scholars to think, read, reason, and argue like an intellectual. Across five modules, scholars move from the practical habits of a serious student — time management, goal-setting, active reading, note-taking, memory, and test preparation — to the deeper work of clear communication, scientific reasoning, close reading, and well-built argument. Every topic pairs a short interactive lesson with a written assignment and an immersive activity on Optima’s VR campus, and three of the modules build toward a real project that scholars complete and present.';
+    s.about.text = 'It is a full-year middle-school course; your class moves through the five modules together across the four quarters of the year.';
+    s.objectives.items = [
+      'Apply study skills — time management, goal-setting, active reading, note-taking, memory, and test preparation — to manage their own learning.',
+      'Communicate clearly and adapt how they communicate to different people, purposes, and situations.',
+      'Tell facts from opinions and recognize when a claim is substantive rather than mere opinion.',
+      'Reason scientifically: form hypotheses, gather and evaluate evidence, and calibrate their confidence in a belief.',
+      'Identify faulty reasoning and common logical fallacies.',
+      'Read closely and critically — previewing, questioning, inferring, summarizing, and synthesizing across sources.',
+      'Find, evaluate, and cite sources with academic integrity.',
+      'Build, evaluate, and refine an argument, and defend a position against counter-arguments.'
+    ];
+    s.miles.rows = [
+      { a: 'The Good Life Experiment', b: 'Module 3 · Weeks 14–24', c: 'by Feb 26 (Q3)', d: 'A week-long self-experiment with a daily data log and a findings video in science-paper format, submitted in Canvas.' },
+      { a: 'Annotated Bibliography', b: 'Module 4 · Weeks 25–32', c: 'by Apr 30', d: 'A curated set of sources, evaluated and annotated inside a VR research library, with a guided tour.' },
+      { a: 'The Disputatio (course final)', b: 'Module 5 · Weeks 33–36', c: 'by May 21', d: 'A researched argument built and defended in a VR arena: a position taken, counter-arguments answered, and claims fact-checked.' }
+    ];
+    s.grading.items = [
+      { pct: '50%', label: 'Weekly written assignments' },
+      { pct: '30%', label: 'Module projects & the Disputatio final' },
+      { pct: '20%', label: 'VR campus activities' }
+    ];
+    s.ai.bullets = AI_BULLETS['68'].slice();
+    s.ai.close = AI_CLOSE['68'];
+    s.ai.framing = 'This is a course about reasoning, so that standard matters here more than in most places: AI may support your work, but it may not do the reasoning an assignment asks of you.';
+    s.needs.items = [
+      'A computer with reliable internet and access to Canvas.',
+      'A VR headset, charged and ready for the weekly immersive activities on Optima’s VR campus.',
+      'Microsoft 365 (Word, Excel) with OneDrive, for the documents and data logs you create and submit.',
+      'A notebook or binder, and pens or pencils, for notes and study practice.'
+    ];
+    s.footer.text = 'Built from the course content (5 modules / 32 lessons) and the board-approved ' + YEAR + ' academic calendar. Project target dates reflect a sample full-year pacing. School calendar dates may be adjusted by the school.';
+    s.custom = [SECTION_PRESETS.schedule()];
+    return s;
+  }
+
+  function hydrate(s) {
+    var b = blankState();
+    if (!s || typeof s !== 'object') return b;
+    Object.keys(b).forEach(function (k) {
+      if (s[k] == null) return;
+      if (Array.isArray(b[k])) { b[k] = Array.isArray(s[k]) ? s[k] : b[k]; return; }
+      if (typeof b[k] === 'object') {
+        Object.keys(b[k]).forEach(function (j) { if (s[k][j] != null) b[k][j] = s[k][j]; });
+        return;
+      }
+      b[k] = s[k];
+    });
+    (b.custom || []).forEach(function (c) {
+      c.blocks = Array.isArray(c.blocks) ? c.blocks : [];
+      c.blocks.forEach(function (bl) {
+        if (bl.kind === 'table' && !Array.isArray(bl.rows)) bl.rows = [{ a: '', b: '', c: '' }];
+      });
+    });
+    return b;
+  }
+
+  var state = null;
+  function load() {
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      if (!raw) return null;
+      return hydrate(JSON.parse(raw));
+    } catch (e) { return null; }
+  }
+  function save() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  // ------------------------------------------------------ round-trip payload
+  // Kept deliberately as its own copy rather than shared with index.html and
+  // lesson.html, so neither file's changes can break the others.
+  var TAG = 'OAO-BUILDER';
+  var PAYLOAD_V = 1;
+
+  function b64enc(str) {
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-Fa-f]{2})/g, function (m, hex) {
+      return String.fromCharCode(parseInt(hex, 16));
+    }));
+  }
+  function b64dec(b64) {
+    var bytes = atob(String(b64).replace(/\s+/g, '')), pct = '';
+    for (var i = 0; i < bytes.length; i++) {
+      pct += '%' + ('0' + bytes.charCodeAt(i).toString(16)).slice(-2);
+    }
+    return decodeURIComponent(pct);
+  }
+  function payloadLines() {
+    return [
+      '  ----------------------------------------------------------------------------',
+      '  REOPENING THIS SYLLABUS: paste this whole file back into the builder and every',
+      '  field comes back filled in, ready to change. The line below is how - it is',
+      '  this page\'s settings. Students never see it. Leave it alone and it keeps',
+      '  working; delete it and the page still renders, it just cannot be reopened.',
+      '',
+      '  ' + TAG + ':' + PAYLOAD_V + ':syllabus:' + b64enc(JSON.stringify(state))
+    ];
+  }
+  function readPayload(text) {
+    var s = String(text || '');
+    var m = s.match(new RegExp(TAG + ':(\\d+):([a-z]+):([A-Za-z0-9+/=\\s]*?)\\s*-->'))
+         || s.match(new RegExp(TAG + ':(\\d+):([a-z]+):([A-Za-z0-9+/=]+)'));
+    if (!m) return null;
+    try {
+      return { v: parseInt(m[1], 10), mode: m[2], state: JSON.parse(b64dec(m[3])) };
+    } catch (e) {
+      return { error: true, mode: m[2] };
+    }
+  }
+
+  function getPath(p) {
+    var parts = p.split('.'), o = state;
+    for (var i = 0; i < parts.length; i++) { if (o == null) return undefined; o = o[parts[i]]; }
+    return o;
+  }
+  function setPath(p, v) {
+    var parts = p.split('.'), o = state;
+    for (var i = 0; i < parts.length - 1; i++) o = o[parts[i]];
+    o[parts[parts.length - 1]] = v;
+  }
+
+  // ------------------------------------------------------- escaping helpers
+  function t(v) { return String(v == null ? '' : v).trim(); }
+  function slug(s) {
+    return String(s || 'syllabus').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'syllabus';
+  }
+  // Canvas wants pure ASCII, so anything above 126 goes out as a numeric reference.
+  function esc(str) {
+    str = String(str == null ? '' : str);
+    var out = '';
+    for (var i = 0; i < str.length; i++) {
+      var cp = str.codePointAt(i), ch = String.fromCodePoint(cp);
+      if (cp > 0xFFFF) i++;
+      if (ch === '&') out += '&amp;';
+      else if (ch === '<') out += '&lt;';
+      else if (ch === '>') out += '&gt;';
+      else if (ch === '"') out += '&quot;';
+      else if (cp > 126 || (cp < 32 && ch !== '\n')) out += '&#' + cp + ';';
+      else out += ch;
+    }
+    return out;
+  }
+  function escAttr(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  // Word's document.xml is UTF-8, so only the three XML characters need escaping.
+  function xesc(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  // What this section is called depends on which section it is for.
+  function role() { return state.meta.mode === 'Live' ? 'teacher' : 'facilitator'; }
+  function isLive() { return state.meta.mode === 'Live'; }
+  function modeLabel() { return isLive() ? 'Live (Synchronous)' : 'On-Demand (Asynchronous)'; }
+  function fmtLine() {
+    return t(state.meta.fmt) || (isLive()
+      ? 'Live (synchronous) · scheduled classes on Optima’s VR campus'
+      : 'On-Demand (asynchronous) · self-paced within each quarter');
+  }
+  function fill(s) { return String(s == null ? '' : s).replace(/\{role\}/g, role()); }
+
+  // Split a list into two balanced columns, as the generator does.
+  function halve(items) {
+    var n = Math.ceil(items.length / 2);
+    return [items.slice(0, n), items.slice(n)];
+  }
+  function lines(txt) {
+    return String(txt == null ? '' : txt).replace(/\r/g, '').split('\n')
+      .map(function (l) { return l.trim(); }).filter(function (l) { return l !== ''; });
+  }
+  function paras(txt) {
+    return String(txt == null ? '' : txt).replace(/\r/g, '').split(/\n\s*\n/)
+      .map(function (c) { return c.split('\n').map(function (l) { return l.trim(); }).filter(Boolean).join(' '); })
+      .filter(Boolean);
+  }
+
+  // ==========================================================================
+  // THE DOCUMENT MODEL
+  // Both outputs walk the same list of blocks, so the Word file and the Canvas
+  // page can never drift apart. Each block is {t: kind, ...}.
+  // ==========================================================================
+  function sectionBlocks(id) {
+    var m = state.meta, out = [];
+    if (id === 'overview') {
+      if (!t(state.desc.text)) return [];
+      out.push({ t: 'bar', text: 'Course Overview' });
+      paras(state.desc.text).forEach(function (p) { out.push({ t: 'body', text: p }); });
+    }
+    else if (id === 'objectives') {
+      if (!state.objectives.on) return [];
+      var items = lines(state.objectives.items.join('\n'));
+      if (!items.length) return [];
+      out.push({ t: 'lead', text: 'What scholars will learn to do' });
+      out.push({ t: 'twocol', glyph: 'dot', items: items });
+    }
+    else if (id === 'miles') {
+      if (!state.miles.on) return [];
+      var rows = state.miles.rows.filter(function (r) { return t(r.a) || t(r.d); });
+      if (!rows.length) return [];
+      out.push({ t: 'bar', text: 'Big Projects & Milestones' });
+      var intro = t(state.miles.intro);
+      if (intro) {
+        out.push({ t: 'body', text: intro + ' Target dates below follow a sample pacing; ' +
+          (isLive() ? 'your section works to the class schedule your teacher sets'
+                    : 'you pace to your own enrolled term') + ', keeping each milestone roughly in order.' });
+      }
+      out.push({ t: 'table', head: MILE_HEAD, widths: [3000, 1730, 1300, 4626],
+                 rows: rows.map(function (r) { return [t(r.a), t(r.b), t(r.c), t(r.d)]; }) });
+    }
+    else if (id === 'dates') {
+      if (!state.dates.on) return [];
+      var pairs = state.dates.pairs.filter(function (p) { return t(p.d) || t(p.e); });
+      if (!pairs.length) return [];
+      out.push({ t: 'bar', text: 'Important Dates — ' + YEAR });
+      out.push({ t: 'dates', pairs: pairs.map(function (p) { return [t(p.d), t(p.e)]; }) });
+    }
+    else if (id === 'grading') {
+      if (!state.grading.on) return [];
+      var g = state.grading.items.filter(function (x) { return t(x.pct) || t(x.label); });
+      if (!g.length && !t(state.grading.note)) return [];
+      out.push({ t: 'bar', text: 'Assessment & Grading' });
+      if (g.length) out.push({ t: 'grading', items: g.map(function (x) { return [t(x.pct), t(x.label)]; }) });
+      if (t(state.grading.note)) {
+        paras(state.grading.note).forEach(function (p) { out.push({ t: 'body', text: fill(p) }); });
+      }
+    }
+    else if (id === 'delivery') {
+      if (!state.delivery.on) return [];
+      var cum = t(state.delivery.cumulative);
+      if (isLive()) {
+        out.push({ t: 'bar', text: 'Live (Synchronous) Learning' });
+        out.push({ t: 'body', text: 'In the **Live** section you join scheduled class meetings on Optima’s VR campus, where your teacher leads instruction in real time and you learn alongside classmates. The readings, activities, assignments, and projects are the same as the On-Demand course; what differs is the pacing — the class moves through the material together on the class schedule rather than at each scholar’s own pace, and class time is also used for demonstrations, questions, and guided practice.' + (cum ? ' ' + cum : '') });
+        out.push({ t: 'body', text: '**Attendance is measured by presence and participation.** Attend the scheduled sessions on time and ready to take part. If you must miss a class, notify the school in advance and your teacher will tell you how to make up the work. Completing your work still means a **sincere attempt** — real effort on real work — and assignments open and close with each quarter.' });
+        out.push({ t: 'panel', tone: 'cyan', lead: 'You meet regularly with a teacher.',
+                   text: t(state.delivery.tagline) || 'The class gathers throughout the week in VR and on Microsoft Teams for live instruction and discussion.' });
+        out.push({ t: 'body', text: 'This course is also offered as an **On-Demand (asynchronous)** section that scholars pace themselves. If that is your enrollment, use the On-Demand syllabus instead of this one.' });
+      } else {
+        out.push({ t: 'bar', text: 'On-Demand (Asynchronous) Learning' });
+        out.push({ t: 'body', text: 'In the **On-Demand** section you move through the course at your own pace within each quarter, guided by due dates that keep you on track. All assignments for a quarter open at its start and close at its end; there is no grade penalty for missing an individual due date, but any assignment not completed by the end of the quarter receives a **zero**, so steady pacing matters.' + (cum ? ' ' + cum : '') });
+        out.push({ t: 'body', text: '**Attendance is measured by assignment completion.** Per school policy, a scholar who completes no assignment for ten consecutive school days, without notifying the school in advance, may be dropped from the course. Completion means a **sincere attempt** — real effort on real work, not rushed or corrupted files, nonsense submissions, or AI-generated filler.' });
+        out.push({ t: 'panel', tone: 'cyan', lead: 'You are never on your own.',
+                   text: t(state.delivery.tagline) || 'A live facilitator grades your work, gives feedback, and hosts a weekly study hall and VR workshops.' });
+        out.push({ t: 'body', text: 'This course is also taught as a **Live (synchronous)** section that meets on a schedule on Optima’s VR campus. If that is your enrollment, use the Live syllabus instead of this one.' });
+      }
+    }
+    else if (id === 'ai') {
+      if (!state.ai.on) return [];
+      var bl = lines(state.ai.bullets.join('\n'));
+      if (!bl.length) return [];
+      out.push({ t: 'bar', text: 'Using AI in This Course' });
+      out.push({ t: 'body', text: AI_INTRO[m.band] + t(state.ai.framing) });
+      out.push({ t: 'twocol', glyph: 'dot', items: bl.map(fill) });
+      if (t(state.ai.close)) out.push({ t: 'body', text: t(state.ai.close) });
+    }
+    else if (id === 'vr') {
+      if (!state.vr.on) return [];
+      out.push({ t: 'bar', text: 'Learning in Virtual Reality' });
+      out.push({ t: 'body', text: 'Optima is a virtual-reality school. Alongside your Canvas coursework you will join immersive sessions on Optima’s VR campus, where you meet your ' + role() + ' and fellow scholars and ' + (t(state.vr.what) || 'take part in live activities') + ' — things you could not do in an ordinary classroom. Keep your headset charged for any scheduled sessions, and treat the VR campus with the courtesy and seriousness you would a physical campus. Every VR activity has a non-VR alternate, so if you cannot get into VR, tell your ' + role() + ' and you will not fall behind.' });
+    }
+    else if (id === 'scholar') {
+      if (!state.scholar.on) return [];
+      var clause = t(state.scholar.clause);
+      out.push({ t: 'bar', text: 'Being an Optima Scholar' });
+      out.push({ t: 'body', text: 'Optima’s mission is an excellent, virtue-centered education. Every scholar is expected to practice the seven virtues that shape life here — **courage, courtesy, honesty, perseverance, self-government, service, and responsibility**. In practice: do your own honest work; ' + (clause ? clause + '; ' : '') + 'treat everyone you meet in this course with respect, in writing, in discussion, and in VR; engage actively rather than passively; come to office hours to know your ' + role() + '; and take responsibility for your own ' + (isLive() ? 'work' : 'pacing') + ' and progress. You belong to a house and a community of scholars, not only to a course.' });
+    }
+    else if (id === 'needs') {
+      if (!state.needs.on) return [];
+      var ni = lines(state.needs.items.join('\n'));
+      out.push({ t: 'bar', text: 'What You Need & Staying Connected' });
+      if (ni.length) out.push({ t: 'twocol', glyph: 'check', items: ni });
+      if (t(state.needs.extra)) {
+        paras(state.needs.extra).forEach(function (p) { out.push({ t: 'body', text: fill(p) }); });
+      }
+      out.push({ t: 'body', text: '**Staying connected.** Updates about this course are posted on the course’s **Canvas** page; school-wide updates are posted in your **Homeroom Canvas** course. Check both regularly. Your ' + role() + ' holds office hours and is glad to help with the material, to meet you, or to talk through your plans.' });
+    }
+    return out;
+  }
+
+  // A teacher's own section becomes the same kind of blocks as a stock one.
+  function customBlocks(c) {
+    var out = [];
+    var hasBody = (c.blocks || []).some(function (b) {
+      return b.kind === 'table' ? (b.rows || []).some(function (r) { return t(r.a) || t(r.b) || t(r.c); })
+                                : t(b.text) || t(b.lead);
+    });
+    if (!t(c.title) && !hasBody) return [];
+    out.push({ t: 'bar', text: t(c.title) || 'Untitled Section' });
+    (c.blocks || []).forEach(function (b) {
+      if (b.kind === 'text') {
+        paras(b.text).forEach(function (p) { out.push({ t: 'body', text: fill(p) }); });
+      } else if (b.kind === 'bullets') {
+        var it = lines(b.text);
+        if (it.length) out.push({ t: 'twocol', glyph: 'dot', items: it.map(fill) });
+      } else if (b.kind === 'table') {
+        var rows = (b.rows || []).filter(function (r) { return t(r.a) || t(r.b) || t(r.c); });
+        if (!rows.length) return;
+        var head = String(b.head || '').split('|').map(function (x) { return x.trim(); });
+        var n = Math.max(2, Math.min(3, head.filter(Boolean).length || 3));
+        var W = n === 2 ? [4000, 6656] : [3000, 2400, 5256];
+        out.push({ t: 'table', head: head.slice(0, n), widths: W,
+                   rows: rows.map(function (r) {
+                     var cells = [t(r.a), t(r.b), t(r.c)].slice(0, n);
+                     return cells;
+                   }) });
+      } else if (b.kind === 'callout') {
+        if (!t(b.lead) && !t(b.text)) return;
+        out.push({ t: 'panel', tone: b.tone === 'cyan' ? 'cyan' : 'gold',
+                   lead: t(b.lead), text: fill(t(b.text)) });
+      }
+    });
+    return out;
+  }
+
+  // The whole document, in order, with the teacher's sections slotted in.
+  function documentBlocks() {
+    var m = state.meta, doc = [];
+
+    doc.push({ t: 'header', title: t(m.title) || 'Course Title',
+               sub: 'OPTIMA ACADEMY ONLINE · COURSE SYLLABUS · ' + YEAR,
+               badges: [modeLabel()].concat([t(m.badge1), t(m.badge2)].filter(Boolean)) });
+
+    doc.push({ t: 'identity', fields: [
+      [role(), t(m.teacher) || '[' + role().charAt(0).toUpperCase() + role().slice(1) + ' Name]', !t(m.teacher)],
+      ['Email & Office', (t(m.email) || '[name@optimaed.com]') + ' · 239.673.2801 (OAO Front Office)', !t(m.email)],
+      [t(m.codeLabel) || 'Florida Course', t(m.code) || '[Course code]', !t(m.code)],
+      ['Office Hours', t(m.office) || '[Office hours — days and times, posted in Canvas]', !t(m.office)],
+      ['Grade Level', t(m.grade) || '[Grade level]', !t(m.grade)],
+      ['Format', fmtLine(), false]
+    ] });
+
+    if (state.about.on) {
+      var tail = isLive()
+        ? 'Optima also offers this course as an On-Demand section with the same content and expectations, described in its own syllabus. Exact pacing, scheduled dates, and a few activities may vary from section to section and term to term. Your teacher will confirm the specifics for your section.'
+        : 'Optima also offers this course as a Live section with the same content and expectations, described in its own syllabus. Exact pacing and a few activities may vary from term to term. Your facilitator will confirm the specifics for your section.';
+      doc.push({ t: 'note', lead: 'About this syllabus.',
+                 text: 'This is the plan for the **' + modeLabel() + '** section of the course as designed. ' +
+                       (t(state.about.text) ? t(state.about.text) + ' ' : '') + tail });
+    }
+
+    var order = ['overview', 'objectives', 'miles', 'dates', 'grading', 'delivery', 'ai', 'vr', 'scholar', 'needs'];
+    var placed = {};
+    (state.custom || []).forEach(function (c) {
+      var at = c.at || 'grading';
+      (placed[at] = placed[at] || []).push(c);
+    });
+    // A section slotted after the gold note comes before everything else.
+    (placed.about || []).forEach(function (c) { doc = doc.concat(customBlocks(c)); });
+    order.forEach(function (id) {
+      doc = doc.concat(sectionBlocks(id));
+      (placed[id] || []).forEach(function (c) { doc = doc.concat(customBlocks(c)); });
+    });
+    (placed.end || []).forEach(function (c) { doc = doc.concat(customBlocks(c)); });
+
+    if (state.footer.on && t(state.footer.text)) {
+      var tailF = t(m.title) + ' · ' + (isLive() ? 'Live (synchronous)' : 'On-Demand (asynchronous)') +
+        ' section' + (t(m.code) ? ' · ' + t(m.code) : '') + ' · Optima Academy Online, ' + YEAR + '. ';
+      doc.push({ t: 'footer', text: tailF + t(state.footer.text) });
+    }
+    return doc;
+  }
+
+  // ==========================================================================
+  // OUTPUT 1 - WORD
+  // A direct port of the .docx generator behind the reference syllabi, so the
+  // download matches the documents already in circulation.
+  // ==========================================================================
+  var W_ = 10656;
+  var S = { title: 34, badge: 17, hsub: 15, bar: 19, label: 13, idval: 16, body: 16,
+            bullet: 15, lead: 14, tblhead: 13, tblbody: 15, pct: 26, foot: 12 };
+
+  function wrun(text, o) {
+    o = o || {};
+    var rpr = '<w:rFonts w:ascii="Segoe UI" w:hAnsi="Segoe UI"/>';
+    rpr += o.bold ? '<w:b/>' : '<w:b w:val="0"/>';
+    rpr += '<w:i w:val="0"/>';
+    rpr += '<w:color w:val="' + (o.color || INK) + '"/><w:sz w:val="' + (o.size || S.body) + '"/>';
+    if (o.spacing) rpr += '<w:spacing w:val="' + o.spacing + '"/>';
+    if (o.hl) rpr += '<w:highlight w:val="yellow"/>';
+    return '<w:r><w:rPr>' + rpr + '</w:rPr><w:t xml:space="preserve">' + xesc(text) + '</w:t></w:r>';
+  }
+  function wrich(md, o) {
+    o = o || {};
+    var out = '', parts = String(md == null ? '' : md).split(/(\*\*[^*]*\*\*)/);
+    parts.forEach(function (p) {
+      if (!p) return;
+      if (p.slice(0, 2) === '**' && p.slice(-2) === '**' && p.length > 4) {
+        out += wrun(p.slice(2, -2), { bold: true, size: o.size, color: o.color });
+      } else {
+        out += wrun(p, { size: o.size, color: o.color });
+      }
+    });
+    return out;
+  }
+  function wpara(inner, o) {
+    o = o || {};
+    var ppr = '<w:pPr>';
+    if (o.keepnext) ppr += '<w:keepNext/>';
+    ppr += '<w:spacing w:after="' + (o.after == null ? 0 : o.after) + '"';
+    if (o.before != null) ppr += ' w:before="' + o.before + '"';
+    if (o.line) ppr += ' w:line="' + o.line + '" w:lineRule="auto"';
+    ppr += '/>';
+    if (o.jc) ppr += '<w:jc w:val="' + o.jc + '"/>';
+    ppr += '</w:pPr>';
+    return '<w:p>' + ppr + inner + '</w:p>';
+  }
+  function wbody(md, after, size) {
+    return wpara(wrich(md, { size: size || S.body }), { after: after == null ? 30 : after, line: 258 });
+  }
+  function wspacer(pt) { return wpara('<w:r><w:rPr><w:sz w:val="' + (pt || 4) + '"/></w:rPr></w:r>', { after: 0 }); }
+  function wbullet(md, glyph) {
+    var g = glyph === 'check' ? '✓' : '●';
+    var gc = glyph === 'check' ? GOLD : CYAN;
+    var gs = glyph === 'check' ? S.bullet : 11;
+    return wpara(wrun(g + '  ', { size: gs, color: gc }) + wrich(md, { size: S.bullet }),
+                 { after: 18, line: 254 });
+  }
+  function wtblpr(grid, borders, jc) {
+    var pr = '<w:tblPr><w:tblW w:type="auto" w:w="0"/>';
+    if (jc) pr += '<w:jc w:val="' + jc + '"/>';
+    pr += '<w:tblLook w:firstColumn="1" w:firstRow="1" w:lastColumn="0" w:lastRow="0" w:noHBand="0" w:noVBand="1" w:val="04A0"/>';
+    pr += '<w:tblBorders><w:top w:val="none" w:sz="0"/><w:left w:val="none" w:sz="0"/>'
+        + '<w:bottom w:val="none" w:sz="0"/><w:right w:val="none" w:sz="0"/>'
+        + '<w:insideH w:val="none" w:sz="0"/><w:insideV w:val="none" w:sz="0"/></w:tblBorders>';
+    if (borders) pr += borders;
+    pr += '</w:tblPr><w:tblGrid>';
+    grid.forEach(function (g) { pr += '<w:gridCol w:w="' + g + '"/>'; });
+    return pr + '</w:tblGrid>';
+  }
+  function wleftBorder(color, sz) {
+    return '<w:tblBorders><w:top w:val="none" w:sz="0"/><w:left w:val="single" w:sz="' + (sz || 18) +
+      '" w:color="' + color + '"/><w:bottom w:val="none" w:sz="0"/><w:right w:val="none" w:sz="0"/>' +
+      '<w:insideH w:val="none" w:sz="0"/><w:insideV w:val="none" w:sz="0"/></w:tblBorders>';
+  }
+  function wgridBorder() {
+    var s = 'w:val="single" w:sz="4" w:color="' + RULE + '"';
+    return '<w:tblBorders><w:top ' + s + '/><w:left ' + s + '/><w:bottom ' + s + '/><w:right ' + s +
+      '/><w:insideH ' + s + '/><w:insideV ' + s + '/></w:tblBorders>';
+  }
+  function wtc(width, inner, o) {
+    o = o || {};
+    var mar = o.mar || [60, 140, 60, 120];
+    var p = '<w:tcPr><w:tcW w:type="dxa" w:w="' + width + '"/>';
+    if (o.fill) p += '<w:shd w:val="clear" w:color="auto" w:fill="' + o.fill + '"/>';
+    p += '<w:tcMar><w:top w:w="' + mar[0] + '" w:type="dxa"/><w:start w:w="' + mar[1] +
+         '" w:type="dxa"/><w:bottom w:w="' + mar[2] + '" w:type="dxa"/><w:end w:w="' + mar[3] +
+         '" w:type="dxa"/></w:tcMar>';
+    if (o.bottomRule) p += '<w:tcBorders><w:bottom w:val="single" w:sz="4" w:color="' + o.bottomRule + '"/></w:tcBorders>';
+    p += '</w:tcPr>';
+    return '<w:tc>' + p + inner + '</w:tc>';
+  }
+  function wtr(cells, o) {
+    o = o || {};
+    var pr = o.header ? '<w:trPr><w:tblHeader w:val="true"/></w:trPr>'
+           : (o.cantsplit ? '<w:trPr><w:cantSplit/></w:trPr>' : '');
+    return '<w:tr>' + pr + cells.join('') + '</w:tr>';
+  }
+  function wtbl(grid, rows, borders, jc) {
+    return '<w:tbl>' + wtblpr(grid, borders, jc) + rows.join('') + '</w:tbl>';
+  }
+
+  function docxBlock(b) {
+    if (b.t === 'header') {
+      var lw = 7704, rw = W_ - lw;
+      var left = wpara(wrun(b.title, { bold: true, size: S.title, color: 'FFFFFF' }), { after: 40 }) +
+                 wpara(wrun(b.sub, { size: S.hsub, color: CYAN, spacing: 14 }), { after: 0 });
+      var right = b.badges.map(function (x) {
+        return wpara(wrun(x, { bold: true, size: S.badge, color: 'FFFFFF' }), { after: 0, jc: 'center' });
+      }).join('');
+      return wtbl([lw, rw], [wtr([
+        wtc(lw, left, { fill: NAVY, mar: [150, 200, 150, 160] }),
+        wtc(rw, right, { fill: GOLD, mar: [150, 200, 150, 160] })
+      ])]) + wspacer(7);
+    }
+    if (b.t === 'identity') {
+      var half = Math.floor(W_ / 2), cells = b.fields.map(function (f) {
+        var inner = wpara(wrun(String(f[0]).toUpperCase(), { bold: true, size: S.label, color: LABEL, spacing: 8 }), { after: 0 });
+        inner += wpara(wrun(f[1], { bold: true, size: S.idval, color: NAVY, hl: !!f[2] }), { after: 0 });
+        return wtc(half, inner, { fill: PANEL });
+      });
+      var rows = [];
+      for (var i = 0; i < cells.length; i += 2) rows.push(wtr(cells.slice(i, i + 2)));
+      return wtbl([half, half], rows, wleftBorder(GOLD, 18)) + wspacer(5);
+    }
+    if (b.t === 'note' || b.t === 'panel') {
+      var gold = b.t === 'note' || b.tone === 'gold';
+      var inner2 = wpara((b.lead ? wrun(b.lead, { bold: true, size: S.idval }) : '') +
+                         wrich((b.lead ? ' ' : '') + b.text, { size: S.idval }), { after: 0, line: 300 });
+      return wtbl([W_], [wtr([wtc(W_, inner2, { fill: gold ? GOLDBG : CYANBG, mar: [90, 150, 90, 150] })])],
+                  wleftBorder(gold ? GOLD : CYAN, 14)) + wspacer(5);
+    }
+    if (b.t === 'bar') {
+      var innerB = wpara(wrun(b.text.toUpperCase(), { bold: true, size: S.bar, color: NAVY, spacing: 12 }),
+                         { after: 0, before: 0, keepnext: true });
+      return wspacer(5) + wtbl([W_], [wtr([wtc(W_, innerB, { mar: [40, 120, 20, 60] })], { cantsplit: true })],
+                               wleftBorder(CYAN, 18), 'left') + wspacer(2);
+    }
+    if (b.t === 'lead') {
+      return wpara(wrun(b.text.toUpperCase(), { bold: true, size: S.lead, color: GOLD, spacing: 8 }), { after: 20 });
+    }
+    if (b.t === 'body') return wbody(b.text, 20);
+    if (b.t === 'twocol') {
+      var h = halve(b.items), halfw = Math.floor(W_ / 2);
+      return wtbl([halfw, halfw], [wtr([
+        wtc(halfw, h[0].map(function (x) { return wbullet(x, b.glyph); }).join(''), { mar: [0, 0, 0, 120] }),
+        wtc(halfw, h[1].map(function (x) { return wbullet(x, b.glyph); }).join(''), { mar: [0, 60, 0, 0] })
+      ])]);
+    }
+    if (b.t === 'table') {
+      var mar = [50, 90, 50, 90];
+      var head = wtr(b.head.map(function (hh, i) {
+        return wtc(b.widths[i], wpara(wrun(String(hh).toUpperCase(), { bold: true, size: S.tblhead, color: 'FFFFFF', spacing: 8 }), { after: 0 }),
+                   { fill: NAVY, mar: mar });
+      }), { header: true });
+      var rows2 = [head];
+      b.rows.forEach(function (r) {
+        rows2.push(wtr(r.map(function (cell, i) {
+          var color = i === 0 ? NAVY : ((i === 1 || i === 2) ? MUTED : INK);
+          var inner3 = i === 0 ? wrun(cell, { bold: true, size: S.tblbody, color: NAVY })
+                               : wrich(cell, { size: S.tblbody, color: color });
+          return wtc(b.widths[i], wpara(inner3, { after: 0, line: 288 }), { mar: mar });
+        })));
+      });
+      return wtbl(b.widths, rows2, wgridBorder());
+    }
+    if (b.t === 'dates') {
+      var dw = 1440, ew = 3888, marD = [30, 60, 30, 60], rows3 = [];
+      var halfN = Math.ceil(b.pairs.length / 2);
+      for (var k = 0; k < halfN; k++) {
+        var cellsD = [], pair = [b.pairs[k], b.pairs[k + halfN] || ['', '']];
+        pair.forEach(function (p) {
+          cellsD.push(wtc(dw, wpara(wrun(p[0], { bold: true, size: S.tblbody, color: NAVY }), { after: 0 }),
+                          { mar: marD, bottomRule: PANEL }));
+          cellsD.push(wtc(ew, wpara(wrun(p[1], { size: S.tblbody, color: MUTED }), { after: 0, jc: 'right' }),
+                          { mar: marD, bottomRule: PANEL }));
+        });
+        rows3.push(wtr(cellsD));
+      }
+      return wtbl([dw, ew, dw, ew], rows3);
+    }
+    if (b.t === 'grading') {
+      var n = b.items.length, cw = Math.floor(W_ / n);
+      var cellsG = b.items.map(function (g) {
+        var inner4 = wpara(wrun(g[0], { bold: true, size: S.pct, color: NAVY }), { after: 20 });
+        inner4 += wpara(wrun(g[1], { size: S.tblbody, color: MUTED }), { after: 0, line: 276 });
+        return wtc(cw, inner4, { fill: PANEL, mar: [90, 120, 90, 110] });
+      });
+      var topGold = '<w:tblBorders><w:top w:val="single" w:sz="16" w:color="' + GOLD + '"/>' +
+        '<w:left w:val="none" w:sz="0"/><w:bottom w:val="none" w:sz="0"/><w:right w:val="none" w:sz="0"/>' +
+        '<w:insideH w:val="none" w:sz="0"/><w:insideV w:val="none" w:sz="0"/></w:tblBorders>';
+      var out = [];
+      if (n <= 5) out.push(wtbl(new Array(n).fill(cw), [wtr(cellsG)], topGold));
+      else {
+        var hn = Math.ceil(n / 2);
+        out.push(wtbl(new Array(hn).fill(Math.floor(W_ / hn)), [wtr(cellsG.slice(0, hn))], topGold));
+        out.push(wtbl(new Array(n - hn).fill(Math.floor(W_ / (n - hn))), [wtr(cellsG.slice(hn))], topGold));
+      }
+      return out.join('') + wspacer(2);
+    }
+    if (b.t === 'footer') {
+      return wspacer(8) + wpara(wrun(b.text, { size: S.foot, color: LABEL }), { after: 0, line: 264 });
+    }
+    return '';
+  }
+
+  function docxBody() {
+    return documentBlocks().map(docxBlock).join('');
+  }
+
+  // ---------------------------------------------------------- the .docx file
+  // The shell holds the reference build's styles with an empty body, and its own
+  // word/document.xml is STORED, so the prefix and sectPr can be read without an
+  // inflate implementation. Every other part is copied across still compressed.
+  var CRC_TABLE = (function () {
+    var tb = new Uint32Array(256);
+    for (var n = 0; n < 256; n++) {
+      var c = n;
+      for (var k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+      tb[n] = c >>> 0;
+    }
+    return tb;
+  })();
+  function crc32(bytes) {
+    var c = 0xFFFFFFFF;
+    for (var i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8);
+    return (c ^ 0xFFFFFFFF) >>> 0;
+  }
+  function zipRead(buf) {
+    var b = new Uint8Array(buf), dv = new DataView(buf), eocd = -1;
+    var floor = Math.max(0, b.length - 65558);
+    for (var i = b.length - 22; i >= floor; i--) {
+      if (b[i] === 0x50 && b[i + 1] === 0x4B && b[i + 2] === 0x05 && b[i + 3] === 0x06) { eocd = i; break; }
+    }
+    if (eocd < 0) throw new Error('the Word template is not a valid file');
+    var count = dv.getUint16(eocd + 10, true), cdoff = dv.getUint32(eocd + 16, true);
+    var entries = [], p = cdoff, dec = new TextDecoder();
+    for (var n = 0; n < count; n++) {
+      if (dv.getUint32(p, true) !== 0x02014b50) throw new Error('the Word template is damaged');
+      var flags = dv.getUint16(p + 8, true), nlen = dv.getUint16(p + 28, true),
+          elen = dv.getUint16(p + 30, true), clen = dv.getUint16(p + 32, true),
+          lho = dv.getUint32(p + 42, true);
+      var name = dec.decode(b.subarray(p + 46, p + 46 + nlen));
+      if (flags & 0x08) throw new Error('the Word template uses a zip feature this cannot read');
+      var lnlen = dv.getUint16(lho + 26, true), lelen = dv.getUint16(lho + 28, true);
+      var dstart = lho + 30 + lnlen + lelen, csize = dv.getUint32(p + 20, true);
+      entries.push({ name: name, flags: flags, method: dv.getUint16(p + 10, true),
+                     mtime: dv.getUint16(p + 12, true), mdate: dv.getUint16(p + 14, true),
+                     crc: dv.getUint32(p + 16, true), csize: csize,
+                     usize: dv.getUint32(p + 24, true),
+                     data: b.subarray(dstart, dstart + csize) });
+      p += 46 + nlen + elen + clen;
+    }
+    return entries;
+  }
+  function zipWrite(entries, replaceName, newBytes) {
+    var enc = new TextEncoder(), parts = [], central = [], offset = 0, cdsize = 0, found = false, j;
+    for (var i = 0; i < entries.length; i++) {
+      var e = entries[i];
+      if (e.name === replaceName) {
+        found = true;
+        e = { name: replaceName, flags: 0, method: 0, mtime: 0x0000, mdate: 0x0021,
+              crc: crc32(newBytes), csize: newBytes.length, usize: newBytes.length, data: newBytes };
+      }
+      var name = enc.encode(e.name);
+      var lh = new Uint8Array(30), lv = new DataView(lh.buffer);
+      lv.setUint32(0, 0x04034b50, true); lv.setUint16(4, 20, true);
+      lv.setUint16(6, e.flags, true);    lv.setUint16(8, e.method, true);
+      lv.setUint16(10, e.mtime, true);   lv.setUint16(12, e.mdate, true);
+      lv.setUint32(14, e.crc, true);     lv.setUint32(18, e.csize, true);
+      lv.setUint32(22, e.usize, true);   lv.setUint16(26, name.length, true);
+      lv.setUint16(28, 0, true);
+      parts.push(lh, name, e.data);
+
+      var ch = new Uint8Array(46), cv = new DataView(ch.buffer);
+      cv.setUint32(0, 0x02014b50, true); cv.setUint16(4, 20, true); cv.setUint16(6, 20, true);
+      cv.setUint16(8, e.flags, true);    cv.setUint16(10, e.method, true);
+      cv.setUint16(12, e.mtime, true);   cv.setUint16(14, e.mdate, true);
+      cv.setUint32(16, e.crc, true);     cv.setUint32(20, e.csize, true);
+      cv.setUint32(24, e.usize, true);   cv.setUint16(28, name.length, true);
+      cv.setUint16(30, 0, true); cv.setUint16(32, 0, true); cv.setUint16(34, 0, true);
+      cv.setUint16(36, 0, true); cv.setUint32(38, 0, true); cv.setUint32(42, offset, true);
+      central.push(ch, name);
+      cdsize += 46 + name.length;
+      offset += 30 + name.length + e.data.length;
+    }
+    if (!found) throw new Error(replaceName + ' is missing from the Word template');
+    var eo = new Uint8Array(22), ev = new DataView(eo.buffer);
+    ev.setUint32(0, 0x06054b50, true); ev.setUint16(4, 0, true); ev.setUint16(6, 0, true);
+    ev.setUint16(8, entries.length, true); ev.setUint16(10, entries.length, true);
+    ev.setUint32(12, cdsize, true); ev.setUint32(16, offset, true); ev.setUint16(20, 0, true);
+    var all = parts.concat(central, [eo]), total = 0;
+    for (j = 0; j < all.length; j++) total += all[j].length;
+    var out = new Uint8Array(total), at = 0;
+    for (j = 0; j < all.length; j++) { out.set(all[j], at); at += all[j].length; }
+    return out;
+  }
+
+  var shellCache = null;
+  function loadShell() {
+    if (shellCache) return Promise.resolve(shellCache);
+    return fetch('syllabus-shell.docx').then(function (r) {
+      if (!r.ok) throw new Error('the Word template could not be loaded (' + r.status + ')');
+      return r.arrayBuffer();
+    }).then(function (buf) {
+      var entries = zipRead(buf), stored = null;
+      for (var i = 0; i < entries.length; i++) {
+        if (entries[i].name === 'word/document.xml') {
+          if (entries[i].method !== 0) throw new Error('the Word template is not in the expected form');
+          stored = new TextDecoder().decode(entries[i].data);
+        }
+      }
+      if (!stored) throw new Error('the Word template has no document part');
+      shellCache = {
+        entries: entries,
+        prefix: stored.slice(0, stored.indexOf('<w:body>') + '<w:body>'.length),
+        sectpr: stored.match(/<w:sectPr[\s\S]*?<\/w:sectPr>/)[0]
+      };
+      return shellCache;
+    });
+  }
+
+  function buildDocx() {
+    return loadShell().then(function (sh) {
+      var xml = sh.prefix + docxBody() + sh.sectpr + '</w:body></w:document>';
+      return zipWrite(sh.entries, 'word/document.xml', new TextEncoder().encode(xml));
+    });
+  }
+
+  // ==========================================================================
+  // OUTPUT 2 - HTML for the Canvas Syllabus page
+  // Canvas keeps markup but not stylesheets, so everything is inline. No :hover,
+  // no media queries, and nothing that depends on font-weight, text-transform or
+  // letter-spacing, since the rich-text editor drops all three - bold is a real
+  // <strong> and capitals are typed in capitals. Rows are tables, not flexbox,
+  // because a <td> equalises heights structurally. No block element ever sits
+  // inside a link, which Canvas's editor would unwrap.
+  // ==========================================================================
+  var TBL = 'width: 100%; border-collapse: collapse; margin: 0 0 14px 0;';
+  var BODY_TD = 'font-size: 15px; color: ' + H.ink + '; line-height: 1.6; padding: 0;';
+
+  function hinline(s) {
+    return esc(s).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  }
+  function hbody(md) {
+    return '<p style="font-size: 15px; color: ' + H.ink + '; line-height: 1.65; margin: 0 0 12px 0;">' +
+      hinline(md) + '</p>';
+  }
+  function hbar(text) {
+    return '<table role="presentation" style="' + TBL + ' margin: 22px 0 10px 0;"><tr>' +
+      '<td style="border-left: 5px solid ' + H.cyan + '; padding: 3px 0 3px 12px;">' +
+      '<span style="font-size: 14px; color: ' + H.navy + '; letter-spacing: 0.6px;"><strong>' +
+      esc(String(text).toUpperCase()) + '</strong></span></td></tr></table>';
+  }
+  function hlead(text) {
+    return '<p style="font-size: 12px; color: ' + H.gold + '; margin: 4px 0 8px 0;"><strong>' +
+      esc(String(text).toUpperCase()) + '</strong></p>';
+  }
+  function hbulletCell(items, glyph) {
+    return items.map(function (x) {
+      var g = glyph === 'check' ? '&#10003;' : '&#9679;';
+      var gc = glyph === 'check' ? H.gold : H.cyan;
+      return '<table role="presentation" style="width: 100%; border-collapse: collapse; margin: 0 0 8px 0;"><tr>' +
+        '<td style="width: 18px; vertical-align: top; padding: 0; font-size: 11px; color: ' + gc + ';">' + g + '</td>' +
+        '<td style="' + BODY_TD + '">' + hinline(x) + '</td></tr></table>';
+    }).join('');
+  }
+
+  function htmlBlock(b) {
+    if (b.t === 'header') {
+      return '<table role="presentation" style="' + TBL + ' margin-bottom: 0;"><tr>' +
+        '<td style="background: ' + H.navy + '; padding: 22px 24px; vertical-align: middle; width: 72%;">' +
+        '<div style="font-size: 25px; color: #FFFFFF; line-height: 1.2; margin-bottom: 7px;"><strong>' +
+        esc(b.title) + '</strong></div>' +
+        '<div style="font-size: 11px; color: ' + H.cyan + '; letter-spacing: 1px;">' + esc(b.sub) + '</div></td>' +
+        '<td style="background: ' + H.gold + '; padding: 22px 18px; vertical-align: middle; text-align: center;">' +
+        b.badges.map(function (x) {
+          return '<div style="font-size: 12.5px; color: #FFFFFF; line-height: 1.45;"><strong>' + esc(x) + '</strong></div>';
+        }).join('') + '</td></tr></table>';
+    }
+    if (b.t === 'identity') {
+      var rows = [];
+      for (var i = 0; i < b.fields.length; i += 2) {
+        var pair = b.fields.slice(i, i + 2);
+        rows.push('<tr>' + pair.map(function (f) {
+          return '<td style="width: 50%; background: ' + H.panel + '; padding: 9px 14px; vertical-align: top; ' +
+            'border-left: 3px solid ' + H.gold + ';">' +
+            '<div style="font-size: 10px; color: ' + H.label + '; letter-spacing: 0.8px; margin-bottom: 2px;"><strong>' +
+            esc(String(f[0]).toUpperCase()) + '</strong></div>' +
+            '<div style="font-size: 13.5px; color: ' + H.navy + ';"><strong>' + esc(f[1]) + '</strong></div></td>';
+        }).join('') + (pair.length === 1 ? '<td style="width:50%;"></td>' : '') + '</tr>');
+      }
+      return '<table role="presentation" style="' + TBL + ' margin-top: 8px;">' + rows.join('') + '</table>';
+    }
+    if (b.t === 'note' || b.t === 'panel') {
+      var gold = b.t === 'note' || b.tone === 'gold';
+      return '<table role="presentation" style="' + TBL + '"><tr>' +
+        '<td style="background: ' + (gold ? H.goldbg : H.cyanbg) + '; border-left: 4px solid ' +
+        (gold ? H.gold : H.cyan) + '; padding: 12px 15px; font-size: 13.5px; color: ' + H.ink + '; line-height: 1.6;">' +
+        (b.lead ? '<strong>' + esc(b.lead) + '</strong> ' : '') + hinline(b.text) + '</td></tr></table>';
+    }
+    if (b.t === 'bar') return hbar(b.text);
+    if (b.t === 'lead') return hlead(b.text);
+    if (b.t === 'body') return hbody(b.text);
+    if (b.t === 'twocol') {
+      var h = halve(b.items);
+      return '<table role="presentation" style="' + TBL + '"><tr>' +
+        '<td style="width: 50%; vertical-align: top; padding: 0 14px 0 0;">' + hbulletCell(h[0], b.glyph) + '</td>' +
+        '<td style="width: 50%; vertical-align: top; padding: 0 0 0 6px;">' + hbulletCell(h[1], b.glyph) + '</td>' +
+        '</tr></table>';
+    }
+    if (b.t === 'table') {
+      var total = b.widths.reduce(function (a, c) { return a + c; }, 0);
+      var head = '<tr>' + b.head.map(function (hh, i) {
+        return '<td style="background: ' + H.navy + '; color: #FFFFFF; font-size: 10.5px; letter-spacing: 0.7px; ' +
+          'padding: 7px 9px; border: 1px solid ' + H.rule + '; width: ' +
+          Math.round(b.widths[i] / total * 100) + '%;"><strong>' + esc(String(hh).toUpperCase()) + '</strong></td>';
+      }).join('') + '</tr>';
+      var body = b.rows.map(function (r) {
+        return '<tr>' + r.map(function (cell, i) {
+          var col = i === 0 ? H.navy : ((i === 1 || i === 2) ? H.muted : H.ink);
+          return '<td style="padding: 7px 9px; border: 1px solid ' + H.rule + '; font-size: 13px; color: ' + col +
+            '; line-height: 1.5; vertical-align: top;">' + (i === 0 ? '<strong>' + esc(cell) + '</strong>' : hinline(cell)) + '</td>';
+        }).join('') + '</tr>';
+      }).join('');
+      return '<table role="presentation" style="' + TBL + '">' + head + body + '</table>';
+    }
+    if (b.t === 'dates') {
+      var halfN = Math.ceil(b.pairs.length / 2), rowsD = [];
+      for (var k = 0; k < halfN; k++) {
+        var cells = '';
+        [b.pairs[k], b.pairs[k + halfN] || ['', '']].forEach(function (p) {
+          cells += '<td style="width: 14%; padding: 5px 6px; border-bottom: 1px solid ' + H.panel +
+            '; font-size: 13px; color: ' + H.navy + '; vertical-align: top;"><strong>' + esc(p[0]) + '</strong></td>' +
+            '<td style="width: 36%; padding: 5px 6px; border-bottom: 1px solid ' + H.panel +
+            '; font-size: 13px; color: ' + H.muted + '; text-align: right; vertical-align: top;">' + esc(p[1]) + '</td>';
+        });
+        rowsD.push('<tr>' + cells + '</tr>');
+      }
+      return '<table role="presentation" style="' + TBL + '">' + rowsD.join('') + '</table>';
+    }
+    if (b.t === 'grading') {
+      return '<table role="presentation" style="' + TBL + ' border-top: 4px solid ' + H.gold + ';"><tr>' +
+        b.items.map(function (g) {
+          return '<td style="background: ' + H.panel + '; padding: 14px 14px; vertical-align: top; text-align: left; width: ' +
+            Math.round(100 / b.items.length) + '%;">' +
+            '<div style="font-size: 22px; color: ' + H.navy + '; line-height: 1.1; margin-bottom: 5px;"><strong>' +
+            esc(g[0]) + '</strong></div>' +
+            '<div style="font-size: 12.5px; color: ' + H.muted + '; line-height: 1.4;">' + esc(g[1]) + '</div></td>';
+        }).join('') + '</tr></table>';
+    }
+    if (b.t === 'footer') {
+      return '<p style="font-size: 10.5px; color: ' + H.label + '; line-height: 1.55; margin: 22px 0 0 0;">' +
+        esc(b.text) + '</p>';
+    }
+    return '';
+  }
+
+  function buildCanvas() {
+    var m = state.meta;
+    var ascii = function (s) { return String(s == null ? '' : s).replace(/[^\x20-\x7E]/g, '-'); };
+    var head = [
+      '<!--',
+      '  ====================================================',
+      '  ' + ascii((t(m.title) || 'COURSE').toUpperCase()) + ' - COURSE SYLLABUS  (Optima Academy Online)',
+      '  ' + ascii(modeLabel()) + ' section  -  ' + YEAR_ASCII,
+      '  ====================================================',
+      '  Built with the Optima Syllabus Builder.',
+      '  Paste this into the course Syllabus page using the HTML editor.'
+    ].concat(payloadLines()).concat(['-->']).join('\n');
+
+    var body = documentBlocks().map(htmlBlock).join('\n');
+    return head + '\n<div style="font-family: \'Segoe UI\', Arial, Helvetica, sans-serif; max-width: 960px;">\n' +
+      body + '\n</div>';
+  }
+
+  // ==========================================================================
+  // THE FORM
+  // ==========================================================================
+  function tools(listPath, i, len, kind) {
+    return '<div class="tools">' +
+      '<button type="button" class="mini" data-action="up" data-list="' + listPath + '" data-idx="' + i + '"' + (i === 0 ? ' disabled' : '') + ' title="Move up">&uarr;</button>' +
+      '<button type="button" class="mini" data-action="down" data-list="' + listPath + '" data-idx="' + i + '"' + (i === len - 1 ? ' disabled' : '') + ' title="Move down">&darr;</button>' +
+      '<button type="button" class="mini danger" data-action="del" data-list="' + listPath + '" data-idx="' + i + '" data-kind="' + (kind || '') + '" title="Remove">&times;</button>' +
+      '</div>';
+  }
+  function selectOf(path, current, pairs) {
+    var o = ['<select data-path="' + path + '">'];
+    pairs.forEach(function (pr) {
+      o.push('<option value="' + escAttr(pr[0]) + '"' + (pr[0] === current ? ' selected' : '') + '>' + escAttr(pr[1]) + '</option>');
+    });
+    o.push('</select>');
+    return o.join('');
+  }
+  function lineList(elId, listPath, items, label, placeholders) {
+    document.getElementById(elId).innerHTML = items.map(function (x, i) {
+      var ph = placeholders[i % placeholders.length];
+      return '<div class="item">' +
+        '<div class="item-head"><span class="item-title">' + label + ' ' + (i + 1) + '</span>' + tools(listPath, i, items.length, 'line') + '</div>' +
+        '<label class="f"><textarea data-path="' + listPath + '.' + i + '" placeholder="' + escAttr(ph) + '">' + escAttr(x) + '</textarea></label>' +
+        '</div>';
+    }).join('');
+  }
+
+  function renderLists() {
+    lineList('list-objectives', 'objectives.items', state.objectives.items || [], 'Objective',
+      ['Read closely and critically, and say what a passage is doing',
+       'Build an argument and defend it against counter-arguments']);
+
+    document.getElementById('list-miles').innerHTML = (state.miles.rows || []).map(function (r, i) {
+      var p = 'miles.rows.' + i;
+      return '<div class="item">' +
+        '<div class="item-head"><span class="item-title">Project ' + (i + 1) + '</span>' + tools('miles.rows', i, state.miles.rows.length, 'mrow') + '</div>' +
+        '<label class="f"><span>Project or milestone</span><input type="text" data-path="' + p + '.a" value="' + escAttr(r.a) + '" placeholder="The Good Life Experiment" /></label>' +
+        '<div class="row">' +
+        '<label class="f"><span>Where it falls</span><input type="text" data-path="' + p + '.b" value="' + escAttr(r.b) + '" placeholder="Module 3 - Weeks 14-24" /></label>' +
+        '<label class="f"><span>Sample timing</span><input type="text" data-path="' + p + '.c" value="' + escAttr(r.c) + '" placeholder="by Feb 26 (Q3)" /></label>' +
+        '</div>' +
+        '<label class="f"><span>What they turn in</span><textarea data-path="' + p + '.d" placeholder="A week-long self-experiment with a daily data log, submitted in Canvas.">' + escAttr(r.d) + '</textarea></label>' +
+        '</div>';
+    }).join('');
+
+    document.getElementById('list-dates').innerHTML = (state.dates.pairs || []).map(function (p, i) {
+      return '<div class="item"><div class="item-head"><span class="item-title">Date ' + (i + 1) + '</span>' +
+        tools('dates.pairs', i, state.dates.pairs.length, 'dpair') + '</div>' +
+        '<div class="row"><label class="f"><span>When</span><input type="text" data-path="dates.pairs.' + i + '.d" value="' + escAttr(p.d) + '" placeholder="Oct 9" /></label>' +
+        '<label class="f"><span>What</span><input type="text" data-path="dates.pairs.' + i + '.e" value="' + escAttr(p.e) + '" placeholder="Quarter 1 ends" /></label></div></div>';
+    }).join('');
+
+    document.getElementById('list-grading').innerHTML = (state.grading.items || []).map(function (g, i) {
+      return '<div class="item"><div class="item-head"><span class="item-title">Category ' + (i + 1) + '</span>' +
+        tools('grading.items', i, state.grading.items.length, 'gitem') + '</div>' +
+        '<div class="row narrow"><label class="f fixed"><span>Weight</span><input type="text" data-path="grading.items.' + i + '.pct" value="' + escAttr(g.pct) + '" placeholder="50%" /></label>' +
+        '<label class="f"><span>What it covers</span><input type="text" data-path="grading.items.' + i + '.label" value="' + escAttr(g.label) + '" placeholder="Weekly written assignments" /></label></div></div>';
+    }).join('');
+
+    lineList('list-ai', 'ai.bullets', state.ai.bullets || [], 'Point',
+      ['Write **bold** for the opening phrase. {role} becomes teacher or facilitator.']);
+
+    lineList('list-needs', 'needs.items', state.needs.items || [], 'Item',
+      ['A computer with reliable internet and access to Canvas.',
+       'A VR headset, charged and ready.']);
+
+    renderCustom();
+  }
+
+  function blockForm(b, listPath, j, len) {
+    var p = listPath + '.' + j, o = [];
+    o.push('<div class="block"><div class="item-head"><span class="item-title">' +
+      (BLOCK_LABEL[b.kind] || b.kind) + '</span>' + tools(listPath, j, len, 'block') + '</div>');
+    if (b.kind === 'text') {
+      o.push('<label class="f"><textarea data-path="' + p + '.text" placeholder="Type as you would in an email. A blank line starts a new paragraph.">' + escAttr(b.text) + '</textarea></label>');
+    } else if (b.kind === 'bullets') {
+      o.push('<label class="f"><span>One per line</span><textarea data-path="' + p + '.text" placeholder="First point&#10;Second point">' + escAttr(b.text) + '</textarea></label>');
+    } else if (b.kind === 'callout') {
+      o.push('<div class="row"><label class="f fixed"><span>Colour</span>' +
+        selectOf(p + '.tone', b.tone || 'gold', [['gold', 'Gold'], ['cyan', 'Blue']]) + '</label>' +
+        '<label class="f"><span>Opening phrase, in bold</span><input type="text" data-path="' + p + '.lead" value="' + escAttr(b.lead) + '" placeholder="Revision is expected." /></label></div>');
+      o.push('<label class="f"><span>The rest</span><textarea data-path="' + p + '.text">' + escAttr(b.text) + '</textarea></label>');
+    } else if (b.kind === 'table') {
+      o.push('<label class="f"><span>Column headings, separated by |</span><input type="text" data-path="' + p + '.head" value="' + escAttr(b.head) + '" placeholder="Day|Time|What we do" /></label>');
+      o.push((b.rows || []).map(function (r, k) {
+        var rp = p + '.rows.' + k;
+        return '<div class="item" style="border-left-color:#B9C6DC;"><div class="item-head"><span class="item-title">Row ' + (k + 1) + '</span>' +
+          tools(p + '.rows', k, b.rows.length, 'trow') + '</div><div class="row">' +
+          '<label class="f"><input type="text" data-path="' + rp + '.a" value="' + escAttr(r.a) + '" /></label>' +
+          '<label class="f"><input type="text" data-path="' + rp + '.b" value="' + escAttr(r.b) + '" /></label>' +
+          '<label class="f"><input type="text" data-path="' + rp + '.c" value="' + escAttr(r.c) + '" /></label>' +
+          '</div></div>';
+      }).join(''));
+      o.push('<button type="button" class="add" data-action="add" data-list="' + p + '.rows" data-kind="trow">+ Add a row</button>');
+    }
+    o.push('</div>');
+    return o.join('');
+  }
+
+  function renderCustom() {
+    var el = document.getElementById('list-custom');
+    if (!(state.custom || []).length) {
+      el.innerHTML = '<p class="empty">Nothing of your own yet. The buttons below start one.</p>';
+      return;
+    }
+    el.innerHTML = state.custom.map(function (c, i) {
+      var lp = 'custom.' + i;
+      var o = ['<div class="sect"><div class="item-head"><span class="item-title">Your section ' + (i + 1) + '</span>' +
+        tools('custom', i, state.custom.length, 'section') + '</div>'];
+      o.push('<label class="f"><span>Heading</span><input type="text" data-path="' + lp + '.title" value="' + escAttr(c.title) + '" placeholder="My Class Meeting Schedule" /></label>');
+      o.push('<label class="f"><span>Where it goes</span>' +
+        selectOf(lp + '.at', c.at || 'grading', SLOTS.map(function (s) { return [s[0], 'After ' + s[1]]; })) + '</label>');
+      o.push((c.blocks || []).map(function (b, j) { return blockForm(b, lp + '.blocks', j, c.blocks.length); }).join(''));
+      o.push('<div class="blockbar">' +
+        '<button type="button" data-action="add" data-list="' + lp + '.blocks" data-kind="text">+ Paragraphs</button>' +
+        '<button type="button" data-action="add" data-list="' + lp + '.blocks" data-kind="bullets">+ Bulleted list</button>' +
+        '<button type="button" data-action="add" data-list="' + lp + '.blocks" data-kind="table">+ Small table</button>' +
+        '<button type="button" data-action="add" data-list="' + lp + '.blocks" data-kind="callout">+ Highlighted note</button>' +
+        '</div></div>');
+      return o.join('');
+    }).join('');
+  }
+
+  function renderScalars() {
+    var nodes = document.querySelectorAll('#form [data-path]');
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i], p = el.getAttribute('data-path');
+      if (/\.\d+(\.|$)/.test(p)) continue;
+      var v = getPath(p);
+      if (el.type === 'checkbox') el.checked = !!v;
+      else if (el.type === 'radio') el.checked = (el.value === v);
+      else el.value = v == null ? '' : v;
+    }
+    document.getElementById('segLive').classList.toggle('on', isLive());
+    document.getElementById('segOD').classList.toggle('on', !isLive());
+    document.getElementById('deliveryHint').textContent = isLive()
+      ? 'The Live wording is used: scheduled meetings on the VR campus, attendance by presence and participation, and a pointer to the On-Demand syllabus.'
+      : 'The On-Demand wording is used: self-paced within each quarter, attendance by assignment completion, the ten-day rule, and a pointer to the Live syllabus.';
+    ['about', 'objectives', 'miles', 'dates', 'grading', 'delivery', 'ai', 'vr', 'scholar', 'needs', 'footer']
+      .forEach(function (id) {
+        var card = document.getElementById('card-' + id);
+        if (card) card.classList.toggle('off', !state[id].on);
+      });
+  }
+
+  // ---------------------------------------------------------- the catalogue
+  var CATALOGUE = [];
+  function renderCatalogue() {
+    var sel = document.getElementById('catPick');
+    var opts = ['<option value="">Write my own</option>'];
+    var lastGrade = null;
+    CATALOGUE.forEach(function (c, i) {
+      if (c.grade !== lastGrade) {
+        if (lastGrade !== null) opts.push('</optgroup>');
+        opts.push('<optgroup label="' + escAttr(c.grade === 'MS' ? 'Middle school' : c.grade === 'HS' ? 'High school' : 'Grade ' + c.grade) + '">');
+        lastGrade = c.grade;
+      }
+      opts.push('<option value="' + escAttr(String(i)) + '">' + escAttr(c.title + (c.code ? '  (' + c.code + ')' : '')) + '</option>');
+    });
+    if (lastGrade !== null) opts.push('</optgroup>');
+    sel.innerHTML = opts.join('');
+    sel.value = state.desc.pick || '';
+  }
+  function applyCatalogue(idx) {
+    var c = CATALOGUE[parseInt(idx, 10)];
+    var note = document.getElementById('catNote');
+    if (!c) { note.textContent = ''; return; }
+    state.desc.text = c.desc || '';
+    if (c.title) state.meta.title = c.title;
+    if (c.code) state.meta.code = 'Florida ' + c.code;
+    if (c.band) state.meta.band = c.band;
+    setAiBand(c.band);
+    var bits = [];
+    if (!c.desc) bits.push('The catalogue has no description for this one yet, so write your own below.');
+    if (c.prereq) bits.push('Catalogue prerequisite: ' + c.prereq + '.');
+    if (c.modes && c.modes.length === 1) {
+      bits.push('The catalogue lists this course as ' + (c.modes[0] === 'Live' ? 'Live only' : 'On-Demand only') + '.');
+    }
+    note.textContent = bits.join('  ');
+  }
+  function setAiBand(band) {
+    if (!AI_BULLETS[band]) return;
+    state.ai.bullets = AI_BULLETS[band].slice();
+    state.ai.close = AI_CLOSE[band];
+  }
+
+  // ---------------------------------------------------------------- plumbing
+  var activeTab = 'preview';
+  var frameEl = document.getElementById('previewFrame');
+  var sizeEl = document.getElementById('sizeNote');
+
+  function updateOutput() {
+    var html = buildCanvas();
+    document.getElementById('codeCanvas').value = html;
+    frameEl.srcdoc = '<!DOCTYPE html><html><head><meta charset="utf-8" /></head>' +
+      '<body style="margin:0; padding:18px; background:#e8ecf5;">' + html + '</body></html>';
+    var secs = documentBlocks().filter(function (b) { return b.t === 'bar'; }).length;
+    sizeEl.textContent = Math.max(1, Math.round(html.length / 1024)) + ' KB · ' +
+      secs + (secs === 1 ? ' section' : ' sections');
+    save();
+  }
+  function redrawAll() { renderLists(); renderScalars(); updateOutput(); }
+
+  var formEl = document.getElementById('form');
+
+  function onField(e) {
+    var p = e.target.getAttribute('data-path');
+    if (!p) return;
+    var v = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    setPath(p, v);
+
+    if (p === 'desc.pick') { applyCatalogue(v); redrawAll(); return; }
+    if (p === 'meta.band') { setAiBand(v); redrawAll(); return; }
+    if (p === 'meta.mode' || /\.on$/.test(p) || /\.(at|tone|kind)$/.test(p)) {
+      var sel = document.activeElement && document.activeElement.getAttribute
+              ? document.activeElement.getAttribute('data-path') : null;
+      redrawAll();
+      if (sel) {
+        var again = document.querySelector('#form [data-path="' + sel + '"]');
+        if (again) again.focus();
+      }
+      return;
+    }
+    updateOutput();
+  }
+  formEl.addEventListener('input', onField);
+  formEl.addEventListener('change', onField);
+
+  var NEW = {
+    line: function () { return ''; },
+    mrow: function () { return { a: '', b: '', c: '', d: '' }; },
+    dpair: function () { return { d: '', e: '' }; },
+    gitem: function () { return { pct: '', label: '' }; },
+    trow: function () { return { a: '', b: '', c: '' }; },
+    section: function () { return SECTION_PRESETS.blank(); }
+  };
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest ? e.target.closest('button[data-action]') : null;
+    if (!btn) return;
+    var act = btn.getAttribute('data-action');
+    var listPath = btn.getAttribute('data-list');
+    var kind = btn.getAttribute('data-kind');
+    var idx = parseInt(btn.getAttribute('data-idx'), 10);
+    var arr = listPath ? getPath(listPath) : null;
+
+    if (act === 'add') {
+      if (NEW[kind]) arr.push(NEW[kind]());
+      else arr.push(newBlock(kind));
+      redrawAll();
+    }
+    else if (act === 'del') {
+      arr.splice(idx, 1);
+      if (!arr.length && NEW[kind] && kind !== 'section' && kind !== 'block') arr.push(NEW[kind]());
+      redrawAll();
+    }
+    else if (act === 'up') { swap(arr, idx, idx - 1); redrawAll(); }
+    else if (act === 'down') { swap(arr, idx, idx + 1); redrawAll(); }
+    else if (act === 'addSection') {
+      var mk = SECTION_PRESETS[btn.getAttribute('data-preset')] || SECTION_PRESETS.blank;
+      state.custom.push(mk());
+      redrawAll();
+    }
+    else if (act === 'loadExample') { state = exampleState(); renderCatalogue(); redrawAll(); }
+    else if (act === 'reset') {
+      if (confirm('Clear everything and start from a blank form?')) { state = blankState(); renderCatalogue(); redrawAll(); }
+    }
+    else if (act === 'tab') { showTab(btn.getAttribute('data-tab')); }
+    else if (act === 'reopenToggle') {
+      var rb = document.getElementById('reopenBody');
+      rb.hidden = !rb.hidden;
+      btn.setAttribute('aria-expanded', rb.hidden ? 'false' : 'true');
+    }
+    else if (act === 'reopenFile') { document.getElementById('reopenFileInput').click(); }
+    else if (act === 'reopenLoad') { doReopen(document.getElementById('reopenPaste').value); }
+    else if (act === 'copy') { doCopy(); }
+    else if (act === 'download') { doDownload(); }
+    else if (act === 'docx') { doDocx(); }
+  });
+
+  function swap(arr, i, j) {
+    if (j < 0 || j >= arr.length) return;
+    var x = arr[i]; arr[i] = arr[j]; arr[j] = x;
+  }
+
+  function reopenMsg(kind, html) {
+    document.getElementById('reopenMsg').innerHTML =
+      html ? '<div class="lint ' + kind + '">' + html + '</div>' : '';
+  }
+  function doReopen(text) {
+    if (!t(text)) { reopenMsg('bad', 'Paste the syllabus in first, or open a file you downloaded.'); return; }
+    var p = readPayload(text);
+    if (!p) {
+      reopenMsg('bad', 'No settings in that. Either it was not built here, or the comment at the top has been ' +
+        'removed. A Word file never carries them &mdash; keep the <code class="k">.html</code> download if you want to reopen later.');
+      return;
+    }
+    if (p.error) {
+      reopenMsg('bad', 'The settings line is there but will not decode, so something has edited it. If you still ' +
+        'have the file you downloaded, that copy is the one to use.');
+      return;
+    }
+    if (p.mode !== 'syllabus') {
+      var where = p.mode === 'lesson' ? '<a href="lesson.html">lesson builder</a>'
+                : '<a href="index.html#' + p.mode + '">page builder</a>';
+      reopenMsg('bad', 'That is a different kind of page. Open the ' + where + ' and reopen it there.');
+      return;
+    }
+    if (p.v > PAYLOAD_V) {
+      reopenMsg('bad', 'That was built by a newer version of this builder than the one you have open. Reload and try again.');
+      return;
+    }
+    if (!confirm('This replaces everything in the form with the settings from that syllabus.\n\nGo ahead?')) return;
+    state = hydrate(p.state);
+    renderCatalogue();
+    redrawAll();
+    reopenMsg('ok', 'Loaded. Every field is filled in from that syllabus &mdash; make your change, then copy the ' +
+      'new HTML or download a fresh Word file.');
+    flash('Settings loaded');
+  }
+  document.getElementById('reopenFileInput').addEventListener('change', function (e) {
+    var f = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (!f) return;
+    var r = new FileReader();
+    r.onload = function () {
+      var txt = String(r.result || '');
+      document.getElementById('reopenPaste').value = txt;
+      doReopen(txt);
+    };
+    r.onerror = function () { reopenMsg('bad', 'That file could not be read.'); };
+    r.readAsText(f);
+  });
+
+  function showTab(which) {
+    activeTab = which;
+    ['preview', 'canvas', 'how'].forEach(function (k) {
+      document.getElementById('tab-' + k).setAttribute('aria-selected', k === which);
+      document.getElementById('pane-' + k).hidden = (k !== which);
+    });
+  }
+  function flash(msg) {
+    var f = document.getElementById('flash');
+    f.textContent = msg;
+    f.classList.add('show');
+    setTimeout(function () { f.classList.remove('show'); }, 2400);
+  }
+  function saveBlob(blob, name) {
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  }
+  function baseName() {
+    return slug(state.meta.title || 'syllabus') + '-syllabus-' +
+      (isLive() ? 'live' : 'ondemand') + '-2026-2027';
+  }
+  function doCopy() {
+    if (activeTab !== 'canvas') showTab('canvas');
+    var el = document.getElementById('codeCanvas'), text = el.value;
+    function fallback() {
+      el.removeAttribute('readonly');
+      el.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (err) {}
+      el.setAttribute('readonly', 'readonly');
+      flash(ok ? 'Copied to clipboard' : 'Press Ctrl+C to copy');
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { flash('Copied to clipboard'); }, fallback);
+    } else { fallback(); }
+  }
+  function doDownload() {
+    var name = baseName() + '.html';
+    saveBlob(new Blob([document.getElementById('codeCanvas').value], { type: 'text/html;charset=utf-8' }), name);
+    flash('Downloaded ' + name);
+  }
+  function doDocx() {
+    flash('Building the Word file…');
+    buildDocx().then(function (bytes) {
+      var name = baseName() + '.docx';
+      saveBlob(new Blob([bytes], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }), name);
+      flash('Downloaded ' + name);
+    }).catch(function (err) {
+      flash('');
+      alert('The Word file could not be built.\n\n' + err.message +
+        '\n\nThe HTML output is unaffected - use Copy HTML in the meantime.');
+    });
+  }
+
+  // ---------------------------------------------------------------- start up
+  state = load() || exampleState();
+  renderCatalogue();
+  redrawAll();
+
+  fetch('syllabus-courses.json').then(function (r) {
+    if (!r.ok) throw new Error('status ' + r.status);
+    return r.json();
+  }).then(function (list) {
+    CATALOGUE = Array.isArray(list) ? list : [];
+    renderCatalogue();
+  }).catch(function () {
+    var sel = document.getElementById('catPick');
+    sel.innerHTML = '<option value="">Write my own</option>';
+    document.getElementById('catNote').textContent =
+      'The course catalogue could not be loaded, so type your description below instead.';
+  });
+})();
+</script>
+</body>
+</html>
