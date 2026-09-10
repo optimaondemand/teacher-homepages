@@ -11,6 +11,7 @@ no CDN, no external fonts.** Open an `.html` file in a browser and it runs.
 | `syllabus.html` | Course syllabus, as Word `.docx` or Canvas HTML | `/syllabus.html` |
 | `houses/*.png` | Four house crests, 240px, hotlinked absolutely by pasted pages | `/houses/` |
 | `syllabus-courses.json`, `syllabus-shell.docx` | Ship with `syllabus.html`; must stay together | |
+| `encyclopedia-editor/index.html` | ELA Encyclopedia editor. **Generated** by `optima-ela-encyclopedia/_build/make_pages.py`; never edit it here. Not a paste-into-Canvas builder: it talks to the GitHub API with the viewer's own token. js-yaml is inlined so the no-CDN rule holds | `/encyclopedia-editor/` |
 
 **`README.md` is the real documentation** — ~400 lines, one section per builder, and it
 explains *why* each constraint exists. Read the section for whatever you are touching

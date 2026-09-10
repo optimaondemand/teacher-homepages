@@ -8,6 +8,7 @@ Self-serve builders that turn a short form into a branded Canvas page for Optima
 | `index.html` | An **Optima Commons** homeroom page | https://optimaondemand.github.io/teacher-homepages/#commons |
 | `lesson.html` | A **lesson page** in the house lesson format | https://optimaondemand.github.io/teacher-homepages/lesson.html |
 | `syllabus.html` | A **course syllabus**, as Word or as Canvas HTML | https://optimaondemand.github.io/teacher-homepages/syllabus.html |
+| `encyclopedia-editor/index.html` | The **ELA Encyclopedia editor**: a proofreading tracker that reads and commits to the private `optima-ela-encyclopedia` repo with the signed-in person's own GitHub token. A generated file; its source and build script live in that repo | https://optimaondemand.github.io/teacher-homepages/encyclopedia-editor/ |
 
 They are siblings by design and share their conventions (inline styles only, pure-ASCII output, `localStorage` drafts, live preview beside the form).
 
